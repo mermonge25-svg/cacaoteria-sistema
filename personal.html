@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Personal - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+.contenedor {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.barra-superior h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 24px;
+}
+
+.btn-agregar {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto;
+}
+
+.btn-agregar:hover {
+    background-color: #6b4530;
+}
+
+
+/* =========================================================
+   BOTONES EDITAR Y ELIMINAR
+   ========================================================= */
+
+.btn-editar,
+.btn-eliminar {
+    background: transparent;
+    border: none;
+    padding: 3px;
+    margin-right: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-editar svg,
+.btn-eliminar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-editar {
+    color: #6b4530;
+}
+
+.btn-editar:hover {
+    color: #402719;
+}
+
+.btn-eliminar {
+    color: #aaa;
+}
+
+.btn-eliminar:hover {
+    color: #777;
+}
+
+td.acciones {
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1e9e4;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.estado-activo {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.estado-no-activo {
+    color: #777;
+    font-weight: bold;
+}
+
+.mensaje {
+    text-align: center;
+    padding: 25px;
+    font-size: 18px;
+}
+
+.mensaje.error {
+    color: #a94442;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    width: 90%;
+    max-width: 500px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    color: #5a3825;
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.campo input,
+.campo select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: none;
+    border-color: #5a3825;
+}
+
+.botones-modal {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cerrar {
+    background-color: #777;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-cerrar:hover {
+    background-color: #5f5f5f;
+}
+
+.btn-guardar {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-guardar:hover {
+    background-color: #6b4530;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="contenedor">
+
+<div class="barra-superior">
+
+<h2>Personal</h2>
+
+<button
+ class="btn-agregar"
+ onclick="abrirFormulario()">
+
++ Agregar responsable
+
+</button>
+
+</div>
+
+<div class="tabla-contenedor">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Responsable</th>
+
+<th>Ubicación</th>
+
+<th>Estado</th>
+
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="cuerpoTabla">
+
+<tr>
+
+<td
+    colspan="4"
+    class="mensaje">
+
+Cargando personal...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL
+     ===================================================== -->
+
+<div
+    class="modal"
+    id="modalPersonal">
+
+<div class="modal-contenido">
+
+<h2 id="tituloModal">
+    Agregar responsable
+</h2>
+
+<form
+    class="formulario"
+    onsubmit="guardarResponsable(event)">
+
+<div class="campo">
+
+<label for="nombreResponsable">
+    Responsable
+</label>
+
+<input
+ type="text"
+ id="nombreResponsable"
+ placeholder="Ingrese el nombre"
+ required>
+
+</div>
+
+<div class="campo">
+
+<label for="ubicacionResponsable">
+    Ubicación
+</label>
+
+<input
+ type="text"
+ id="ubicacionResponsable"
+ placeholder="Ingrese la ubicación"
+ required>
+
+</div>
+
+<div class="campo">
+
+<label for="estadoResponsable">
+    Estado
+</label>
+
+<select
+ id="estadoResponsable"
+ required>
+
+<option value="Activo">
+    Activo
+</option>
+
+<option value="No activo">
+    No activo
+</option>
+
+</select>
+
+</div>
+
+<div class="botones-modal">
+
+<button
+ type="button"
+ class="btn-cerrar"
+ onclick="cerrarFormulario()">
+
+Cancelar
+
+</button>
+
+<button
+ type="submit"
+ class="btn-guardar">
+
+Guardar
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let personal = [];
+
+let indiceEditando = null;
+
+
+/* =========================================================
+   CARGAR PERSONAL
+   ========================================================= */
+
+async function cargarPersonal() {
+
+    const cuerpoTabla =
+        document.getElementById("cuerpoTabla");
+
+    cuerpoTabla.innerHTML = `
+        <tr>
+            <td colspan="4" class="mensaje">
+                Cargando personal...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Personal")
+            .select("Responsable, Ubicacion, Estado")
+            .order("Responsable", {
+                ascending: true
+            });
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando personal:",
+                error
+            );
+
+            cuerpoTabla.innerHTML = `
+                <tr>
+                    <td
+                        colspan="4"
+                        class="mensaje error">
+
+                        Error al cargar el personal:<br><br>
+
+                        ${escaparHTML(error.message)}
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        personal = data || [];
+
+        mostrarPersonal();
+
+    } catch (error) {
+
+        console.error(error);
+
+        cuerpoTabla.innerHTML = `
+            <tr>
+                <td
+                    colspan="4"
+                    class="mensaje error">
+
+                    No se pudo conectar con Supabase.
+
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR PERSONAL
+   ========================================================= */
+
+function mostrarPersonal() {
+
+    const cuerpoTabla =
+        document.getElementById("cuerpoTabla");
+
+
+    if (personal.length === 0) {
+
+        cuerpoTabla.innerHTML = `
+            <tr>
+                <td
+                    colspan="4"
+                    class="mensaje">
+
+                    No hay responsables registrados.
+
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    cuerpoTabla.innerHTML =
+
+        personal.map((persona, indice) => {
+
+            const estado =
+                String(
+                    persona.Estado || ""
+                ).trim();
+
+            const claseEstado =
+                estado.toLowerCase() === "activo"
+                    ? "estado-activo"
+                    : "estado-no-activo";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${escaparHTML(
+                            persona.Responsable || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(
+                            persona.Ubicacion || ""
+                        )}
+                    </td>
+
+                    <td
+                        class="${claseEstado}">
+
+                        ${escaparHTML(
+                            estado
+                        )}
+
+                    </td>
+
+                    <td class="acciones">
+
+                        <button
+                            type="button"
+                            class="btn-editar"
+                            title="Editar responsable"
+                            onclick="editarResponsable(${indice})"
+                            aria-label="Editar responsable">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+
+                                <path
+                                    d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M14.5 5.5L18.5 9.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-eliminar"
+                            title="Eliminar responsable"
+                            onclick="eliminarResponsable(${indice})"
+                            aria-label="Eliminar responsable">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+
+                                <path
+                                    d="M5 7H19"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                                <path
+                                    d="M9 7V4H15V7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M7 7L8 20H16L17 7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M10 11V17"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                                <path
+                                    d="M14 11V17"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   ABRIR FORMULARIO
+   ========================================================= */
+
+function abrirFormulario() {
+
+    indiceEditando = null;
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Agregar responsable";
+
+
+    document.getElementById(
+        "nombreResponsable"
+    ).value = "";
+
+
+    document.getElementById(
+        "ubicacionResponsable"
+    ).value = "";
+
+
+    document.getElementById(
+        "estadoResponsable"
+    ).value =
+        "Activo";
+
+
+    document.getElementById(
+        "modalPersonal"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   CERRAR FORMULARIO
+   ========================================================= */
+
+function cerrarFormulario() {
+
+    document.getElementById(
+        "modalPersonal"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   EDITAR RESPONSABLE
+   ========================================================= */
+
+function editarResponsable(indice) {
+
+    const persona =
+        personal[indice];
+
+    if (!persona) {
+        return;
+    }
+
+
+    indiceEditando = indice;
+
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Editar responsable";
+
+
+    document.getElementById(
+        "nombreResponsable"
+    ).value =
+        persona.Responsable || "";
+
+
+    document.getElementById(
+        "ubicacionResponsable"
+    ).value =
+        persona.Ubicacion || "";
+
+
+    document.getElementById(
+        "estadoResponsable"
+    ).value =
+        persona.Estado || "Activo";
+
+
+    document.getElementById(
+        "modalPersonal"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   VERIFICAR RESPONSABLE DUPLICADO
+   ========================================================= */
+
+async function verificarResponsableDuplicado(
+    nombre,
+    nombreOriginal = null
+) {
+
+    let consulta =
+        supabaseClient
+            .from("Personal")
+            .select("Responsable")
+            .eq(
+                "Responsable",
+                nombre
+            );
+
+
+    if (nombreOriginal !== null) {
+
+        consulta =
+            consulta.neq(
+                "Responsable",
+                nombreOriginal
+            );
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await consulta;
+
+
+    if (error) {
+
+        throw new Error(
+            "No se pudo verificar el responsable: " +
+            error.message
+        );
+
+    }
+
+
+    return (
+        data &&
+        data.length > 0
+    );
+
+}
+
+
+/* =========================================================
+   GUARDAR RESPONSABLE
+   ========================================================= */
+
+async function guardarResponsable(event) {
+
+    event.preventDefault();
+
+
+    const nombre =
+        document
+            .getElementById(
+                "nombreResponsable"
+            )
+            .value
+            .trim();
+
+
+    const ubicacion =
+        document
+            .getElementById(
+                "ubicacionResponsable"
+            )
+            .value
+            .trim();
+
+
+    const estado =
+        document
+            .getElementById(
+                "estadoResponsable"
+            )
+            .value;
+
+
+    if (!nombre) {
+
+        alert(
+            "Ingrese el nombre del responsable."
+        );
+
+        return;
+
+    }
+
+
+    if (!ubicacion) {
+
+        alert(
+            "Ingrese la ubicación."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+
+        /* =================================================
+           AGREGAR
+           ================================================= */
+
+        if (indiceEditando === null) {
+
+
+            const duplicado =
+                await verificarResponsableDuplicado(
+                    nombre
+                );
+
+
+            if (duplicado) {
+
+                alert(
+                    "Ese responsable ya existe."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } = await supabaseClient
+                .from("Personal")
+                .insert([
+                    {
+                        Responsable:
+                            nombre,
+
+                        Ubicacion:
+                            ubicacion,
+
+                        Estado:
+                            estado
+                    }
+                ]);
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo agregar el responsable:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Responsable agregado correctamente."
+            );
+
+        }
+
+
+        /* =================================================
+           EDITAR
+           ================================================= */
+
+        else {
+
+
+            const personaActual =
+                personal[indiceEditando];
+
+
+            if (!personaActual) {
+
+                alert(
+                    "No se encontró el responsable."
+                );
+
+                return;
+
+            }
+
+
+            const duplicado =
+                await verificarResponsableDuplicado(
+                    nombre,
+                    personaActual.Responsable
+                );
+
+
+            if (duplicado) {
+
+                alert(
+                    "Ese responsable ya existe."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } = await supabaseClient
+                .from("Personal")
+                .update({
+
+                    Responsable:
+                        nombre,
+
+                    Ubicacion:
+                        ubicacion,
+
+                    Estado:
+                        estado
+
+                })
+                .eq(
+                    "Responsable",
+                    personaActual.Responsable
+                );
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo actualizar el responsable:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Responsable actualizado correctamente."
+            );
+
+        }
+
+
+        cerrarFormulario();
+
+        await cargarPersonal();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al guardar el responsable:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ELIMINAR RESPONSABLE
+   ========================================================= */
+
+async function eliminarResponsable(indice) {
+
+    const persona =
+        personal[indice];
+
+    if (!persona) {
+        return;
+    }
+
+
+    const confirmar =
+        confirm(
+
+            "¿Está seguro de eliminar este responsable?\n\n" +
+
+            persona.Responsable
+
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    try {
+
+
+        const {
+            error
+        } = await supabaseClient
+            .from("Personal")
+            .delete()
+            .eq(
+                "Responsable",
+                persona.Responsable
+            );
+
+
+        if (error) {
+
+            console.error(error);
+
+            alert(
+                "No se pudo eliminar el responsable:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Responsable eliminado correctamente."
+        );
+
+
+        await cargarPersonal();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al eliminar el responsable:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEGURIDAD HTML
+   ========================================================= */
+
+function escaparHTML(valor) {
+
+    return String(valor ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL AL HACER CLIC AFUERA
+   ========================================================= */
+
+window.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "modalPersonal"
+            );
+
+
+        if (
+            event.target ===
+            modal
+        ) {
+
+            cerrarFormulario();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+
+cargarPersonal();
+
+</script>
+
+</body>
+
+</html>

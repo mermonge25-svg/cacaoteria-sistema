@@ -1,0 +1,4995 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ventas - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+* {
+    font-family: "Times New Roman", Times, serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 20px 30px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.contenedor {
+    max-width: 1500px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.encabezado h2 {
+    margin: 0;
+    color: #5a3825;
+}
+
+.informacion {
+    background-color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   BOTONES SUPERIORES
+========================================================= */
+
+.botones-superiores {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.boton-superior {
+    border: none;
+    padding: 11px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #5a3825;
+    color: white;
+}
+
+.boton-superior:hover {
+    background-color: #43291b;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.formulario {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+    display: none;
+}
+
+.formulario.visible {
+    display: block;
+}
+
+.formulario h3 {
+    margin-top: 0;
+    color: #5a3825;
+}
+
+.grid-formulario {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: none;
+    border-color: #5a3825;
+}
+
+.campo input[readonly] {
+    background-color: #f1f1f1;
+    color: #555;
+}
+
+.campo-manual {
+    display: none;
+}
+
+.campo-manual.visible {
+    display: flex;
+}
+
+.campo-manual input {
+    border-color: #6b4530;
+}
+
+.campo-manual small {
+    margin-top: 5px;
+    color: #777;
+    font-size: 12px;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.acciones {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+button {
+    border: none;
+    padding: 11px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.boton-principal {
+    background-color: #5a3825;
+    color: white;
+}
+
+.boton-principal:hover {
+    background-color: #43291b;
+}
+
+.boton-cancelar {
+    background-color: #777;
+    color: white;
+    display: none;
+}
+
+.boton-cancelar:hover {
+    background-color: #555;
+}
+
+.boton-editar {
+    background-color: #806044;
+    color: white;
+    padding: 7px 12px;
+    margin-right: 5px;
+}
+
+.boton-editar:hover {
+    background-color: #654b35;
+}
+
+.boton-eliminar {
+    background-color: #a00000;
+    color: white;
+    padding: 7px 12px;
+}
+
+.boton-eliminar:hover {
+    background-color: #780000;
+}
+
+.mensaje {
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.mensaje.exito {
+    display: block;
+    background-color: #e8f5e9;
+    color: #27632a;
+}
+
+.mensaje.error {
+    display: block;
+    background-color: #fdecea;
+    color: #a00000;
+}
+
+.tabla-contenedor {
+    background-color: white;
+    border-radius: 10px;
+    overflow-x: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1700px;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 13px 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+tr:hover {
+    background-color: #f9f3ef;
+}
+
+.numero {
+    text-align: right;
+}
+
+.sin-dato {
+    color: #888;
+}
+
+.mensaje-vacio {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+
+/* =========================================================
+   RESUMEN DE VENTAS
+========================================================= */
+
+.resumen-ventas {
+    display: none;
+    margin-bottom: 25px;
+}
+
+.resumen-ventas.visible {
+    display: block;
+}
+
+
+/* FILTROS */
+
+.filtros-resumen {
+    background-color: white;
+    padding: 18px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.filtros-resumen-contenido {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filtros-resumen label {
+    font-weight: bold;
+}
+
+.filtros-resumen select {
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+}
+
+#productoResumen {
+    min-width: 220px;
+}
+
+
+/* TARJETAS DE RESUMEN */
+
+.resumen-datos {
+    background-color: white;
+    padding: 18px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.resumen-dato {
+    min-width: 200px;
+}
+
+.resumen-dato-titulo {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.resumen-dato-valor {
+    font-size: 20px;
+    font-weight: bold;
+    color: #5a3825;
+}
+
+
+/* TABLA DEL RESUMEN */
+
+.tabla-resumen {
+    margin-bottom: 25px;
+}
+
+.tabla-resumen table {
+    min-width: 700px;
+}
+
+
+/* =========================================================
+   GRÁFICO DE VENTAS
+========================================================= */
+
+.grafico-contenedor {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+.grafico-encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.grafico-encabezado h3 {
+    margin: 0;
+    color: #5a3825;
+}
+
+.botones-periodo {
+    display: flex;
+    gap: 8px;
+}
+
+.boton-periodo {
+    background-color: #eeeeee;
+    color: #555;
+    border: 1px solid #ccc;
+    padding: 8px 18px;
+    border-radius: 6px;
+}
+
+.boton-periodo:hover {
+    background-color: #ddd;
+}
+
+.boton-periodo.activo {
+    background-color: #5a3825;
+    color: white;
+    border-color: #5a3825;
+}
+
+.grafico-area {
+    position: relative;
+    width: 100%;
+    height: 430px;
+}
+
+.mensaje-grafico {
+    text-align: center;
+    color: #777;
+    padding: 40px 20px;
+    display: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .grid-formulario {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .grid-formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .botones-superiores {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .grafico-encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .botones-periodo {
+        width: 100%;
+    }
+
+    .boton-periodo {
+        flex: 1;
+    }
+
+    .grafico-area {
+        height: 400px;
+    }
+
+    .filtros-resumen-contenido {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .filtros-resumen select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .grid-formulario {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="contenedor">
+
+<div class="encabezado">
+
+    <h2>Registro de Ventas</h2>
+
+    <div class="informacion">
+        Ventas registradas:
+        <span id="totalVentas">0</span>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     BOTONES SUPERIORES
+====================================================== -->
+
+<div class="botones-superiores">
+
+    <button
+        type="button"
+        class="boton-superior"
+        id="botonRegistrarVenta"
+        onclick="alternarFormulario()"
+    >
+        Registrar Venta
+    </button>
+
+    <button
+        type="button"
+        class="boton-superior"
+        id="botonResumenVentas"
+        onclick="alternarResumenVentas()"
+    >
+        Resumen ventas
+    </button>
+
+</div>
+
+
+<div id="mensaje" class="mensaje"></div>
+
+
+<!-- =====================================================
+     FORMULARIO
+====================================================== -->
+
+<div
+    class="formulario"
+    id="formularioVenta"
+>
+
+    <h3 id="tituloFormulario">Nueva Venta</h3>
+
+    <div class="grid-formulario">
+
+        <div class="campo">
+
+            <label for="fecha">Fecha</label>
+
+            <input
+                type="date"
+                id="fecha"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="producto">Producto</label>
+
+            <select id="producto">
+
+                <option value="">
+                    Seleccione un producto
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="codigo">Código</label>
+
+            <input
+                type="text"
+                id="codigo"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="lote">Lote</label>
+
+            <select id="lote">
+
+                <option value="">
+                    Seleccione un lote
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="tipo">Tipo</label>
+
+            <input
+                type="text"
+                id="tipo"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="unidadMedida">
+                Unidad de Medida
+            </label>
+
+            <input
+                type="text"
+                id="unidadMedida"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="ubicacion">
+                Ubicación
+            </label>
+
+            <select
+                id="ubicacion"
+                onchange="cambiarUbicacion()"
+            >
+
+                <option value="">
+                    Seleccione una ubicación
+                </option>
+
+                <option value="Diproa">
+                    Diproa
+                </option>
+
+                <option value="Tres Ríos">
+                    Tres Ríos
+                </option>
+
+                <option value="La Garita">
+                    La Garita
+                </option>
+
+                <option value="San Antonio">
+                    San Antonio
+                </option>
+
+                <option value="__OTRA_UBICACION__">
+                    ➕ Otra / Escribir manualmente
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="campo campo-manual"
+            id="campoUbicacionManual"
+        >
+
+            <label for="ubicacionManual">
+                Escribir ubicación
+            </label>
+
+            <input
+                type="text"
+                id="ubicacionManual"
+                placeholder="Ingrese la ubicación"
+                maxlength="150"
+            >
+
+            <small>
+                Se guardará esta ubicación directamente en la venta.
+            </small>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="responsable">
+                Responsable
+            </label>
+
+            <select
+                id="responsable"
+                onchange="cambiarResponsable()"
+            >
+
+                <option value="">
+                    Cargando responsables...
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="campo campo-manual"
+            id="campoResponsableManual"
+        >
+
+            <label for="responsableManual">
+                Escribir responsable
+            </label>
+
+            <input
+                type="text"
+                id="responsableManual"
+                placeholder="Ingrese el nombre del responsable"
+                maxlength="150"
+            >
+
+            <small>
+                Se guardará este responsable directamente en la venta.
+            </small>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <input
+                type="text"
+                id="descripcion"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="cantidad">
+                Cantidad
+            </label>
+
+            <input
+                type="number"
+                id="cantidad"
+                min="1"
+                step="1"
+                placeholder="0"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="precio">
+                Precio unitario (₡)
+            </label>
+
+            <input
+                type="number"
+                id="precio"
+                min="0"
+                step="1"
+                placeholder="0"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="total">
+                Total (₡)
+            </label>
+
+            <input
+                type="text"
+                id="total"
+                class="total"
+                value="₡0"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="destino">
+                Destino / Cliente
+            </label>
+
+            <input
+                type="text"
+                id="destino"
+                placeholder="Cliente o destino"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="acciones">
+
+        <button
+            type="button"
+            class="boton-cancelar"
+            id="botonCancelar"
+            onclick="cancelarEdicion()"
+        >
+            Cancelar
+        </button>
+
+        <button
+            type="button"
+            class="boton-principal"
+            id="botonGuardar"
+            onclick="guardarVenta()"
+        >
+            Registrar Venta
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     RESUMEN DE VENTAS
+====================================================== -->
+
+<div
+    class="resumen-ventas"
+    id="contenedorResumenVentas"
+>
+
+
+    <!-- =================================================
+         FILTROS
+    ================================================== -->
+
+    <div class="filtros-resumen">
+
+        <div class="filtros-resumen-contenido">
+
+            <label for="periodoResumen">
+                Período:
+            </label>
+
+            <select
+                id="periodoResumen"
+                onchange="actualizarResumenVentas()"
+            >
+
+                <option value="semana">
+                    Última semana
+                </option>
+
+                <option value="mes">
+                    Mes
+                </option>
+
+                <option value="año">
+                    Año
+                </option>
+
+            </select>
+
+
+            <label for="productoResumen">
+                Producto:
+            </label>
+
+            <select
+                id="productoResumen"
+                onchange="actualizarResumenVentas()"
+            >
+
+                <option value="">
+                    Todos los productos
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DATOS GENERALES
+    ================================================== -->
+
+    <div class="resumen-datos">
+
+        <div class="resumen-dato">
+
+            <div class="resumen-dato-titulo">
+                Monto total vendido
+            </div>
+
+            <div
+                class="resumen-dato-valor"
+                id="montoTotalVentas"
+            >
+                ₡0.00
+            </div>
+
+        </div>
+
+
+        <div class="resumen-dato">
+
+            <div class="resumen-dato-titulo">
+                Unidades vendidas
+            </div>
+
+            <div
+                class="resumen-dato-valor"
+                id="unidadesTotalesVentas"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="resumen-dato">
+
+            <div class="resumen-dato-titulo">
+                Ventas realizadas
+            </div>
+
+            <div
+                class="resumen-dato-valor"
+                id="cantidadTotalVentas"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         GRÁFICO
+    ================================================== -->
+
+    <div class="grafico-contenedor">
+
+        <div class="grafico-encabezado">
+
+            <h3 id="tituloGrafico">
+                Ventas por producto — Última semana
+            </h3>
+
+            <div class="botones-periodo">
+
+                <button
+                    type="button"
+                    class="boton-periodo activo"
+                    id="botonSemana"
+                    onclick="cambiarPeriodoGrafico('semana')"
+                >
+                    Última semana
+                </button>
+
+                <button
+                    type="button"
+                    class="boton-periodo"
+                    id="botonMes"
+                    onclick="cambiarPeriodoGrafico('mes')"
+                >
+                    Mes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="grafico-area">
+
+            <canvas id="graficoVentas"></canvas>
+
+        </div>
+
+
+        <div
+            id="mensajeGrafico"
+            class="mensaje-grafico"
+        >
+            No hay datos suficientes para mostrar el gráfico.
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         TABLA RESUMEN POR PRODUCTO
+    ================================================== -->
+
+    <div
+        class="tabla-contenedor tabla-resumen"
+        id="tablaResumenProductos"
+    >
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Producto
+                    </th>
+
+                    <th>
+                        Unidades vendidas
+                    </th>
+
+                    <th>
+                        Monto total vendido
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody
+                id="cuerpoResumenProductos"
+            ></tbody>
+
+        </table>
+
+
+        <div
+            id="resumenProductosVacio"
+            class="mensaje-vacio"
+            style="display: none;"
+        >
+            No hay ventas para el período seleccionado.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TABLA PRINCIPAL DE VENTAS
+====================================================== -->
+
+<div
+    class="tabla-contenedor"
+    id="tablaVentasPrincipal"
+>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Fecha</th>
+                <th>Código</th>
+                <th>Lote</th>
+                <th>Tipo</th>
+                <th>Unidad de Medida</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+                <th>Destino / Cliente</th>
+                <th>Acciones</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="cuerpoVentas"></tbody>
+
+    </table>
+
+    <div
+        id="ventasVacias"
+        class="mensaje-vacio"
+    >
+        No hay ventas registradas.
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+let productos = [];
+let ventas = [];
+let personal = [];
+let lotes = [];
+let ventaEditando = null;
+
+let periodoGrafico = "semana";
+let graficoVentas = null;
+
+
+/* =========================================================
+   FECHA ACTUAL
+========================================================= */
+
+function obtenerFechaActual() {
+
+    const hoy = new Date();
+
+    const año = hoy.getFullYear();
+
+    const mes =
+        String(hoy.getMonth() + 1).padStart(2, "0");
+
+    const dia =
+        String(hoy.getDate()).padStart(2, "0");
+
+    return `${año}-${mes}-${dia}`;
+
+}
+
+
+/* =========================================================
+   LIMPIAR TEXTO
+========================================================= */
+
+function limpiarTexto(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+        return "";
+    }
+
+    return String(valor)
+        .trim()
+        .replace(/^["']+|["']+$/g, "")
+        .trim();
+
+}
+
+
+/* =========================================================
+   NORMALIZAR TEXTO
+========================================================= */
+
+function normalizarTexto(valor) {
+
+    return limpiarTexto(valor).toLowerCase();
+
+}
+
+
+/* =========================================================
+   CARGAR PRODUCTOS
+========================================================= */
+
+async function cargarProductos() {
+
+    const selector =
+        document.getElementById("producto");
+
+    selector.innerHTML =
+        `<option value="">
+            Cargando productos...
+        </option>`;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Productos")
+            .select(
+                "id, Codigo, Lote, Tipo, Descripcion, Unidad_Medida"
+            )
+            .order(
+                "Descripcion",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando productos:",
+                error
+            );
+
+            selector.innerHTML =
+                `<option value="">
+                    No se pudieron cargar los productos
+                </option>`;
+
+            mostrarMensaje(
+                "No se pudieron cargar los productos: " +
+                error.message,
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        productos = data || [];
+
+
+        selector.innerHTML =
+            `<option value="">
+                Seleccione un producto
+            </option>`;
+
+
+        const productosTerminados =
+            productos.filter(function(producto) {
+
+                return (
+                    normalizarTexto(producto.Tipo) ===
+                    "producto terminado"
+                );
+
+            });
+
+
+        const productosIdsMostrados = [];
+
+
+        productosTerminados.forEach(function(producto) {
+
+            if (
+                producto.id === null ||
+                producto.id === undefined
+            ) {
+                return;
+            }
+
+
+            if (
+                productosIdsMostrados.includes(
+                    producto.id
+                )
+            ) {
+                return;
+            }
+
+
+            productosIdsMostrados.push(
+                producto.id
+            );
+
+
+            const opcion =
+                document.createElement("option");
+
+
+            opcion.value =
+                String(producto.id);
+
+
+            opcion.textContent =
+                limpiarTexto(
+                    producto.Descripcion
+                );
+
+
+            selector.appendChild(opcion);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarMensaje(
+            "No se pudo conectar con la tabla Productos.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARGAR PRODUCTOS DEL FILTRO DE RESUMEN
+========================================================= */
+
+function cargarProductosResumen() {
+
+    const selector =
+        document.getElementById("productoResumen");
+
+    if (!selector) {
+        return;
+    }
+
+    selector.innerHTML =
+        `<option value="">
+            Todos los productos
+        </option>`;
+
+    const productosUnicos = [];
+
+    productos.forEach(function(producto) {
+
+        if (
+            normalizarTexto(producto.Tipo) !==
+            "producto terminado"
+        ) {
+            return;
+        }
+
+        const descripcion =
+            limpiarTexto(producto.Descripcion);
+
+        if (!descripcion) {
+            return;
+        }
+
+        const existe =
+            productosUnicos.some(function(existente) {
+
+                return (
+                    normalizarTexto(existente) ===
+                    normalizarTexto(descripcion)
+                );
+
+            });
+
+        if (!existe) {
+            productosUnicos.push(descripcion);
+        }
+
+    });
+
+    productosUnicos.sort(function(a, b) {
+
+        return a.localeCompare(
+            b,
+            "es",
+            {
+                sensitivity: "base"
+            }
+        );
+
+    });
+
+    productosUnicos.forEach(function(producto) {
+
+        const opcion =
+            document.createElement("option");
+
+        opcion.value = producto;
+        opcion.textContent = producto;
+
+        selector.appendChild(opcion);
+
+    });
+
+}
+
+
+/* =========================================================
+   CARGAR LOTES
+========================================================= */
+
+async function cargarLotes() {
+
+    const selectorLote =
+        document.getElementById("lote");
+
+
+    selectorLote.innerHTML =
+        `<option value="">
+            Cargando lotes...
+        </option>`;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Lotes")
+            .select("Lote")
+            .order(
+                "Lote",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando lotes:",
+                error
+            );
+
+
+            selectorLote.innerHTML =
+                `<option value="">
+                    No se pudieron cargar los lotes
+                </option>`;
+
+
+            mostrarMensaje(
+                "No se pudieron cargar los lotes: " +
+                error.message,
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        lotes = data || [];
+
+
+        selectorLote.innerHTML =
+            `<option value="">
+                Seleccione un lote
+            </option>`;
+
+
+        const lotesUnicos = [];
+
+
+        lotes.forEach(function(item) {
+
+            const lote =
+                limpiarTexto(item.Lote);
+
+
+            if (!lote) {
+                return;
+            }
+
+
+            const existe =
+                lotesUnicos.some(function(loteExistente) {
+
+                    return (
+                        normalizarTexto(loteExistente) ===
+                        normalizarTexto(lote)
+                    );
+
+                });
+
+
+            if (!existe) {
+                lotesUnicos.push(lote);
+            }
+
+        });
+
+
+        lotesUnicos.sort(function(a, b) {
+
+            return a.localeCompare(
+                b,
+                "es",
+                {
+                    numeric: true,
+                    sensitivity: "base"
+                }
+            );
+
+        });
+
+
+        lotesUnicos.forEach(function(lote) {
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value = lote;
+            opcion.textContent = lote;
+
+            selectorLote.appendChild(opcion);
+
+        });
+
+
+        if (lotesUnicos.length === 0) {
+
+            selectorLote.innerHTML =
+                `<option value="">
+                    No hay lotes registrados
+                </option>`;
+
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        selectorLote.innerHTML =
+            `<option value="">
+                No se pudieron cargar los lotes
+            </option>`;
+
+
+        mostrarMensaje(
+            "No se pudo conectar con la tabla Lotes.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARGAR PERSONAL
+========================================================= */
+
+async function cargarPersonal() {
+
+    const select =
+        document.getElementById("responsable");
+
+
+    select.innerHTML =
+        `<option value="">
+            Cargando responsables...
+        </option>`;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Personal")
+            .select("Responsable, Estado")
+            .eq("Estado", "Activo")
+            .order(
+                "Responsable",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando personal:",
+                error
+            );
+
+
+            select.innerHTML =
+                `<option value="">
+                    No se pudieron cargar los responsables
+                </option>`;
+
+
+            mostrarMensaje(
+                "No se pudieron cargar los responsables: " +
+                error.message,
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        personal = data || [];
+
+
+        select.innerHTML =
+            `<option value="">
+                Seleccione un responsable
+            </option>`;
+
+
+        const responsables = [];
+
+
+        personal.forEach(function(persona) {
+
+            const responsable =
+                limpiarTexto(persona.Responsable);
+
+
+            if (!responsable) {
+                return;
+            }
+
+
+            const yaExiste =
+                responsables.some(function(existente) {
+
+                    return (
+                        normalizarTexto(existente) ===
+                        normalizarTexto(responsable)
+                    );
+
+                });
+
+
+            if (!yaExiste) {
+                responsables.push(responsable);
+            }
+
+        });
+
+
+        responsables.sort(function(a, b) {
+
+            return a.localeCompare(
+                b,
+                "es",
+                {
+                    sensitivity: "base"
+                }
+            );
+
+        });
+
+
+        responsables.forEach(function(responsable) {
+
+            const opcion =
+                document.createElement("option");
+
+            opcion.value = responsable;
+            opcion.textContent = responsable;
+
+            select.appendChild(opcion);
+
+        });
+
+
+        const opcionOtro =
+            document.createElement("option");
+
+        opcionOtro.value =
+            "__OTRO_RESPONSABLE__";
+
+        opcionOtro.textContent =
+            "➕ Otro / Escribir manualmente";
+
+        select.appendChild(opcionOtro);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarMensaje(
+            "No se pudo conectar con la tabla Personal.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSABLE MANUAL
+========================================================= */
+
+function cambiarResponsable() {
+
+    const select =
+        document.getElementById("responsable");
+
+    const campoManual =
+        document.getElementById(
+            "campoResponsableManual"
+        );
+
+    const inputManual =
+        document.getElementById(
+            "responsableManual"
+        );
+
+
+    if (
+        select.value ===
+        "__OTRO_RESPONSABLE__"
+    ) {
+
+        campoManual.classList.add("visible");
+
+        inputManual.required = true;
+
+        setTimeout(function() {
+            inputManual.focus();
+        }, 50);
+
+
+    } else {
+
+        campoManual.classList.remove("visible");
+
+        inputManual.required = false;
+
+        inputManual.value = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   UBICACIÓN MANUAL
+========================================================= */
+
+function cambiarUbicacion() {
+
+    const select =
+        document.getElementById("ubicacion");
+
+    const campoManual =
+        document.getElementById(
+            "campoUbicacionManual"
+        );
+
+    const inputManual =
+        document.getElementById(
+            "ubicacionManual"
+        );
+
+
+    if (
+        select.value ===
+        "__OTRA_UBICACION__"
+    ) {
+
+        campoManual.classList.add("visible");
+
+        inputManual.required = true;
+
+        setTimeout(function() {
+            inputManual.focus();
+        }, 50);
+
+
+    } else {
+
+        campoManual.classList.remove("visible");
+
+        inputManual.required = false;
+
+        inputManual.value = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSABLE FINAL
+========================================================= */
+
+function obtenerResponsableFinal() {
+
+    const select =
+        document.getElementById("responsable");
+
+
+    if (
+        select.value ===
+        "__OTRO_RESPONSABLE__"
+    ) {
+
+        return limpiarTexto(
+            document.getElementById(
+                "responsableManual"
+            ).value
+        );
+
+    }
+
+
+    return limpiarTexto(select.value);
+
+}
+
+
+/* =========================================================
+   UBICACIÓN FINAL
+========================================================= */
+
+function obtenerUbicacionFinal() {
+
+    const select =
+        document.getElementById("ubicacion");
+
+
+    if (
+        select.value ===
+        "__OTRA_UBICACION__"
+    ) {
+
+        return limpiarTexto(
+            document.getElementById(
+                "ubicacionManual"
+            ).value
+        );
+
+    }
+
+
+    return limpiarTexto(select.value);
+
+}
+
+
+/* =========================================================
+   PRODUCTO SELECCIONADO
+========================================================= */
+
+function productoSeleccionado() {
+
+    const valor =
+        limpiarTexto(
+            document.getElementById(
+                "producto"
+            ).value
+        );
+
+
+    if (!valor) {
+        return null;
+    }
+
+
+    return productos.find(function(item) {
+
+        return String(item.id) === valor;
+
+    }) || null;
+
+}
+
+
+/* =========================================================
+   COMPLETAR DATOS DEL PRODUCTO
+========================================================= */
+
+function completarDatosProducto() {
+
+    const producto =
+        productoSeleccionado();
+
+
+    if (!producto) {
+
+        document.getElementById("codigo").value = "";
+
+        document.getElementById("lote").value = "";
+
+        document.getElementById("tipo").value = "";
+
+        document.getElementById("unidadMedida").value = "";
+
+        document.getElementById("descripcion").value = "";
+
+        document.getElementById("precio").value = "";
+
+        calcularTotal();
+
+        return;
+
+    }
+
+
+    document.getElementById("codigo").value =
+        limpiarTexto(producto.Codigo);
+
+
+    document.getElementById("tipo").value =
+        limpiarTexto(producto.Tipo);
+
+
+    document.getElementById("unidadMedida").value =
+        limpiarTexto(producto.Unidad_Medida);
+
+
+    document.getElementById("descripcion").value =
+        limpiarTexto(producto.Descripcion);
+
+
+    document.getElementById("lote").value = "";
+
+
+    calcularTotal();
+
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+function calcularTotal() {
+
+    const cantidad =
+        Number(
+            document.getElementById("cantidad").value
+        ) || 0;
+
+
+    const precio =
+        Number(
+            document.getElementById("precio").value
+        ) || 0;
+
+
+    const total =
+        cantidad * precio;
+
+
+    document.getElementById("total").value =
+        "₡" +
+        total.toLocaleString(
+            "es-CR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+function mostrarMensaje(texto, tipo) {
+
+    const mensaje =
+        document.getElementById("mensaje");
+
+
+    mensaje.textContent = texto;
+
+    mensaje.className =
+        "mensaje " + tipo;
+
+
+    setTimeout(function() {
+
+        mensaje.className = "mensaje";
+
+    }, 4000);
+
+}
+
+
+/* =========================================================
+   CARGAR VENTAS
+========================================================= */
+
+async function cargarVentas() {
+
+    const cuerpo =
+        document.getElementById("cuerpoVentas");
+
+
+    cuerpo.innerHTML =
+        `<tr>
+            <td colspan="13" class="mensaje-vacio">
+                Cargando ventas...
+            </td>
+        </tr>`;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Ventas")
+            .select(
+                "id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino"
+            )
+            .order(
+                "Fecha",
+                {
+                    ascending: false
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando ventas:",
+                error
+            );
+
+
+            mostrarMensaje(
+                "No se pudieron cargar las ventas: " +
+                error.message,
+                "error"
+            );
+
+
+            cuerpo.innerHTML = "";
+
+            return;
+
+        }
+
+
+        ventas = data || [];
+
+
+        mostrarVentas();
+
+        actualizarResumenVentas();
+
+        actualizarGraficoVentas();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensaje(
+            "No se pudo conectar con la tabla Ventas.",
+            "error"
+        );
+
+
+        cuerpo.innerHTML = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   GUARDAR VENTA
+========================================================= */
+
+function guardarVenta() {
+
+    guardarVentaSupabase();
+
+}
+
+
+/* =========================================================
+   BUSCAR MOVIMIENTO ASOCIADO
+========================================================= */
+
+async function buscarMovimientoAsociado(ventaAnterior) {
+
+    try {
+
+        let consulta =
+            supabaseClient
+                .from("Movimientos")
+                .select(
+                    'id, Fecha, Codigo, Lote, "Ubicacion origen", "Responsable origen", Descripcion, Cantidad, Movimiento, Motivo, "Ubicacion destino", "Responsable destino", Tipo, Unidad_Medida'
+                )
+                .eq(
+                    "Movimiento",
+                    "Salida"
+                )
+                .eq(
+                    "Motivo",
+                    "Venta"
+                )
+                .eq(
+                    "Fecha",
+                    ventaAnterior.Fecha
+                )
+                .eq(
+                    "Ubicacion origen",
+                    ventaAnterior.Ubicacion
+                )
+                .eq(
+                    "Responsable origen",
+                    ventaAnterior.Responsable
+                )
+                .eq(
+                    "Cantidad",
+                    ventaAnterior.Cantidad
+                );
+
+
+        if (
+            ventaAnterior.Destino === null ||
+            ventaAnterior.Destino === undefined ||
+            limpiarTexto(ventaAnterior.Destino) === ""
+        ) {
+
+            consulta =
+                consulta.is(
+                    "Ubicacion destino",
+                    null
+                );
+
+        } else {
+
+            consulta =
+                consulta.eq(
+                    "Ubicacion destino",
+                    ventaAnterior.Destino
+                );
+
+        }
+
+
+        if (
+            ventaAnterior.Codigo === null ||
+            ventaAnterior.Codigo === undefined ||
+            limpiarTexto(ventaAnterior.Codigo) === ""
+        ) {
+
+            consulta =
+                consulta.is(
+                    "Codigo",
+                    null
+                );
+
+        } else {
+
+            consulta =
+                consulta.eq(
+                    "Codigo",
+                    ventaAnterior.Codigo
+                );
+
+        }
+
+
+        const {
+            data: candidatos,
+            error
+        } = await consulta;
+
+
+        if (error) {
+
+            console.error(
+                "Error buscando movimiento asociado:",
+                error
+            );
+
+
+            return {
+                movimiento: null,
+                error: error
+            };
+
+        }
+
+
+        if (
+            candidatos &&
+            candidatos.length === 1
+        ) {
+
+            return {
+                movimiento: candidatos[0],
+                error: null
+            };
+
+        }
+
+
+        if (
+            candidatos &&
+            candidatos.length > 1
+        ) {
+
+            const loteAnterior =
+                limpiarTexto(
+                    ventaAnterior.Lote
+                );
+
+
+            const descripcionAnterior =
+                limpiarTexto(
+                    ventaAnterior.Descripcion
+                );
+
+
+            const coincidenciasExactas =
+                candidatos.filter(function(movimiento) {
+
+                    return (
+                        normalizarTexto(
+                            movimiento.Lote
+                        ) ===
+                        normalizarTexto(
+                            loteAnterior
+                        )
+                        &&
+                        normalizarTexto(
+                            movimiento.Descripcion
+                        ) ===
+                        normalizarTexto(
+                            descripcionAnterior
+                        )
+                    );
+
+                });
+
+
+            if (
+                coincidenciasExactas.length === 1
+            ) {
+
+                return {
+                    movimiento:
+                        coincidenciasExactas[0],
+                    error: null
+                };
+
+            }
+
+
+            const coincidenciasLote =
+                candidatos.filter(function(movimiento) {
+
+                    return (
+                        normalizarTexto(
+                            movimiento.Lote
+                        ) ===
+                        normalizarTexto(
+                            loteAnterior
+                        )
+                    );
+
+                });
+
+
+            if (
+                coincidenciasLote.length === 1
+            ) {
+
+                return {
+                    movimiento:
+                        coincidenciasLote[0],
+                    error: null
+                };
+
+            }
+
+        }
+
+
+        return {
+            movimiento: null,
+            error: null
+        };
+
+
+    } catch (error) {
+
+        console.error(
+            "Error buscando movimiento:",
+            error
+        );
+
+
+        return {
+            movimiento: null,
+            error: error
+        };
+
+    }
+
+}
+
+
+/* =========================================================
+   GUARDAR VENTA EN SUPABASE
+========================================================= */
+
+async function guardarVentaSupabase() {
+
+    const producto =
+        productoSeleccionado();
+
+
+    if (!producto) {
+
+        mostrarMensaje(
+            "Seleccione un producto.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const fecha =
+        document.getElementById("fecha").value;
+
+
+    const lote =
+        limpiarTexto(
+            document.getElementById("lote").value
+        );
+
+
+    const ubicacion =
+        obtenerUbicacionFinal();
+
+
+    const responsable =
+        obtenerResponsableFinal();
+
+
+    const cantidad =
+        Number(
+            document.getElementById("cantidad").value
+        );
+
+
+    const precio =
+        Number(
+            document.getElementById("precio").value
+        );
+
+
+    const destino =
+        limpiarTexto(
+            document.getElementById("destino").value
+        );
+
+
+    if (!fecha) {
+
+        mostrarMensaje(
+            "Seleccione la fecha.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!lote) {
+
+        mostrarMensaje(
+            "Seleccione un lote.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!ubicacion) {
+
+        mostrarMensaje(
+            "Seleccione o escriba una ubicación.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!responsable) {
+
+        mostrarMensaje(
+            "Seleccione o escriba un responsable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isInteger(cantidad) ||
+        cantidad <= 0
+    ) {
+
+        mostrarMensaje(
+            "La cantidad debe ser un número entero mayor que cero.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        isNaN(precio) ||
+        precio < 0
+    ) {
+
+        mostrarMensaje(
+            "Ingrese un precio válido.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!destino) {
+
+        mostrarMensaje(
+            "Ingrese el cliente o destino.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const codigo =
+        limpiarTexto(producto.Codigo);
+
+
+    const tipo =
+        limpiarTexto(producto.Tipo);
+
+
+    const unidadMedida =
+        limpiarTexto(producto.Unidad_Medida);
+
+
+    const descripcion =
+        limpiarTexto(producto.Descripcion);
+
+
+    const total =
+        cantidad * precio;
+
+
+    const registro = {
+
+        Fecha:
+            fecha,
+
+        Codigo:
+            codigo || null,
+
+        Lote:
+            lote || null,
+
+        Tipo:
+            tipo || null,
+
+        Unidad_Medida:
+            unidadMedida || null,
+
+        Ubicacion:
+            ubicacion,
+
+        Responsable:
+            responsable,
+
+        Descripcion:
+            descripcion,
+
+        Cantidad:
+            cantidad,
+
+        Precio_Unitario:
+            precio,
+
+        Total:
+            total,
+
+        Destino:
+            destino
+
+    };
+
+
+    try {
+
+        /* =================================================
+           EDITAR VENTA
+        ================================================= */
+
+        if (ventaEditando !== null) {
+
+            const ventaAnterior =
+                ventas[ventaEditando];
+
+
+            if (!ventaAnterior) {
+
+                mostrarMensaje(
+                    "No se encontró la venta que se está editando.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const ventaId =
+                ventaAnterior.id;
+
+
+            const resultadoMovimiento =
+                await buscarMovimientoAsociado(
+                    ventaAnterior
+                );
+
+
+            const movimientoAnterior =
+                resultadoMovimiento.movimiento;
+
+
+            const errorBusquedaMovimiento =
+                resultadoMovimiento.error;
+
+
+            if (errorBusquedaMovimiento) {
+
+                mostrarMensaje(
+                    "No se pudo buscar el movimiento asociado. La venta no fue modificada.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const {
+                error: errorVenta
+            } = await supabaseClient
+                .from("Ventas")
+                .update(registro)
+                .eq(
+                    "id",
+                    ventaId
+                );
+
+
+            if (errorVenta) {
+
+                console.error(
+                    "Error actualizando venta:",
+                    errorVenta
+                );
+
+
+                mostrarMensaje(
+                    "No se pudo actualizar la venta: " +
+                    errorVenta.message,
+                    "error"
+                );
+
+
+                return;
+
+            }
+
+
+            if (movimientoAnterior) {
+
+                const {
+                    data: movimientoActualizado,
+                    error: errorMovimiento
+                } =
+                    await supabaseClient
+                        .from("Movimientos")
+                        .update({
+
+                            Fecha:
+                                fecha,
+
+                            Codigo:
+                                codigo || null,
+
+                            Lote:
+                                lote || null,
+
+                            "Ubicacion origen":
+                                ubicacion,
+
+                            "Responsable origen":
+                                responsable,
+
+                            Descripcion:
+                                descripcion,
+
+                            Cantidad:
+                                cantidad,
+
+                            Movimiento:
+                                "Salida",
+
+                            Motivo:
+                                "Venta",
+
+                            "Ubicacion destino":
+                                destino,
+
+                            "Responsable destino":
+                                null,
+
+                            Tipo:
+                                tipo || null,
+
+                            Unidad_Medida:
+                                unidadMedida || null
+
+                        })
+                        .eq(
+                            "id",
+                            movimientoAnterior.id
+                        )
+                        .select();
+
+
+                if (errorMovimiento) {
+
+                    console.error(
+                        "Error actualizando movimiento:",
+                        errorMovimiento
+                    );
+
+
+                    ventaEditando = null;
+
+                    limpiarFormulario();
+
+
+                    document.getElementById(
+                        "tituloFormulario"
+                    ).textContent =
+                        "Nueva Venta";
+
+
+                    document.getElementById(
+                        "botonGuardar"
+                    ).textContent =
+                        "Registrar Venta";
+
+
+                    document.getElementById(
+                        "botonCancelar"
+                    ).style.display =
+                        "none";
+
+
+                    await cargarVentas();
+
+
+                    mostrarMensaje(
+                        "La venta se actualizó, pero hubo un problema al actualizar el movimiento: " +
+                        errorMovimiento.message,
+                        "error"
+                    );
+
+
+                    return;
+
+                }
+
+
+                if (
+                    !movimientoActualizado ||
+                    movimientoActualizado.length === 0
+                ) {
+
+                    console.warn(
+                        "No se confirmó la actualización del movimiento."
+                    );
+
+
+                    mostrarMensaje(
+                        "La venta se actualizó, pero no se pudo confirmar la actualización del movimiento.",
+                        "error"
+                    );
+
+                } else {
+
+                    mostrarMensaje(
+                        "Venta y movimiento actualizados correctamente.",
+                        "exito"
+                    );
+
+                }
+
+
+            } else {
+
+                console.warn(
+                    "No se encontró un movimiento único asociado a la venta:",
+                    ventaAnterior
+                );
+
+
+                mostrarMensaje(
+                    "La venta se actualizó, pero no se encontró un movimiento único asociado para actualizarlo.",
+                    "error"
+                );
+
+            }
+
+
+            ventaEditando = null;
+
+            limpiarFormulario();
+
+
+            document.getElementById(
+                "tituloFormulario"
+            ).textContent =
+                "Nueva Venta";
+
+
+            document.getElementById(
+                "botonGuardar"
+            ).textContent =
+                "Registrar Venta";
+
+
+            document.getElementById(
+                "botonCancelar"
+            ).style.display =
+                "none";
+
+
+            await cargarVentas();
+
+
+            return;
+
+        }
+
+
+        /* =================================================
+           NUEVA VENTA
+        ================================================= */
+
+        const {
+            error
+        } = await supabaseClient
+            .from("Ventas")
+            .insert(registro);
+
+
+        if (error) {
+
+            console.error(
+                "Error registrando venta:",
+                error
+            );
+
+
+            mostrarMensaje(
+                "No se pudo registrar la venta: " +
+                error.message,
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        limpiarFormulario();
+
+        await cargarVentas();
+
+
+        mostrarMensaje(
+            "Venta registrada correctamente. Supabase generará automáticamente la Salida en Movimientos.",
+            "exito"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensaje(
+            "Ocurrió un error al guardar la venta.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   EDITAR VENTA
+========================================================= */
+
+function editarVenta(indice) {
+
+    const venta =
+        ventas[indice];
+
+
+    if (!venta) {
+
+        mostrarMensaje(
+            "No se encontró la venta.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    ventaEditando = indice;
+
+
+    document.getElementById("formularioVenta")
+        .classList.add("visible");
+
+
+    document.getElementById("fecha").value =
+        venta.Fecha || "";
+
+
+    let producto = null;
+
+
+    const codigoVenta =
+        limpiarTexto(venta.Codigo);
+
+
+    const descripcionVenta =
+        limpiarTexto(venta.Descripcion);
+
+
+    if (codigoVenta) {
+
+        producto =
+            productos.find(function(item) {
+
+                return (
+                    limpiarTexto(item.Codigo) ===
+                    codigoVenta
+                );
+
+            });
+
+    }
+
+
+    if (!producto && descripcionVenta) {
+
+        producto =
+            productos.find(function(item) {
+
+                return (
+                    normalizarTexto(
+                        item.Descripcion
+                    ) ===
+                    normalizarTexto(
+                        descripcionVenta
+                    )
+                );
+
+            });
+
+    }
+
+
+    if (producto) {
+
+        document.getElementById("producto").value =
+            String(producto.id);
+
+
+        completarDatosProducto();
+
+
+        const loteVenta =
+            limpiarTexto(venta.Lote);
+
+
+        const selectorLote =
+            document.getElementById("lote");
+
+
+        const existeLote =
+            Array.from(
+                selectorLote.options
+            ).some(function(option) {
+
+                return (
+                    normalizarTexto(option.value) ===
+                    normalizarTexto(loteVenta)
+                );
+
+            });
+
+
+        if (existeLote) {
+
+            selectorLote.value =
+                loteVenta;
+
+        } else if (loteVenta) {
+
+            const opcion =
+                document.createElement("option");
+
+
+            opcion.value =
+                loteVenta;
+
+
+            opcion.textContent =
+                loteVenta +
+                " (registrado anteriormente)";
+
+
+            selectorLote.appendChild(opcion);
+
+
+            selectorLote.value =
+                loteVenta;
+
+        }
+
+
+    } else {
+
+        document.getElementById("codigo").value =
+            limpiarTexto(venta.Codigo);
+
+
+        document.getElementById("lote").innerHTML =
+            `<option value="">
+                Seleccione un lote
+            </option>`;
+
+
+        if (venta.Lote) {
+
+            const opcion =
+                document.createElement("option");
+
+
+            opcion.value =
+                limpiarTexto(venta.Lote);
+
+
+            opcion.textContent =
+                limpiarTexto(venta.Lote);
+
+
+            document.getElementById("lote")
+                .appendChild(opcion);
+
+
+            document.getElementById("lote").value =
+                limpiarTexto(venta.Lote);
+
+        }
+
+
+        document.getElementById("tipo").value =
+            limpiarTexto(venta.Tipo);
+
+
+        document.getElementById("unidadMedida").value =
+            limpiarTexto(venta.Unidad_Medida);
+
+
+        document.getElementById("descripcion").value =
+            limpiarTexto(venta.Descripcion);
+
+    }
+
+
+    /* =================================================
+       UBICACIÓN
+    ================================================= */
+
+    const ubicacionActual =
+        limpiarTexto(venta.Ubicacion);
+
+
+    const selectUbicacion =
+        document.getElementById("ubicacion");
+
+
+    const campoUbicacionManual =
+        document.getElementById(
+            "campoUbicacionManual"
+        );
+
+
+    const inputUbicacionManual =
+        document.getElementById(
+            "ubicacionManual"
+        );
+
+
+    const existeUbicacion =
+        Array.from(
+            selectUbicacion.options
+        ).some(function(option) {
+
+            return (
+                option.value ===
+                ubicacionActual
+            );
+
+        });
+
+
+    if (
+        ubicacionActual &&
+        existeUbicacion
+    ) {
+
+        selectUbicacion.value =
+            ubicacionActual;
+
+
+        campoUbicacionManual.classList.remove(
+            "visible"
+        );
+
+
+        inputUbicacionManual.required =
+            false;
+
+
+        inputUbicacionManual.value = "";
+
+
+    } else if (ubicacionActual) {
+
+        selectUbicacion.value =
+            "__OTRA_UBICACION__";
+
+
+        campoUbicacionManual.classList.add(
+            "visible"
+        );
+
+
+        inputUbicacionManual.required =
+            true;
+
+
+        inputUbicacionManual.value =
+            ubicacionActual;
+
+
+    } else {
+
+        selectUbicacion.value = "";
+
+    }
+
+
+    /* =================================================
+       RESPONSABLE
+    ================================================= */
+
+    const responsableActual =
+        limpiarTexto(venta.Responsable);
+
+
+    const selectResponsable =
+        document.getElementById("responsable");
+
+
+    const campoResponsableManual =
+        document.getElementById(
+            "campoResponsableManual"
+        );
+
+
+    const inputResponsableManual =
+        document.getElementById(
+            "responsableManual"
+        );
+
+
+    const existeResponsable =
+        Array.from(
+            selectResponsable.options
+        ).some(function(option) {
+
+            return (
+                option.value ===
+                responsableActual
+            );
+
+        });
+
+
+    if (
+        responsableActual &&
+        existeResponsable
+    ) {
+
+        selectResponsable.value =
+            responsableActual;
+
+
+        campoResponsableManual.classList.remove(
+            "visible"
+        );
+
+
+        inputResponsableManual.required =
+            false;
+
+
+        inputResponsableManual.value = "";
+
+
+    } else if (responsableActual) {
+
+        selectResponsable.value =
+            "__OTRO_RESPONSABLE__";
+
+
+        campoResponsableManual.classList.add(
+            "visible"
+        );
+
+
+        inputResponsableManual.required =
+            true;
+
+
+        inputResponsableManual.value =
+            responsableActual;
+
+
+    } else {
+
+        selectResponsable.value = "";
+
+    }
+
+
+    document.getElementById("cantidad").value =
+        venta.Cantidad || "";
+
+
+    document.getElementById("precio").value =
+        venta.Precio_Unitario || "";
+
+
+    document.getElementById("destino").value =
+        venta.Destino || "";
+
+
+    calcularTotal();
+
+
+    document.getElementById(
+        "tituloFormulario"
+    ).textContent =
+        "Editar Venta";
+
+
+    document.getElementById(
+        "botonGuardar"
+    ).textContent =
+        "Guardar Cambios";
+
+
+    document.getElementById(
+        "botonCancelar"
+    ).style.display =
+        "inline-block";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   CANCELAR EDICIÓN
+========================================================= */
+
+function cancelarEdicion() {
+
+    ventaEditando = null;
+
+    limpiarFormulario();
+
+
+    document.getElementById(
+        "tituloFormulario"
+    ).textContent =
+        "Nueva Venta";
+
+
+    document.getElementById(
+        "botonGuardar"
+    ).textContent =
+        "Registrar Venta";
+
+
+    document.getElementById(
+        "botonCancelar"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   ELIMINAR VENTA
+========================================================= */
+
+async function eliminarVenta(indice) {
+
+    const venta =
+        ventas[indice];
+
+
+    if (!venta) {
+
+        mostrarMensaje(
+            "No se encontró la venta.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            "¿Está seguro de eliminar esta venta?\n\nTambién se eliminará el movimiento asociado mediante la lógica de Supabase."
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    try {
+
+        let consulta =
+            supabaseClient
+                .from("Ventas")
+                .delete()
+                .eq(
+                    "Fecha",
+                    venta.Fecha
+                );
+
+
+        if (
+            venta.Codigo === null ||
+            venta.Codigo === undefined ||
+            limpiarTexto(venta.Codigo) === ""
+        ) {
+
+            consulta =
+                consulta.is(
+                    "Codigo",
+                    null
+                );
+
+        } else {
+
+            consulta =
+                consulta.eq(
+                    "Codigo",
+                    venta.Codigo
+                );
+
+        }
+
+
+        if (
+            venta.Lote === null ||
+            venta.Lote === undefined ||
+            limpiarTexto(venta.Lote) === ""
+        ) {
+
+            consulta =
+                consulta.is(
+                    "Lote",
+                    null
+                );
+
+        } else {
+
+            consulta =
+                consulta.eq(
+                    "Lote",
+                    venta.Lote
+                );
+
+        }
+
+
+        const {
+            data,
+            error
+        } = await consulta
+            .eq(
+                "Ubicacion",
+                venta.Ubicacion
+            )
+            .eq(
+                "Responsable",
+                venta.Responsable
+            )
+            .eq(
+                "Descripcion",
+                venta.Descripcion
+            )
+            .eq(
+                "Cantidad",
+                venta.Cantidad
+            )
+            .eq(
+                "Precio_Unitario",
+                venta.Precio_Unitario
+            )
+            .eq(
+                "Total",
+                venta.Total
+            )
+            .eq(
+                "Destino",
+                venta.Destino
+            )
+            .select();
+
+
+        if (error) {
+
+            console.error(
+                "Error eliminando venta:",
+                error
+            );
+
+
+            mostrarMensaje(
+                "No se pudo eliminar la venta: " +
+                error.message,
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            console.error(
+                "No se eliminó ninguna venta. Registro buscado:",
+                venta
+            );
+
+
+            mostrarMensaje(
+                "No se encontró la venta que se intentó eliminar.",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        await cargarVentas();
+
+
+        mostrarMensaje(
+            "Venta eliminada correctamente.",
+            "exito"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensaje(
+            "Ocurrió un error al eliminar la venta.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LIMPIAR FORMULARIO
+========================================================= */
+
+function limpiarFormulario() {
+
+    document.getElementById("fecha").value =
+        obtenerFechaActual();
+
+
+    document.getElementById("producto").value = "";
+
+    document.getElementById("codigo").value = "";
+
+    document.getElementById("lote").value = "";
+
+    document.getElementById("tipo").value = "";
+
+    document.getElementById("unidadMedida").value = "";
+
+    document.getElementById("ubicacion").value = "";
+
+    document.getElementById("responsable").value = "";
+
+
+    document.getElementById(
+        "campoUbicacionManual"
+    ).classList.remove("visible");
+
+
+    document.getElementById(
+        "ubicacionManual"
+    ).value = "";
+
+
+    document.getElementById(
+        "ubicacionManual"
+    ).required = false;
+
+
+    document.getElementById(
+        "campoResponsableManual"
+    ).classList.remove("visible");
+
+
+    document.getElementById(
+        "responsableManual"
+    ).value = "";
+
+
+    document.getElementById(
+        "responsableManual"
+    ).required = false;
+
+
+    document.getElementById("descripcion").value = "";
+
+    document.getElementById("cantidad").value = "";
+
+    document.getElementById("precio").value = "";
+
+    document.getElementById("total").value = "₡0";
+
+    document.getElementById("destino").value = "";
+
+}
+
+
+/* =========================================================
+   MOSTRAR VENTAS
+========================================================= */
+
+function mostrarVentas() {
+
+    const cuerpo =
+        document.getElementById("cuerpoVentas");
+
+
+    cuerpo.innerHTML = "";
+
+
+    document.getElementById("totalVentas").textContent =
+        ventas.length;
+
+
+    document.getElementById("ventasVacias").style.display =
+        ventas.length === 0
+            ? "block"
+            : "none";
+
+
+    ventas.forEach(function(venta, indice) {
+
+        const fila =
+            document.createElement("tr");
+
+
+        agregarCelda(fila, venta.Fecha);
+
+        agregarCelda(fila, venta.Codigo);
+
+        agregarCelda(fila, venta.Lote);
+
+        agregarCelda(fila, venta.Tipo);
+
+        agregarCelda(fila, venta.Unidad_Medida);
+
+        agregarCelda(fila, venta.Ubicacion);
+
+        agregarCelda(fila, venta.Responsable);
+
+        agregarCelda(fila, venta.Descripcion);
+
+
+        const cantidad =
+            document.createElement("td");
+
+
+        cantidad.className = "numero";
+
+
+        cantidad.textContent =
+            formatearNumero(venta.Cantidad);
+
+
+        fila.appendChild(cantidad);
+
+
+        const precio =
+            document.createElement("td");
+
+
+        precio.className = "numero";
+
+
+        precio.textContent =
+            formatearColones(
+                venta.Precio_Unitario
+            );
+
+
+        fila.appendChild(precio);
+
+
+        const total =
+            document.createElement("td");
+
+
+        total.className = "numero";
+
+
+        total.textContent =
+            formatearColones(
+                venta.Total
+            );
+
+
+        fila.appendChild(total);
+
+
+        agregarCelda(
+            fila,
+            venta.Destino
+        );
+
+
+        const acciones =
+            document.createElement("td");
+
+
+        const botonEditar =
+            document.createElement("button");
+
+
+        botonEditar.textContent =
+            "Editar";
+
+
+        botonEditar.className =
+            "boton-editar";
+
+
+        botonEditar.onclick =
+            function() {
+
+                editarVenta(indice);
+
+            };
+
+
+        acciones.appendChild(
+            botonEditar
+        );
+
+
+        const botonEliminar =
+            document.createElement("button");
+
+
+        botonEliminar.textContent =
+            "Eliminar";
+
+
+        botonEliminar.className =
+            "boton-eliminar";
+
+
+        botonEliminar.onclick =
+            function() {
+
+                eliminarVenta(indice);
+
+            };
+
+
+        acciones.appendChild(
+            botonEliminar
+        );
+
+
+        fila.appendChild(
+            acciones
+        );
+
+
+        cuerpo.appendChild(
+            fila
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   AGREGAR CELDA
+========================================================= */
+
+function agregarCelda(fila, valor) {
+
+    const celda =
+        document.createElement("td");
+
+
+    const texto =
+        limpiarTexto(valor);
+
+
+    if (texto) {
+
+        celda.textContent =
+            texto;
+
+    } else {
+
+        celda.innerHTML =
+            '<span class="sin-dato">—</span>';
+
+    }
+
+
+    fila.appendChild(celda);
+
+}
+
+
+/* =========================================================
+   FORMATEAR NÚMERO
+========================================================= */
+
+function formatearNumero(numero) {
+
+    return (
+        Number(numero) || 0
+    ).toLocaleString(
+        "es-CR",
+        {
+            maximumFractionDigits: 0
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FORMATEAR COLONES
+========================================================= */
+
+function formatearColones(numero) {
+
+    return (
+        "₡" +
+        (
+            Number(numero) || 0
+        ).toLocaleString(
+            "es-CR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR / OCULTAR FORMULARIO
+========================================================= */
+
+function alternarFormulario() {
+
+    const formulario =
+        document.getElementById(
+            "formularioVenta"
+        );
+
+
+    if (
+        formulario.classList.contains(
+            "visible"
+        )
+    ) {
+
+        formulario.classList.remove(
+            "visible"
+        );
+
+    } else {
+
+        formulario.classList.add(
+            "visible"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR / OCULTAR RESUMEN DE VENTAS
+========================================================= */
+
+function alternarResumenVentas() {
+
+    const resumen =
+        document.getElementById(
+            "contenedorResumenVentas"
+        );
+
+    const tablaVentas =
+        document.getElementById(
+            "tablaVentasPrincipal"
+        );
+
+    const boton =
+        document.getElementById(
+            "botonResumenVentas"
+        );
+
+
+    const visible =
+        resumen.classList.contains(
+            "visible"
+        );
+
+
+    if (visible) {
+
+        resumen.classList.remove(
+            "visible"
+        );
+
+        tablaVentas.style.display =
+            "block";
+
+        boton.textContent =
+            "Resumen ventas";
+
+        return;
+
+    }
+
+
+    resumen.classList.add(
+        "visible"
+    );
+
+    tablaVentas.style.display =
+        "none";
+
+    boton.textContent =
+        "Ocultar resumen";
+
+    actualizarResumenVentas();
+
+    actualizarGraficoVentas();
+
+}
+
+
+/* =========================================================
+   OBTENER RANGO DEL RESUMEN
+========================================================= */
+
+function obtenerRangoResumen() {
+
+    const hoy =
+        new Date();
+
+    hoy.setHours(
+        23,
+        59,
+        59,
+        999
+    );
+
+
+    const periodo =
+        document.getElementById(
+            "periodoResumen"
+        ).value;
+
+
+    let inicio =
+        new Date();
+
+
+    inicio.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    if (
+        periodo === "semana"
+    ) {
+
+        inicio.setDate(
+            inicio.getDate() - 6
+        );
+
+    }
+
+
+    if (
+        periodo === "mes"
+    ) {
+
+        inicio =
+            new Date(
+                inicio.getFullYear(),
+                inicio.getMonth(),
+                1
+            );
+
+    }
+
+
+    if (
+        periodo === "año"
+    ) {
+
+        inicio =
+            new Date(
+                inicio.getFullYear(),
+                0,
+                1
+            );
+
+    }
+
+
+    inicio.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    return {
+        inicio: inicio,
+        fin: hoy
+    };
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR RESUMEN DE VENTAS
+========================================================= */
+
+function actualizarResumenVentas() {
+
+    const montoTotal =
+        document.getElementById(
+            "montoTotalVentas"
+        );
+
+
+    const unidadesTotales =
+        document.getElementById(
+            "unidadesTotalesVentas"
+        );
+
+
+    const cantidadTotal =
+        document.getElementById(
+            "cantidadTotalVentas"
+        );
+
+
+    const cuerpo =
+        document.getElementById(
+            "cuerpoResumenProductos"
+        );
+
+
+    const mensajeVacio =
+        document.getElementById(
+            "resumenProductosVacio"
+        );
+
+
+    if (
+        !montoTotal ||
+        !unidadesTotales ||
+        !cantidadTotal ||
+        !cuerpo
+    ) {
+
+        return;
+
+    }
+
+
+    const rango =
+        obtenerRangoResumen();
+
+
+    const selectorProducto =
+        document.getElementById(
+            "productoResumen"
+        );
+
+
+    const productoSeleccionadoResumen =
+        selectorProducto
+            ? normalizarTexto(
+                selectorProducto.value
+            )
+            : "";
+
+
+    const ventasFiltradas =
+        ventas.filter(function(venta) {
+
+            const fecha =
+                obtenerFechaVenta(venta);
+
+
+            if (!fecha) {
+                return false;
+            }
+
+
+            fecha.setHours(
+                12,
+                0,
+                0,
+                0
+            );
+
+
+            if (
+                fecha < rango.inicio ||
+                fecha > rango.fin
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                productoSeleccionadoResumen
+            ) {
+
+                const descripcion =
+                    normalizarTexto(
+                        venta.Descripcion
+                    );
+
+
+                if (
+                    descripcion !==
+                    productoSeleccionadoResumen
+                ) {
+
+                    return false;
+
+                }
+
+            }
+
+
+            return true;
+
+        });
+
+
+    let montoTotalCalculado = 0;
+
+    let unidadesTotalCalculadas = 0;
+
+
+    const resumenPorProducto = {};
+
+
+    ventasFiltradas.forEach(function(venta) {
+
+        const descripcion =
+            limpiarTexto(
+                venta.Descripcion
+            ) ||
+            "Sin descripción";
+
+
+        const cantidad =
+            Number(
+                venta.Cantidad
+            ) || 0;
+
+
+        const total =
+            Number(
+                venta.Total
+            ) || 0;
+
+
+        montoTotalCalculado +=
+            total;
+
+
+        unidadesTotalCalculadas +=
+            cantidad;
+
+
+        const clave =
+            normalizarTexto(
+                descripcion
+            );
+
+
+        if (
+            !resumenPorProducto[clave]
+        ) {
+
+            resumenPorProducto[clave] = {
+
+                descripcion:
+                    descripcion,
+
+                unidades:
+                    0,
+
+                monto:
+                    0
+
+            };
+
+        }
+
+
+        resumenPorProducto[clave].unidades +=
+            cantidad;
+
+
+        resumenPorProducto[clave].monto +=
+            total;
+
+    });
+
+
+    montoTotal.textContent =
+        formatearColones(
+            montoTotalCalculado
+        );
+
+
+    unidadesTotales.textContent =
+        formatearNumero(
+            unidadesTotalCalculadas
+        );
+
+
+    cantidadTotal.textContent =
+        formatearNumero(
+            ventasFiltradas.length
+        );
+
+
+    cuerpo.innerHTML = "";
+
+
+    const productosResumen =
+        Object.values(
+            resumenPorProducto
+        );
+
+
+    productosResumen.sort(function(a, b) {
+
+        return (
+            b.monto -
+            a.monto
+        );
+
+    });
+
+
+    if (
+        productosResumen.length === 0
+    ) {
+
+        mensajeVacio.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    mensajeVacio.style.display =
+        "none";
+
+
+    productosResumen.forEach(function(item) {
+
+        const fila =
+            document.createElement("tr");
+
+
+        agregarCelda(
+            fila,
+            item.descripcion
+        );
+
+
+        const unidades =
+            document.createElement("td");
+
+
+        unidades.className =
+            "numero";
+
+
+        unidades.textContent =
+            formatearNumero(
+                item.unidades
+            );
+
+
+        fila.appendChild(
+            unidades
+        );
+
+
+        const monto =
+            document.createElement("td");
+
+
+        monto.className =
+            "numero";
+
+
+        monto.textContent =
+            formatearColones(
+                item.monto
+            );
+
+
+        fila.appendChild(
+            monto
+        );
+
+
+        cuerpo.appendChild(
+            fila
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   FUNCIONES DEL GRÁFICO
+========================================================= */
+
+function obtenerFechaVenta(venta) {
+
+    if (
+        !venta ||
+        !venta.Fecha
+    ) {
+
+        return null;
+
+    }
+
+
+    const texto =
+        limpiarTexto(
+            venta.Fecha
+        );
+
+
+    const partes =
+        texto.split("-");
+
+
+    if (
+        partes.length !== 3
+    ) {
+
+        return null;
+
+    }
+
+
+    const año =
+        Number(partes[0]);
+
+
+    const mes =
+        Number(partes[1]);
+
+
+    const dia =
+        Number(partes[2]);
+
+
+    if (
+        !año ||
+        !mes ||
+        !dia
+    ) {
+
+        return null;
+
+    }
+
+
+    const fecha =
+        new Date(
+            año,
+            mes - 1,
+            dia
+        );
+
+
+    if (
+        isNaN(
+            fecha.getTime()
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    return fecha;
+
+}
+
+
+/* =========================================================
+   TEXTO DEL PERÍODO
+========================================================= */
+
+function obtenerTextoPeriodo() {
+
+    if (
+        periodoGrafico === "semana"
+    ) {
+
+        return "Última semana";
+
+    }
+
+
+    return "Mes";
+
+}
+
+
+/* =========================================================
+   CAMBIAR PERÍODO DEL GRÁFICO
+========================================================= */
+
+function cambiarPeriodoGrafico(periodo) {
+
+    periodoGrafico =
+        periodo;
+
+
+    document
+        .getElementById("botonSemana")
+        .classList.remove("activo");
+
+
+    document
+        .getElementById("botonMes")
+        .classList.remove("activo");
+
+
+    if (
+        periodo === "semana"
+    ) {
+
+        document
+            .getElementById("botonSemana")
+            .classList.add("activo");
+
+    }
+
+
+    if (
+        periodo === "mes"
+    ) {
+
+        document
+            .getElementById("botonMes")
+            .classList.add("activo");
+
+    }
+
+
+    document.getElementById(
+        "tituloGrafico"
+    ).textContent =
+        "Ventas por producto — " +
+        obtenerTextoPeriodo();
+
+
+    actualizarGraficoVentas();
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR GRÁFICO
+========================================================= */
+
+function actualizarGraficoVentas() {
+
+    const canvas =
+        document.getElementById(
+            "graficoVentas"
+        );
+
+
+    const mensaje =
+        document.getElementById(
+            "mensajeGrafico"
+        );
+
+
+    if (!canvas) {
+        return;
+    }
+
+
+    if (graficoVentas) {
+
+        graficoVentas.destroy();
+
+        graficoVentas = null;
+
+    }
+
+
+    const ahora =
+        new Date();
+
+
+    ahora.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let inicioPeriodo =
+        null;
+
+
+    let finPeriodo =
+        null;
+
+
+    if (
+        periodoGrafico === "semana"
+    ) {
+
+        inicioPeriodo =
+            new Date(
+                ahora
+            );
+
+
+        inicioPeriodo.setDate(
+            inicioPeriodo.getDate() - 6
+        );
+
+
+        inicioPeriodo.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        finPeriodo =
+            new Date(
+                ahora
+            );
+
+
+        finPeriodo.setHours(
+            23,
+            59,
+            59,
+            999
+        );
+
+    }
+
+
+    if (
+        periodoGrafico === "mes"
+    ) {
+
+        inicioPeriodo =
+            new Date(
+                ahora.getFullYear(),
+                ahora.getMonth(),
+                1
+            );
+
+
+        finPeriodo =
+            new Date(
+                ahora.getFullYear(),
+                ahora.getMonth() + 1,
+                0
+            );
+
+
+        finPeriodo.setHours(
+            23,
+            59,
+            59,
+            999
+        );
+
+    }
+
+
+    const ventasPeriodo =
+        ventas.filter(function(venta) {
+
+            const fecha =
+                obtenerFechaVenta(
+                    venta
+                );
+
+
+            const cantidad =
+                Number(
+                    venta.Cantidad
+                );
+
+
+            const producto =
+                limpiarTexto(
+                    venta.Descripcion
+                );
+
+
+            if (
+                !fecha ||
+                !producto ||
+                isNaN(cantidad) ||
+                cantidad <= 0
+            ) {
+
+                return false;
+
+            }
+
+
+            return (
+                fecha >= inicioPeriodo &&
+                fecha <= finPeriodo
+            );
+
+        });
+
+
+    if (
+        ventasPeriodo.length === 0
+    ) {
+
+        canvas.style.display =
+            "none";
+
+
+        mensaje.style.display =
+            "block";
+
+
+        return;
+
+    }
+
+
+    canvas.style.display =
+        "block";
+
+
+    mensaje.style.display =
+        "none";
+
+
+    const ventasPorProducto = {};
+
+
+    ventasPeriodo.forEach(function(venta) {
+
+        const producto =
+            limpiarTexto(
+                venta.Descripcion
+            );
+
+
+        const cantidad =
+            Number(
+                venta.Cantidad
+            ) || 0;
+
+
+        if (
+            !ventasPorProducto[producto]
+        ) {
+
+            ventasPorProducto[producto] =
+                0;
+
+        }
+
+
+        ventasPorProducto[producto] +=
+            cantidad;
+
+    });
+
+
+    const productosGrafico =
+        Object.keys(
+            ventasPorProducto
+        );
+
+
+    productosGrafico.sort(function(a, b) {
+
+        return (
+            ventasPorProducto[b] -
+            ventasPorProducto[a]
+        );
+
+    });
+
+
+    const cantidades =
+        productosGrafico.map(function(producto) {
+
+            return ventasPorProducto[
+                producto
+            ];
+
+        });
+
+
+    const colores =
+        [
+            "#5a3825",
+            "#6b4530",
+            "#704214",
+            "#4b3621",
+            "#654321",
+            "#3f3f3f",
+            "#4a4e69",
+            "#394d3a",
+            "#5c3d2e",
+            "#533747"
+        ];
+
+
+    const coloresProductos =
+        productosGrafico.map(
+            function(producto, indice) {
+
+                return colores[
+                    indice %
+                    colores.length
+                ];
+
+            }
+        );
+
+
+    graficoVentas =
+        new Chart(
+            canvas,
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels:
+                        productosGrafico,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Unidades vendidas",
+
+                            data:
+                                cantidades,
+
+                            backgroundColor:
+                                coloresProductos,
+
+                            borderColor:
+                                coloresProductos,
+
+                            borderWidth:
+                                1,
+
+                            borderRadius:
+                                5,
+
+                            barPercentage:
+                                0.65,
+
+                            categoryPercentage:
+                                0.75
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    indexAxis: "y",
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            display:
+                                false
+
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function(context) {
+
+                                        return (
+                                            " " +
+                                            formatearNumero(
+                                                context.raw
+                                            ) +
+                                            " unidades vendidas"
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                precision:
+                                    0,
+
+                                font: {
+
+                                    family:
+                                        "Times New Roman",
+
+                                    size:
+                                        12
+
+                                }
+
+                            },
+
+                            title: {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Unidades vendidas",
+
+                                font: {
+
+                                    family:
+                                        "Times New Roman",
+
+                                    size:
+                                        13,
+
+                                    weight:
+                                        "bold"
+
+                                }
+
+                            }
+
+                        },
+
+                        y: {
+
+                            ticks: {
+
+                                font: {
+
+                                    family:
+                                        "Times New Roman",
+
+                                    size:
+                                        13
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+document
+    .getElementById("producto")
+    .addEventListener(
+        "change",
+        completarDatosProducto
+    );
+
+
+document
+    .getElementById("cantidad")
+    .addEventListener(
+        "input",
+        function() {
+
+            if (
+                this.value.includes(".") ||
+                this.value.includes(",")
+            ) {
+
+                this.value =
+                    Math.floor(
+                        Number(this.value)
+                    );
+
+            }
+
+
+            calcularTotal();
+
+        }
+    );
+
+
+document
+    .getElementById("precio")
+    .addEventListener(
+        "input",
+        calcularTotal
+    );
+
+
+document.getElementById("fecha").value =
+    obtenerFechaActual();
+
+
+/* =========================================================
+   INICIAR PÁGINA
+========================================================= */
+
+async function iniciarPagina() {
+
+    await cargarProductos();
+
+    cargarProductosResumen();
+
+    await cargarLotes();
+
+    await cargarPersonal();
+
+    await cargarVentas();
+
+}
+
+
+iniciarPagina();
+
+</script>
+
+</body>
+
+</html>

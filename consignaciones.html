@@ -1,0 +1,2263 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Productos en Consignación - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+* {
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
+
+.contenedor {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.barra-superior h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 25px;
+}
+
+
+/* =========================================================
+   TOTAL GENERAL
+========================================================= */
+
+.total-general {
+    background-color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+
+    width: 190px;
+    text-align: center;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    margin-left: auto;
+    margin-bottom: 20px;
+}
+
+.total-general-titulo {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.total-general-numero {
+    font-size: 25px;
+    color: #5a3825;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   SELECTOR
+========================================================= */
+
+.selector-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.selector-contenedor {
+    position: relative;
+    flex: 1;
+}
+
+.selector {
+    width: 100%;
+
+    background-color: white;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    padding: 10px;
+
+    cursor: pointer;
+
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selector:hover {
+    border-color: #8b6650;
+}
+
+.flecha {
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.icono-busqueda {
+    font-size: 25px;
+    color: #5a3825;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+.opciones {
+    display: none;
+
+    position: absolute;
+
+    top: calc(100% + 4px);
+    left: 0;
+
+    width: 100%;
+
+    background-color: white;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    z-index: 100;
+}
+
+.busqueda {
+    width: 100%;
+
+    border: none;
+    border-bottom: 1px solid #ddd;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+}
+
+.lista-opciones {
+    max-height: 330px;
+    overflow-y: auto;
+}
+
+.opcion {
+    padding: 12px 14px;
+
+    border-bottom: 1px solid #eee;
+
+    cursor: pointer;
+}
+
+.opcion:hover {
+    background-color: #f3eee9;
+}
+
+.opcion-descripcion {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.opcion-detalle {
+    font-size: 14px;
+    color: #777;
+    margin-top: 4px;
+}
+
+.sin-opciones {
+    padding: 15px;
+    color: #777;
+}
+
+
+/* =========================================================
+   PRODUCTO SELECCIONADO
+========================================================= */
+
+.producto-seleccionado {
+    display: none;
+}
+
+.informacion-producto {
+    background-color: white;
+
+    border-radius: 8px;
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    font-size: 15px;
+}
+
+.informacion-producto strong {
+    color: #5a3825;
+}
+
+
+/* =========================================================
+   DESGLOSE
+========================================================= */
+
+.desglose-titulo {
+    margin: 0 0 20px 0;
+    color: #5a3825;
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.tabla-contenedor {
+    background-color: white;
+    border-radius: 8px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #6b4530;
+    color: white;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: #f3eee9;
+}
+
+.cantidad {
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.estado {
+    font-weight: normal;
+}
+
+.estado-activo {
+    color: #3f5d3a;
+}
+
+.estado-agotado {
+    color: #805f43;
+}
+
+
+/* =========================================================
+   CARGANDO / SIN DATOS
+========================================================= */
+
+.cargando,
+.sin-datos {
+    padding: 25px;
+    text-align: center;
+    color: #777;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .contenedor {
+        width: 95%;
+    }
+
+    .barra-superior h2 {
+        font-size: 23px;
+    }
+
+    .total-general {
+        width: 170px;
+        padding: 9px 15px;
+    }
+
+    .selector-area {
+        gap: 10px;
+    }
+
+    th,
+    td {
+        white-space: nowrap;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- =======================================================
+     ENCABEZADO
+======================================================= -->
+
+<header>
+
+    <h1>
+        Cacaotería S.R.L.
+    </h1>
+
+</header>
+
+
+<div class="contenedor">
+
+
+<!-- =======================================================
+     TÍTULO
+======================================================= -->
+
+<div class="barra-superior">
+
+    <h2>
+        Productos en Consignación
+    </h2>
+
+</div>
+
+
+<!-- =================================================
+     TOTAL GENERAL
+================================================== -->
+
+<div class="total-general">
+
+    <div class="total-general-titulo">
+        Total en consignación
+    </div>
+
+    <div
+        class="total-general-numero"
+        id="totalGeneral"
+    >
+        0
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     SELECTOR
+================================================== -->
+
+<div class="selector-area">
+
+    <div class="selector-contenedor">
+
+        <div
+            class="selector"
+            id="selector"
+            onclick="alternarOpciones()"
+        >
+
+            <span id="textoSelector">
+                Seleccione un producto
+            </span>
+
+            <span class="flecha">
+                ▼
+            </span>
+
+        </div>
+
+
+        <div
+            class="opciones"
+            id="opciones"
+        >
+
+            <input
+                type="text"
+                class="busqueda"
+                id="busqueda"
+                placeholder="Buscar por producto, código o lote..."
+                oninput="filtrarOpciones()"
+            >
+
+
+            <div
+                class="lista-opciones"
+                id="listaOpciones"
+            >
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="icono-busqueda"
+        onclick="abrirBusqueda()"
+        title="Buscar producto"
+    >
+        ⌕
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     PRODUCTO SELECCIONADO
+================================================== -->
+
+<div
+    class="producto-seleccionado"
+    id="productoSeleccionado"
+>
+
+    <div class="informacion-producto">
+
+        <strong>
+            Producto:
+        </strong>
+
+        <span id="nombreProducto">
+            -
+        </span>
+
+        &nbsp;&nbsp; | &nbsp;&nbsp;
+
+        <strong>
+            Código:
+        </strong>
+
+        <span id="codigoProducto">
+            -
+        </span>
+
+        &nbsp;&nbsp; | &nbsp;&nbsp;
+
+        <strong>
+            Lote:
+        </strong>
+
+        <span id="loteProducto">
+            -
+        </span>
+
+    </div>
+
+
+    <div class="desglose-titulo">
+        Desglose por Punto de Consignación
+    </div>
+
+
+    <!-- =================================================
+         TABLA
+    ================================================== -->
+
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Punto de Venta
+                    </th>
+
+                    <th>
+                        Ubicación
+                    </th>
+
+                    <th>
+                        Producto
+                    </th>
+
+                    <th>
+                        Unidades
+                    </th>
+
+                    <th>
+                        Estado
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="detalleConsignacion"
+            >
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let productos = [];
+
+let movimientosConsignacion = [];
+
+let kardexResponsable = [];
+
+let productoActual = null;
+
+
+/* =========================================================
+   NORMALIZAR
+========================================================= */
+
+function normalizar(valor) {
+
+    return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   VERIFICAR CONSIGNACIÓN
+========================================================= */
+
+function esConsignacion(movimiento) {
+
+    return (
+        normalizar(
+            movimiento["Motivo"]
+        ) === "consignacion"
+    );
+
+}
+
+
+/* =========================================================
+   OBTENER IDENTIFICADOR DEL PRODUCTO
+========================================================= */
+
+function obtenerClaveProducto(objeto) {
+
+    const codigo =
+        normalizar(
+            objeto["Codigo"]
+        );
+
+    const lote =
+        normalizar(
+            objeto["Lote"]
+        );
+
+    const descripcion =
+        normalizar(
+            objeto["Descripcion"]
+        );
+
+
+    if (
+        codigo &&
+        lote
+    ) {
+
+        return (
+            "CODIGO_LOTE||" +
+            codigo +
+            "||" +
+            lote
+        );
+
+    }
+
+
+    if (codigo) {
+
+        return (
+            "CODIGO||" +
+            codigo
+        );
+
+    }
+
+
+    if (lote) {
+
+        return (
+            "LOTE||" +
+            lote
+        );
+
+    }
+
+
+    return (
+        "DESCRIPCION||" +
+        descripcion
+    );
+
+}
+
+
+/* =========================================================
+   CLAVE DEL PUNTO DE CONSIGNACIÓN
+========================================================= */
+
+function obtenerClavePuntoDesdeMovimiento(
+    movimiento
+) {
+
+    const ubicacion =
+        normalizar(
+            movimiento[
+                "Ubicacion destino"
+            ]
+        );
+
+    const responsable =
+        normalizar(
+            movimiento[
+                "Responsable destino"
+            ]
+        );
+
+    return (
+        ubicacion +
+        "||" +
+        responsable
+    );
+
+}
+
+
+function obtenerClavePuntoDesdeKardex(
+    kardex
+) {
+
+    const ubicacion =
+        normalizar(
+            kardex[
+                "Ubicacion"
+            ]
+        );
+
+    const responsable =
+        normalizar(
+            kardex[
+                "Responsable"
+            ]
+        );
+
+    return (
+        ubicacion +
+        "||" +
+        responsable
+    );
+
+}
+
+
+/* =========================================================
+   FORMATEAR NÚMERO
+========================================================= */
+
+function formatearNumero(numero) {
+
+    return (
+        Number(numero) || 0
+    ).toLocaleString(
+        "es-CR",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escaparHTML(texto) {
+
+    return String(texto ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   CARGAR MOVIMIENTOS
+========================================================= */
+
+async function cargarMovimientosConsignacion() {
+
+    let todosLosDatos = [];
+
+    let desde = 0;
+
+    const cantidadPorConsulta = 1000;
+
+
+    while (true) {
+
+        const hasta =
+            desde +
+            cantidadPorConsulta -
+            1;
+
+
+        const { data, error } =
+            await supabaseClient
+                .from("Movimientos")
+                .select(`
+                    id,
+                    Codigo,
+                    Lote,
+                    Descripcion,
+                    Cantidad,
+                    Movimiento,
+                    Motivo,
+                    "Responsable destino",
+                    "Ubicacion destino",
+                    Tipo,
+                    Unidad_Medida
+                `)
+                .range(
+                    desde,
+                    hasta
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando Movimientos:",
+                error
+            );
+
+            alert(
+                "No se pudieron cargar los movimientos."
+            );
+
+            return false;
+
+        }
+
+
+        todosLosDatos =
+            todosLosDatos.concat(
+                data || []
+            );
+
+
+        if (
+            !data ||
+            data.length <
+                cantidadPorConsulta
+        ) {
+
+            break;
+
+        }
+
+
+        desde +=
+            cantidadPorConsulta;
+
+    }
+
+
+    movimientosConsignacion =
+        todosLosDatos.filter(
+            movimiento =>
+                esConsignacion(
+                    movimiento
+                )
+        );
+
+
+    console.log(
+        "Total de Movimientos leídos:",
+        todosLosDatos.length
+    );
+
+    console.log(
+        "Movimientos de consignación:",
+        movimientosConsignacion
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   CARGAR KARDEX RESPONSABLE
+========================================================= */
+
+async function cargarKardexResponsable() {
+
+    let todosLosDatos = [];
+
+    let desde = 0;
+
+    const cantidadPorConsulta = 1000;
+
+
+    while (true) {
+
+        const hasta =
+            desde +
+            cantidadPorConsulta -
+            1;
+
+
+        const { data, error } =
+            await supabaseClient
+                .from("Kardex_Responsable")
+                .select(`
+                    id,
+                    Codigo,
+                    Lote,
+                    Ubicacion,
+                    Responsable,
+                    Descripcion,
+                    "Saldo Inicial",
+                    Entradas,
+                    Salidas,
+                    "Saldo Final",
+                    Unidad_Medida,
+                    Tipo
+                `)
+                .range(
+                    desde,
+                    hasta
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando Kardex_Responsable:",
+                error
+            );
+
+            alert(
+                "No se pudo cargar el Kardex por Responsable."
+            );
+
+            return false;
+
+        }
+
+
+        todosLosDatos =
+            todosLosDatos.concat(
+                data || []
+            );
+
+
+        if (
+            !data ||
+            data.length <
+                cantidadPorConsulta
+        ) {
+
+            break;
+
+        }
+
+
+        desde +=
+            cantidadPorConsulta;
+
+    }
+
+
+    kardexResponsable =
+        todosLosDatos;
+
+
+    console.log(
+        "Total de registros de Kardex leídos:",
+        kardexResponsable.length
+    );
+
+    console.log(
+        "Kardex por Responsable:",
+        kardexResponsable
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   CARGAR PRODUCTOS
+========================================================= */
+
+function cargarProductos() {
+
+    const mapaProductos =
+        new Map();
+
+
+    movimientosConsignacion.forEach(
+        movimiento => {
+
+            const clave =
+                obtenerClaveProducto(
+                    movimiento
+                );
+
+
+            const codigo =
+                String(
+                    movimiento["Codigo"] ?? ""
+                ).trim();
+
+            const lote =
+                String(
+                    movimiento["Lote"] ?? ""
+                ).trim();
+
+            const descripcion =
+                String(
+                    movimiento["Descripcion"] ?? ""
+                ).trim();
+
+
+            if (
+                !codigo &&
+                !lote &&
+                !descripcion
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                !mapaProductos.has(
+                    clave
+                )
+            ) {
+
+                mapaProductos.set(
+                    clave,
+                    {
+                        Codigo:
+                            codigo,
+
+                        Lote:
+                            lote,
+
+                        Descripcion:
+                            descripcion,
+
+                        Unidad_Medida:
+                            movimiento[
+                                "Unidad_Medida"
+                            ] || "",
+
+                        Tipo:
+                            movimiento[
+                                "Tipo"
+                            ] || ""
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    productos =
+        Array.from(
+            mapaProductos.values()
+        );
+
+
+    productos.sort(
+        (a, b) => {
+
+            const descripcionA =
+                normalizar(
+                    a["Descripcion"]
+                );
+
+            const descripcionB =
+                normalizar(
+                    b["Descripcion"]
+                );
+
+
+            if (
+                descripcionA <
+                descripcionB
+            ) {
+
+                return -1;
+
+            }
+
+
+            if (
+                descripcionA >
+                descripcionB
+            ) {
+
+                return 1;
+
+            }
+
+
+            const codigoA =
+                normalizar(
+                    a["Codigo"]
+                );
+
+            const codigoB =
+                normalizar(
+                    b["Codigo"]
+                );
+
+
+            if (
+                codigoA <
+                codigoB
+            ) {
+
+                return -1;
+
+            }
+
+
+            if (
+                codigoA >
+                codigoB
+            ) {
+
+                return 1;
+
+            }
+
+
+            return normalizar(
+                a["Lote"]
+            ).localeCompare(
+                normalizar(
+                    b["Lote"]
+                )
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Productos de consignación:",
+        productos
+    );
+
+
+    mostrarOpciones(
+        productos
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   OBTENER PUNTOS DE CONSIGNACIÓN
+========================================================= */
+
+function obtenerPuntosConsignacion(
+    producto
+) {
+
+    const claveProducto =
+        obtenerClaveProducto(
+            producto
+        );
+
+
+    const puntos =
+        new Map();
+
+
+    /*
+       PRIMERO:
+       Obtener todos los puntos que realmente
+       aparecen como destinos de consignación.
+    */
+
+    movimientosConsignacion.forEach(
+        movimiento => {
+
+            const ubicacion =
+                String(
+                    movimiento[
+                        "Ubicacion destino"
+                    ] ?? ""
+                ).trim();
+
+            const responsable =
+                String(
+                    movimiento[
+                        "Responsable destino"
+                    ] ?? ""
+                ).trim();
+
+
+            if (
+                !ubicacion &&
+                !responsable
+            ) {
+
+                return;
+
+            }
+
+
+            const clave =
+                obtenerClavePuntoDesdeMovimiento(
+                    movimiento
+                );
+
+
+            if (
+                !puntos.has(
+                    clave
+                )
+            ) {
+
+                puntos.set(
+                    clave,
+                    {
+                        ubicacion:
+                            ubicacion,
+
+                        responsable:
+                            responsable
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+       SEGUNDO:
+       Para el producto seleccionado, revisar el Kardex.
+       Si el producto existe en alguno de los puntos de
+       consignación, se conserva ese punto aunque el
+       producto haya llegado por inventario inicial.
+    */
+
+    kardexResponsable.forEach(
+        kardex => {
+
+            if (
+                obtenerClaveProducto(
+                    kardex
+                )
+                !==
+                claveProducto
+            ) {
+
+                return;
+
+            }
+
+
+            const clavePunto =
+                obtenerClavePuntoDesdeKardex(
+                    kardex
+                );
+
+
+            if (
+                !clavePunto ||
+                clavePunto === "||"
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                puntos.has(
+                    clavePunto
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+               Solo agregamos el punto si ese mismo
+               punto aparece en Movimientos como una
+               consignación.
+            */
+
+            const existeComoPuntoConsignacion =
+                movimientosConsignacion.some(
+                    movimiento =>
+                        obtenerClavePuntoDesdeMovimiento(
+                            movimiento
+                        ) ===
+                        clavePunto
+                );
+
+
+            if (
+                existeComoPuntoConsignacion
+            ) {
+
+                puntos.set(
+                    clavePunto,
+                    {
+                        ubicacion:
+                            String(
+                                kardex[
+                                    "Ubicacion"
+                                ] ?? ""
+                            ).trim(),
+
+                        responsable:
+                            String(
+                                kardex[
+                                    "Responsable"
+                                ] ?? ""
+                            ).trim()
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    return puntos;
+
+}
+
+
+/* =========================================================
+   OBTENER SALDO DEL PRODUCTO EN UN PUNTO
+========================================================= */
+
+function obtenerSaldoProductoEnPunto(
+    producto,
+    punto
+) {
+
+    const claveProducto =
+        obtenerClaveProducto(
+            producto
+        );
+
+
+    const clavePunto =
+        normalizar(
+            punto.ubicacion
+        )
+        +
+        "||"
+        +
+        normalizar(
+            punto.responsable
+        );
+
+
+    let total =
+        0;
+
+
+    kardexResponsable.forEach(
+        kardex => {
+
+            if (
+                obtenerClaveProducto(
+                    kardex
+                )
+                !==
+                claveProducto
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                obtenerClavePuntoDesdeKardex(
+                    kardex
+                )
+                !==
+                clavePunto
+            ) {
+
+                return;
+
+            }
+
+
+            total +=
+                Number(
+                    kardex[
+                        "Saldo Final"
+                    ]
+                ) || 0;
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+/* =========================================================
+   CALCULAR TOTAL DEL PRODUCTO
+========================================================= */
+
+function calcularTotalConsignacionProducto(
+    producto
+) {
+
+    const puntos =
+        obtenerPuntosConsignacion(
+            producto
+        );
+
+
+    let total =
+        0;
+
+
+    puntos.forEach(
+        punto => {
+
+            total +=
+                obtenerSaldoProductoEnPunto(
+                    producto,
+                    punto
+                );
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+/* =========================================================
+   TOTAL GENERAL
+========================================================= */
+
+function calcularTotalGeneral() {
+
+    let total =
+        0;
+
+
+    productos.forEach(
+        producto => {
+
+            total +=
+                calcularTotalConsignacionProducto(
+                    producto
+                );
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalGeneral"
+    ).textContent =
+        formatearNumero(
+            total
+        );
+
+}
+
+
+/* =========================================================
+   MOSTRAR OPCIONES
+========================================================= */
+
+function mostrarOpciones(
+    lista
+) {
+
+    const contenedor =
+        document.getElementById(
+            "listaOpciones"
+        );
+
+
+    contenedor.innerHTML =
+        "";
+
+
+    if (
+        !lista.length
+    ) {
+
+        contenedor.innerHTML = `
+
+            <div class="sin-opciones">
+
+                No hay productos con movimientos
+                de consignación.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    lista.forEach(
+        producto => {
+
+            const opcion =
+                document.createElement(
+                    "div"
+                );
+
+
+            opcion.className =
+                "opcion";
+
+
+            const total =
+                calcularTotalConsignacionProducto(
+                    producto
+                );
+
+
+            const codigo =
+                String(
+                    producto[
+                        "Codigo"
+                    ] ?? ""
+                ).trim();
+
+
+            const lote =
+                String(
+                    producto[
+                        "Lote"
+                    ] ?? ""
+                ).trim();
+
+
+            let detalle =
+                "";
+
+
+            if (codigo) {
+
+                detalle +=
+                    "Código: " +
+                    escaparHTML(
+                        codigo
+                    );
+
+            }
+
+
+            if (lote) {
+
+                if (detalle) {
+
+                    detalle +=
+                        " | ";
+
+                }
+
+
+                detalle +=
+                    "Lote: " +
+                    escaparHTML(
+                        lote
+                    );
+
+            }
+
+
+            if (!detalle) {
+
+                detalle =
+                    "Sin código ni lote";
+
+            }
+
+
+            if (
+                producto[
+                    "Unidad_Medida"
+                ]
+            ) {
+
+                detalle +=
+                    " | " +
+                    formatearNumero(
+                        total
+                    ) +
+                    " " +
+                    escaparHTML(
+                        producto[
+                            "Unidad_Medida"
+                        ]
+                    );
+
+            } else {
+
+                detalle +=
+                    " | " +
+                    formatearNumero(
+                        total
+                    );
+
+            }
+
+
+            opcion.innerHTML = `
+
+                <div class="opcion-descripcion">
+
+                    ${escaparHTML(
+                        producto[
+                            "Descripcion"
+                        ]
+                    )}
+
+                </div>
+
+
+                <div class="opcion-detalle">
+
+                    ${detalle}
+
+                </div>
+
+            `;
+
+
+            opcion.onclick =
+                function() {
+
+                    seleccionarProducto(
+                        producto
+                    );
+
+                };
+
+
+            contenedor.appendChild(
+                opcion
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTRAR PRODUCTOS
+========================================================= */
+
+function filtrarOpciones() {
+
+    const texto =
+        normalizar(
+            document.getElementById(
+                "busqueda"
+            ).value
+        );
+
+
+    const filtrados =
+        productos.filter(
+            producto => {
+
+                const descripcion =
+                    normalizar(
+                        producto[
+                            "Descripcion"
+                        ]
+                    );
+
+                const codigo =
+                    normalizar(
+                        producto[
+                            "Codigo"
+                        ]
+                    );
+
+                const lote =
+                    normalizar(
+                        producto[
+                            "Lote"
+                        ]
+                    );
+
+
+                return (
+
+                    descripcion.includes(
+                        texto
+                    )
+
+                    ||
+
+                    codigo.includes(
+                        texto
+                    )
+
+                    ||
+
+                    lote.includes(
+                        texto
+                    )
+
+                );
+
+            }
+        );
+
+
+    mostrarOpciones(
+        filtrados
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR SELECTOR
+========================================================= */
+
+function alternarOpciones() {
+
+    const opciones =
+        document.getElementById(
+            "opciones"
+        );
+
+
+    if (
+        opciones.style.display ===
+        "block"
+    ) {
+
+        opciones.style.display =
+            "none";
+
+    } else {
+
+        opciones.style.display =
+            "block";
+
+
+        setTimeout(
+            function() {
+
+                document.getElementById(
+                    "busqueda"
+                ).focus();
+
+            },
+            50
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BOTÓN DE BÚSQUEDA
+========================================================= */
+
+function abrirBusqueda() {
+
+    const opciones =
+        document.getElementById(
+            "opciones"
+        );
+
+
+    opciones.style.display =
+        "block";
+
+
+    setTimeout(
+        function() {
+
+            document.getElementById(
+                "busqueda"
+            ).focus();
+
+        },
+        50
+    );
+
+}
+
+
+/* =========================================================
+   SELECCIONAR PRODUCTO
+========================================================= */
+
+function seleccionarProducto(
+    producto
+) {
+
+    productoActual =
+        producto;
+
+
+    const descripcion =
+        producto[
+            "Descripcion"
+        ] || "Producto";
+
+
+    const lote =
+        String(
+            producto[
+                "Lote"
+            ] ?? ""
+        ).trim();
+
+
+    document.getElementById(
+        "textoSelector"
+    ).textContent =
+
+        lote
+
+            ?
+
+        descripcion +
+        " — Lote: " +
+        lote
+
+            :
+
+        descripcion;
+
+
+    document.getElementById(
+        "opciones"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "busqueda"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "nombreProducto"
+    ).textContent =
+        producto[
+            "Descripcion"
+        ] || "-";
+
+
+    document.getElementById(
+        "codigoProducto"
+    ).textContent =
+        producto[
+            "Codigo"
+        ] || "-";
+
+
+    document.getElementById(
+        "loteProducto"
+    ).textContent =
+        producto[
+            "Lote"
+        ] || "-";
+
+
+    document.getElementById(
+        "productoSeleccionado"
+    ).style.display =
+        "block";
+
+
+    cargarDetalleProducto(
+        producto
+    );
+
+}
+
+
+/* =========================================================
+   CARGAR TABLA DE DETALLE
+========================================================= */
+
+function cargarDetalleProducto(
+    producto
+) {
+
+    const tbody =
+        document.getElementById(
+            "detalleConsignacion"
+        );
+
+
+    tbody.innerHTML =
+        "";
+
+
+    const puntos =
+        obtenerPuntosConsignacion(
+            producto
+        );
+
+
+    if (
+        !puntos.size
+    ) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    class="sin-datos"
+                >
+
+                    Este producto no tiene puntos
+                    de consignación registrados.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    const puntosOrdenados =
+        Array.from(
+            puntos.values()
+        ).sort(
+            (a, b) => {
+
+                const responsableA =
+                    normalizar(
+                        a.responsable
+                    );
+
+                const responsableB =
+                    normalizar(
+                        b.responsable
+                    );
+
+
+                if (
+                    responsableA <
+                    responsableB
+                ) {
+
+                    return -1;
+
+                }
+
+
+                if (
+                    responsableA >
+                    responsableB
+                ) {
+
+                    return 1;
+
+                }
+
+
+                return normalizar(
+                    a.ubicacion
+                ).localeCompare(
+                    normalizar(
+                        b.ubicacion
+                    )
+                );
+
+            }
+        );
+
+
+    puntosOrdenados.forEach(
+        punto => {
+
+            const cantidad =
+                obtenerSaldoProductoEnPunto(
+                    producto,
+                    punto
+                );
+
+
+            const estado =
+                cantidad > 0
+                    ? "Activo"
+                    : "Agotado";
+
+
+            const claseEstado =
+                cantidad > 0
+                    ? "estado-activo"
+                    : "estado-agotado";
+
+
+            const fila =
+                document.createElement(
+                    "tr"
+                );
+
+
+            fila.innerHTML = `
+
+                <td>
+
+                    ${escaparHTML(
+                        punto.responsable
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escaparHTML(
+                        punto.ubicacion
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escaparHTML(
+                        producto[
+                            "Descripcion"
+                        ]
+                    )}
+
+                </td>
+
+
+                <td class="cantidad">
+
+                    ${formatearNumero(
+                        cantidad
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="estado ${claseEstado}"
+                    >
+
+                        ${estado}
+
+                    </span>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                fila
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CERRAR SELECTOR AL HACER CLIC AFUERA
+========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const contenedor =
+            document.querySelector(
+                ".selector-contenedor"
+            );
+
+
+        if (
+            !contenedor.contains(
+                event.target
+            )
+        ) {
+
+            document.getElementById(
+                "opciones"
+            ).style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
+
+async function inicializar() {
+
+    document.getElementById(
+        "listaOpciones"
+    ).innerHTML = `
+
+        <div class="cargando">
+
+            Cargando productos...
+
+        </div>
+
+    `;
+
+
+    /*
+       1. Cargar consignaciones desde Movimientos.
+    */
+
+    const movimientosOK =
+        await cargarMovimientosConsignacion();
+
+
+    if (!movimientosOK) {
+
+        return;
+
+    }
+
+
+    /*
+       2. Cargar saldos desde Kardex_Responsable.
+    */
+
+    const kardexOK =
+        await cargarKardexResponsable();
+
+
+    if (!kardexOK) {
+
+        return;
+
+    }
+
+
+    /*
+       3. Construir productos dinámicamente
+          desde las consignaciones.
+    */
+
+    const productosOK =
+        cargarProductos();
+
+
+    if (!productosOK) {
+
+        return;
+
+    }
+
+
+    /*
+       4. Calcular total general.
+    */
+
+    calcularTotalGeneral();
+
+}
+
+
+/* =========================================================
+   EJECUTAR
+========================================================= */
+
+inicializar();
+
+</script>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kardex - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    font-family: "Times New Roman", Times, serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+.container {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.top-bar h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 24px;
+    text-align: left;
+}
+
+button {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #6b4530;
+}
+
+.estado {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    background-color: #eee;
+    display: none;
+}
+
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filtros label {
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.filtros select {
+    padding: 9px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    background-color: white;
+    min-width: 150px;
+}
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+table {
+    width: 100%;
+    min-width: 1350px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 15px;
+    background-color: white;
+}
+
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(5),
+td:nth-child(7) {
+    text-align: left;
+}
+
+td:nth-child(6) {
+    text-align: center;
+}
+
+tbody tr {
+    background-color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1e9e4;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.numero {
+    text-align: center;
+}
+
+.saldo-final {
+    font-weight: bold;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+}
+
+.tabla-contenedor::-webkit-scrollbar {
+    height: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb {
+    background: #8a6d5a;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb:hover {
+    background: #5a3825;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="container">
+
+<div class="panel">
+
+<div class="top-bar">
+
+    <h2>Kardex de Inventario</h2>
+
+    <button onclick="cargarKardex()">
+        Actualizar
+    </button>
+
+</div>
+
+<div class="filtros">
+
+    <label for="filtroResponsable">
+        Responsable:
+    </label>
+
+    <select
+        id="filtroResponsable"
+        onchange="aplicarFiltros()"
+    >
+
+        <option value="">
+            Todos
+        </option>
+
+    </select>
+
+    <label for="filtroUbicacion">
+        Ubicación:
+    </label>
+
+    <select
+        id="filtroUbicacion"
+        onchange="aplicarFiltros()"
+    >
+
+        <option value="">
+            Todas
+        </option>
+
+    </select>
+
+    <label for="filtroProducto">
+        Producto:
+    </label>
+
+    <select
+        id="filtroProducto"
+        onchange="aplicarFiltros()"
+    >
+
+        <option value="">
+            Todos
+        </option>
+
+    </select>
+
+</div>
+
+<div id="estado" class="estado"></div>
+
+<div class="tabla-contenedor">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Código</th>
+                <th>Lote</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Tipo</th>
+                <th>Unidad de Medida</th>
+                <th>Descripción</th>
+                <th>Saldo Inicial</th>
+                <th>Entradas</th>
+                <th>Salidas</th>
+                <th>Saldo Final</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tablaKardex"></tbody>
+
+    </table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ============================================================
+   CONFIGURACIÓN SUPABASE
+   ============================================================ */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* ============================================================
+   NORMALIZAR TEXTO
+   ============================================================ */
+
+function normalizar(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(valor)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* ============================================================
+   NORMALIZAR LOTE
+   ============================================================ */
+
+function normalizarLote(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+
+        return "sin_lote";
+
+    }
+
+    const texto =
+        String(valor).trim();
+
+    if (
+        texto === "" ||
+        texto === "—" ||
+        texto === "-" ||
+        texto.toLowerCase() === "null" ||
+        texto.toLowerCase() === "undefined"
+    ) {
+
+        return "sin_lote";
+
+    }
+
+    return normalizar(texto);
+
+}
+
+
+/* ============================================================
+   OBTENER VALOR DE COLUMNA
+   ============================================================ */
+
+function obtenerValor(objeto, nombres) {
+
+    if (!objeto) {
+
+        return "";
+
+    }
+
+    const claves =
+        Object.keys(objeto);
+
+    for (const nombre of nombres) {
+
+        const nombreNormalizado =
+            normalizar(nombre);
+
+        const encontrada =
+            claves.find(
+                clave =>
+                    normalizar(clave) ===
+                    nombreNormalizado
+            );
+
+        if (
+            encontrada !== undefined
+        ) {
+
+            const valor =
+                objeto[encontrada];
+
+            if (
+                valor !== null &&
+                valor !== undefined
+            ) {
+
+                return valor;
+
+            }
+
+        }
+
+    }
+
+    return "";
+
+}
+
+
+/* ============================================================
+   CARGAR KARDEX
+   ============================================================ */
+
+async function cargarKardex() {
+
+    const tabla =
+        document.getElementById(
+            "tablaKardex"
+        );
+
+    const estado =
+        document.getElementById(
+            "estado"
+        );
+
+    tabla.innerHTML = "";
+
+    estado.style.display =
+        "block";
+
+    estado.textContent =
+        "Cargando información actualizada desde Supabase...";
+
+    try {
+
+        const resultado =
+            await supabaseClient
+                .from("Kardex_Responsable")
+                .select("*");
+
+        if (
+            resultado.error
+        ) {
+
+            throw resultado.error;
+
+        }
+
+        const kardex =
+            resultado.data || [];
+
+        if (
+            kardex.length === 0
+        ) {
+
+            tabla.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="11"
+                        class="sin-datos"
+                    >
+
+                        No hay registros
+                        para mostrar en el Kardex.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            estado.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        /* ====================================================
+           ORDENAR KARDEX
+           ==================================================== */
+
+        kardex.sort(
+            (a, b) => {
+
+                const responsableA =
+                    normalizar(
+                        obtenerValor(
+                            a,
+                            [
+                                "Responsable"
+                            ]
+                        )
+                    );
+
+                const responsableB =
+                    normalizar(
+                        obtenerValor(
+                            b,
+                            [
+                                "Responsable"
+                            ]
+                        )
+                    );
+
+                const ubicacionA =
+                    normalizar(
+                        obtenerValor(
+                            a,
+                            [
+                                "Ubicacion",
+                                "Ubicación"
+                            ]
+                        )
+                    );
+
+                const ubicacionB =
+                    normalizar(
+                        obtenerValor(
+                            b,
+                            [
+                                "Ubicacion",
+                                "Ubicación"
+                            ]
+                        )
+                    );
+
+                const tipoA =
+                    normalizar(
+                        obtenerValor(
+                            a,
+                            [
+                                "Tipo"
+                            ]
+                        )
+                    );
+
+                const tipoB =
+                    normalizar(
+                        obtenerValor(
+                            b,
+                            [
+                                "Tipo"
+                            ]
+                        )
+                    );
+
+                const descripcionA =
+                    normalizar(
+                        obtenerValor(
+                            a,
+                            [
+                                "Descripcion",
+                                "Descripción"
+                            ]
+                        )
+                    );
+
+                const descripcionB =
+                    normalizar(
+                        obtenerValor(
+                            b,
+                            [
+                                "Descripcion",
+                                "Descripción"
+                            ]
+                        )
+                    );
+
+                const codigoA =
+                    normalizar(
+                        obtenerValor(
+                            a,
+                            [
+                                "Codigo",
+                                "Código"
+                            ]
+                        )
+                    );
+
+                const codigoB =
+                    normalizar(
+                        obtenerValor(
+                            b,
+                            [
+                                "Codigo",
+                                "Código"
+                            ]
+                        )
+                    );
+
+                const loteA =
+                    normalizarLote(
+                        obtenerValor(
+                            a,
+                            [
+                                "Lote"
+                            ]
+                        )
+                    );
+
+                const loteB =
+                    normalizarLote(
+                        obtenerValor(
+                            b,
+                            [
+                                "Lote"
+                            ]
+                        )
+                    );
+
+                if (
+                    responsableA !==
+                    responsableB
+                ) {
+
+                    return responsableA.localeCompare(
+                        responsableB,
+                        "es",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    );
+
+                }
+
+                if (
+                    ubicacionA !==
+                    ubicacionB
+                ) {
+
+                    return ubicacionA.localeCompare(
+                        ubicacionB,
+                        "es",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    );
+
+                }
+
+                if (
+                    tipoA !==
+                    tipoB
+                ) {
+
+                    return tipoA.localeCompare(
+                        tipoB,
+                        "es",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    );
+
+                }
+
+                if (
+                    descripcionA !==
+                    descripcionB
+                ) {
+
+                    return descripcionA.localeCompare(
+                        descripcionB,
+                        "es",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    );
+
+                }
+
+                if (
+                    codigoA !==
+                    codigoB
+                ) {
+
+                    return codigoA.localeCompare(
+                        codigoB,
+                        "es",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    );
+
+                }
+
+                return loteA.localeCompare(
+                    loteB,
+                    "es",
+                    {
+                        sensitivity:
+                            "base"
+                    }
+                );
+
+            }
+        );
+
+
+        /* ====================================================
+           MOSTRAR KARDEX
+           ==================================================== */
+
+        kardex.forEach(
+            fila => {
+
+                const codigo =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Codigo",
+                            "Código"
+                        ]
+                    );
+
+                const lote =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Lote"
+                        ]
+                    );
+
+                const ubicacion =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Ubicacion",
+                            "Ubicación"
+                        ]
+                    );
+
+                const responsable =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Responsable"
+                        ]
+                    );
+
+                const tipo =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Tipo"
+                        ]
+                    );
+
+                const unidadMedida =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Unidad_Medida",
+                            "Unidad de Medida"
+                        ]
+                    );
+
+                const descripcion =
+                    obtenerValor(
+                        fila,
+                        [
+                            "Descripcion",
+                            "Descripción"
+                        ]
+                    );
+
+                const saldoInicial =
+                    Number(
+                        obtenerValor(
+                            fila,
+                            [
+                                "Saldo Inicial"
+                            ]
+                        )
+                    ) || 0;
+
+                const entradas =
+                    Number(
+                        obtenerValor(
+                            fila,
+                            [
+                                "Entradas"
+                            ]
+                        )
+                    ) || 0;
+
+                const salidas =
+                    Number(
+                        obtenerValor(
+                            fila,
+                            [
+                                "Salidas"
+                            ]
+                        )
+                    ) || 0;
+
+                const saldoFinal =
+                    Number(
+                        obtenerValor(
+                            fila,
+                            [
+                                "Saldo Final"
+                            ]
+                        )
+                    ) || 0;
+
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                tr.innerHTML = `
+
+                    <td>
+                        ${escapeHTML(
+                            codigo
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            lote
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            ubicacion
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            responsable
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            tipo
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            unidadMedida
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            descripcion
+                        )}
+                    </td>
+
+                    <td class="numero">
+                        ${formatearNumero(
+                            saldoInicial
+                        )}
+                    </td>
+
+                    <td class="numero">
+                        ${formatearNumero(
+                            entradas
+                        )}
+                    </td>
+
+                    <td class="numero">
+                        ${formatearNumero(
+                            salidas
+                        )}
+                    </td>
+
+                    <td class="numero saldo-final">
+                        ${formatearNumero(
+                            saldoFinal
+                        )}
+                    </td>
+
+                `;
+
+
+                tabla.appendChild(
+                    tr
+                );
+
+            }
+        );
+
+
+        estado.style.display =
+            "none";
+
+
+        console.log(
+            "======================================"
+        );
+
+        console.log(
+            "KARDEX CARGADO DESDE SUPABASE"
+        );
+
+        console.log(
+            "Tabla consultada: Kardex_Responsable"
+        );
+
+        console.log(
+            "Columnas consultadas: todas (*)"
+        );
+
+        console.log(
+            "Filas del Kardex:",
+            kardex.length
+        );
+
+        console.log(
+            "Inventario + Movimientos:"
+        );
+
+        console.log(
+            "El cálculo se realiza en Supabase"
+        );
+
+        console.log(
+            "Saldo Inicial: Inventario"
+        );
+
+        console.log(
+            "Entradas y Salidas: Movimientos"
+        );
+
+        console.log(
+            "Saldo Final = Saldo Inicial + Entradas - Salidas"
+        );
+
+        console.log(
+            "Tipo: Kardex_Responsable"
+        );
+
+        console.log(
+            "Unidad_Medida: Kardex_Responsable"
+        );
+
+        console.log(
+            "======================================"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "ERROR CARGANDO KARDEX:",
+            error
+        );
+
+        estado.style.display =
+            "block";
+
+        estado.textContent =
+            "Error al cargar el Kardex: " +
+            (
+                error.message ||
+                error
+            );
+
+        tabla.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="11"
+                    class="sin-datos"
+                >
+
+                    No se pudo cargar el Kardex.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   CARGAR OPCIONES DE FILTROS
+   ============================================================ */
+
+function cargarFiltros(kardex) {
+
+    const filtroResponsable =
+        document.getElementById(
+            "filtroResponsable"
+        );
+
+    const filtroUbicacion =
+        document.getElementById(
+            "filtroUbicacion"
+        );
+
+    const filtroProducto =
+        document.getElementById(
+            "filtroProducto"
+        );
+
+
+    const responsableSeleccionado =
+        filtroResponsable.value;
+
+    const ubicacionSeleccionada =
+        filtroUbicacion.value;
+
+    const productoSeleccionado =
+        filtroProducto.value;
+
+
+    filtroResponsable.innerHTML = `
+
+        <option value="">
+            Todos
+        </option>
+
+    `;
+
+    filtroUbicacion.innerHTML = `
+
+        <option value="">
+            Todas
+        </option>
+
+    `;
+
+    filtroProducto.innerHTML = `
+
+        <option value="">
+            Todos
+        </option>
+
+    `;
+
+
+    const responsables = [];
+
+
+    kardex.forEach(
+        fila => {
+
+            const responsable =
+                obtenerValor(
+                    fila,
+                    [
+                        "Responsable"
+                    ]
+                );
+
+            if (
+                responsable &&
+                !responsables.some(
+                    existente =>
+                        normalizar(
+                            existente
+                        ) ===
+                        normalizar(
+                            responsable
+                        )
+                )
+            ) {
+
+                responsables.push(
+                    responsable
+                );
+
+            }
+
+        }
+    );
+
+
+    responsables.sort(
+        (a, b) =>
+            normalizar(a).localeCompare(
+                normalizar(b),
+                "es",
+                {
+                    sensitivity:
+                        "base"
+                }
+            )
+    );
+
+
+    responsables.forEach(
+        responsable => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                responsable;
+
+            option.textContent =
+                responsable;
+
+            filtroResponsable.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    const ubicaciones = [];
+
+
+    kardex.forEach(
+        fila => {
+
+            const ubicacion =
+                obtenerValor(
+                    fila,
+                    [
+                        "Ubicacion",
+                        "Ubicación"
+                    ]
+                );
+
+            if (
+                ubicacion &&
+                !ubicaciones.some(
+                    existente =>
+                        normalizar(
+                            existente
+                        ) ===
+                        normalizar(
+                            ubicacion
+                        )
+                )
+            ) {
+
+                ubicaciones.push(
+                    ubicacion
+                );
+
+            }
+
+        }
+    );
+
+
+    ubicaciones.sort(
+        (a, b) =>
+            normalizar(a).localeCompare(
+                normalizar(b),
+                "es",
+                {
+                    sensitivity:
+                        "base"
+                }
+            )
+    );
+
+
+    ubicaciones.forEach(
+        ubicacion => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                ubicacion;
+
+            option.textContent =
+                ubicacion;
+
+            filtroUbicacion.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    const productos = [];
+
+
+    kardex.forEach(
+        fila => {
+
+            const producto =
+                obtenerValor(
+                    fila,
+                    [
+                        "Descripcion",
+                        "Descripción"
+                    ]
+                );
+
+            if (
+                producto &&
+                !productos.some(
+                    existente =>
+                        normalizar(
+                            existente
+                        ) ===
+                        normalizar(
+                            producto
+                        )
+                )
+            ) {
+
+                productos.push(
+                    producto
+                );
+
+            }
+
+        }
+    );
+
+
+    productos.sort(
+        (a, b) =>
+            normalizar(a).localeCompare(
+                normalizar(b),
+                "es",
+                {
+                    sensitivity:
+                        "base"
+                }
+            )
+    );
+
+
+    productos.forEach(
+        producto => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                producto;
+
+            option.textContent =
+                producto;
+
+            filtroProducto.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (
+        Array.from(
+            filtroResponsable.options
+        ).some(
+            option =>
+                normalizar(
+                    option.value
+                ) ===
+                normalizar(
+                    responsableSeleccionado
+                )
+        )
+    ) {
+
+        filtroResponsable.value =
+            responsableSeleccionado;
+
+    }
+
+
+    if (
+        Array.from(
+            filtroUbicacion.options
+        ).some(
+            option =>
+                normalizar(
+                    option.value
+                ) ===
+                normalizar(
+                    ubicacionSeleccionada
+                )
+        )
+    ) {
+
+        filtroUbicacion.value =
+            ubicacionSeleccionada;
+
+    }
+
+
+    if (
+        Array.from(
+            filtroProducto.options
+        ).some(
+            option =>
+                normalizar(
+                    option.value
+                ) ===
+                normalizar(
+                    productoSeleccionado
+                )
+        )
+    ) {
+
+        filtroProducto.value =
+            productoSeleccionado;
+
+    }
+
+}
+
+
+/* ============================================================
+   APLICAR FILTROS
+   ============================================================ */
+
+function aplicarFiltros() {
+
+    const filtroResponsable =
+        document.getElementById(
+            "filtroResponsable"
+        ).value;
+
+    const filtroUbicacion =
+        document.getElementById(
+            "filtroUbicacion"
+        ).value;
+
+    const filtroProducto =
+        document.getElementById(
+            "filtroProducto"
+        ).value;
+
+
+    const filas =
+        document.querySelectorAll(
+            "#tablaKardex tr"
+        );
+
+
+    filas.forEach(
+        fila => {
+
+            if (
+                fila.querySelector(
+                    ".sin-datos"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const responsable =
+                fila.cells[3] ?
+                fila.cells[3].textContent :
+                "";
+
+            const ubicacion =
+                fila.cells[2] ?
+                fila.cells[2].textContent :
+                "";
+
+            const producto =
+                fila.cells[6] ?
+                fila.cells[6].textContent :
+                "";
+
+
+            const coincideResponsable =
+                !filtroResponsable ||
+                normalizar(
+                    responsable
+                ) ===
+                normalizar(
+                    filtroResponsable
+                );
+
+
+            const coincideUbicacion =
+                !filtroUbicacion ||
+                normalizar(
+                    ubicacion
+                ) ===
+                normalizar(
+                    filtroUbicacion
+                );
+
+
+            const coincideProducto =
+                !filtroProducto ||
+                normalizar(
+                    producto
+                ) ===
+                normalizar(
+                    filtroProducto
+                );
+
+
+            if (
+                coincideResponsable &&
+                coincideUbicacion &&
+                coincideProducto
+            ) {
+
+                fila.style.display = "";
+
+            }
+
+            else {
+
+                fila.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   ACTUALIZACIÓN AUTOMÁTICA DESDE SUPABASE
+   ============================================================ */
+
+function activarActualizacionAutomatica() {
+
+    supabaseClient
+        .channel("kardex-tiempo-real")
+
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "Inventario"
+            },
+            payload => {
+
+                console.log(
+                    "Cambio detectado en Inventario:",
+                    payload
+                );
+
+                cargarKardex();
+
+            }
+        )
+
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "Movimientos"
+            },
+            payload => {
+
+                console.log(
+                    "Cambio detectado en Movimientos:",
+                    payload
+                );
+
+                cargarKardex();
+
+            }
+        )
+
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "Kardex_Responsable"
+            },
+            payload => {
+
+                console.log(
+                    "Cambio detectado en Kardex_Responsable:",
+                    payload
+                );
+
+                cargarKardex();
+
+            }
+        )
+
+        .subscribe(
+            status => {
+
+                console.log(
+                    "Estado de actualización automática:",
+                    status
+                );
+
+            }
+        );
+
+}
+
+
+/* ============================================================
+   FORMATEAR NÚMEROS SIN REDONDEAR
+   ============================================================ */
+
+function formatearNumero(numero) {
+
+    if (
+        numero === null ||
+        numero === undefined ||
+        numero === ""
+    ) {
+
+        return "0";
+
+    }
+
+    /*
+     * Se eliminó maximumFractionDigits: 2.
+     *
+     * Ahora se muestran todos los decimales
+     * que tenga el valor recibido desde Supabase.
+     *
+     * No se fuerza un máximo de 2 decimales.
+     */
+
+    return Number(numero)
+        .toLocaleString(
+            "es-CR",
+            {
+                useGrouping: true,
+                maximumFractionDigits: 20
+            }
+        );
+
+}
+
+
+/* ============================================================
+   SEGURIDAD HTML
+   ============================================================ */
+
+function escapeHTML(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(valor)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ============================================================
+   CARGAR AUTOMÁTICAMENTE
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        cargarKardex();
+
+        activarActualizacionAutomatica();
+
+    }
+);
+
+
+/* ============================================================
+   ACTUALIZAR FILTROS DESPUÉS DE CARGAR KARDEX
+   ============================================================ */
+
+const cargarKardexOriginal =
+    cargarKardex;
+
+
+/*
+   Reemplazamos solamente la función de carga
+   para agregar la actualización de los filtros.
+*/
+
+cargarKardex = async function() {
+
+    await cargarKardexOriginal();
+
+
+    const resultado =
+        await supabaseClient
+            .from("Kardex_Responsable")
+            .select("*");
+
+
+    if (
+        resultado.error
+    ) {
+
+        console.error(
+            "Error actualizando filtros:",
+            resultado.error
+        );
+
+        return;
+
+    }
+
+
+    const kardex =
+        resultado.data || [];
+
+
+    cargarFiltros(
+        kardex
+    );
+
+
+    aplicarFiltros();
+
+};
+
+</script>
+
+</body>
+
+</html>

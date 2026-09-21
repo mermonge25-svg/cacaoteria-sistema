@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kardex por Producto - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    font-family: "Times New Roman", Times, serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+/* ==========================================
+   CONTENEDOR
+   ========================================== */
+
+.container {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+/* ==========================================
+   PANEL
+   ========================================== */
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+/* ==========================================
+   BARRA SUPERIOR
+   ========================================== */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.top-bar h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 24px;
+}
+
+/* ==========================================
+   FILTRO
+   ========================================== */
+
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filtros label {
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.filtros select {
+    padding: 9px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    background-color: white;
+    min-width: 250px;
+}
+
+/* ==========================================
+   BOTÓN
+   ========================================== */
+
+button {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #6b4530;
+}
+
+button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   ESTADO
+   ========================================== */
+
+.mensaje {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    background-color: #eee;
+}
+
+/* ==========================================
+   TABLA
+   ========================================== */
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 15px;
+    background-color: white;
+}
+
+/* Código, Lote, Tipo, Unidad y Descripción alineados a la izquierda */
+
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5) {
+    text-align: left;
+}
+
+/* Todas las filas con el mismo color */
+
+tbody tr {
+    background-color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1e9e4;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==========================================
+   NÚMEROS
+   ========================================== */
+
+.numero {
+    text-align: center;
+}
+
+.saldo-final {
+    font-weight: bold;
+}
+
+/* ==========================================
+   BARRA HORIZONTAL
+   ========================================== */
+
+.tabla-contenedor::-webkit-scrollbar {
+    height: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb {
+    background: #8a6d5a;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb:hover {
+    background: #5a3825;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="container">
+
+<div class="panel">
+
+
+<div class="top-bar">
+
+    <h2>Kardex por Producto</h2>
+
+    <button id="btnActualizar" onclick="cargarKardex()">
+        Actualizar
+    </button>
+
+</div>
+
+
+<!-- ==========================================
+     FILTRO POR PRODUCTO
+     ========================================== -->
+
+<div class="filtros">
+
+    <label for="filtroProducto">
+        Producto:
+    </label>
+
+    <select
+        id="filtroProducto"
+        onchange="aplicarFiltroProducto()"
+    >
+
+        <option value="">
+            Todos
+        </option>
+
+    </select>
+
+</div>
+
+
+<div id="mensaje" class="mensaje">
+    Cargando Kardex...
+</div>
+
+
+<div class="tabla-contenedor">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Código</th>
+                <th>Lote</th>
+                <th>Tipo</th>
+                <th>Unidad_Medida</th>
+                <th>Descripción</th>
+                <th>Saldo Inicial</th>
+                <th>Entradas</th>
+                <th>Salidas</th>
+                <th>Saldo Final</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tablaKardex"></tbody>
+
+    </table>
+
+</div>
+
+
+</div>
+
+</div>
+
+<script>
+
+// =========================================================
+// CONFIGURACIÓN SUPABASE
+// =========================================================
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+// =========================================================
+// TABLA
+// =========================================================
+
+const TABLA_KARDEX_PRODUCTO =
+    "Kardex_Producto";
+
+
+// =========================================================
+// ESCAPAR HTML
+// =========================================================
+
+function escaparHTML(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// =========================================================
+// MOSTRAR VALOR
+// =========================================================
+
+function valorMostrar(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined ||
+        String(valor).trim() === ""
+    ) {
+
+        return "—";
+
+    }
+
+    return String(valor).trim();
+
+}
+
+
+// =========================================================
+// FORMATEAR NÚMEROS
+// =========================================================
+
+function formatearNumero(numero) {
+
+    const valor =
+        Number(numero);
+
+    if (isNaN(valor)) {
+
+        return "0";
+
+    }
+
+    return valor.toLocaleString("es-CR", {
+
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+
+    });
+
+}
+
+
+// =========================================================
+// CARGAR FILTRO DE PRODUCTOS
+// =========================================================
+
+function cargarFiltroProductos(data) {
+
+    const filtro =
+        document.getElementById(
+            "filtroProducto"
+        );
+
+    const valorActual =
+        filtro.value;
+
+    filtro.innerHTML = `
+        <option value="">
+            Todos
+        </option>
+    `;
+
+
+    const productos = [];
+
+
+    data.forEach(producto => {
+
+        const descripcion =
+            String(
+                producto.Descripcion || ""
+            ).trim();
+
+        const codigo =
+            String(
+                producto.Codigo || ""
+            ).trim();
+
+        const lote =
+            String(
+                producto.Lote || ""
+            ).trim();
+
+
+        if (!descripcion && !codigo) {
+
+            return;
+
+        }
+
+
+        /*
+           La clave interna sigue utilizando:
+
+           Código + Lote + Descripción
+
+           Esto NO se muestra al usuario.
+        */
+
+        const clave =
+            codigo +
+            "|" +
+            lote +
+            "|" +
+            descripcion;
+
+
+        if (
+            !productos.some(
+                p => p.clave === clave
+            )
+        ) {
+
+            productos.push({
+
+                clave: clave,
+
+                codigo: codigo,
+
+                lote: lote,
+
+                descripcion: descripcion
+
+            });
+
+        }
+
+    });
+
+
+    productos.sort((a, b) => {
+
+        return a.descripcion.localeCompare(
+            b.descripcion,
+            "es"
+        );
+
+    });
+
+
+    productos.forEach(producto => {
+
+        const option =
+            document.createElement("option");
+
+
+        /*
+           El VALUE sigue siendo la clave completa.
+           */
+
+        option.value =
+            producto.clave;
+
+
+        /*
+           AQUÍ ESTÁ EL CAMBIO:
+
+           Antes aparecía:
+           Descripción | Código | Lote
+
+           Ahora solamente aparece:
+           Descripción
+        */
+
+        option.textContent =
+            producto.descripcion;
+
+
+        filtro.appendChild(
+            option
+        );
+
+    });
+
+
+    /*
+       Si el producto que estaba seleccionado
+       todavía existe, se mantiene.
+    */
+
+    const existe =
+        Array.from(
+            filtro.options
+        ).some(
+            option =>
+                option.value === valorActual
+        );
+
+
+    if (existe) {
+
+        filtro.value =
+            valorActual;
+
+    } else {
+
+        filtro.value =
+            "";
+
+    }
+
+}
+
+
+// =========================================================
+// APLICAR FILTRO POR PRODUCTO
+// =========================================================
+
+function aplicarFiltroProducto() {
+
+    const filtro =
+        document.getElementById(
+            "filtroProducto"
+        );
+
+    const valorSeleccionado =
+        filtro.value;
+
+
+    const filas =
+        document.querySelectorAll(
+            "#tablaKardex tr"
+        );
+
+
+    filas.forEach(fila => {
+
+        /*
+           Código = columna 1
+           Lote = columna 2
+           Descripción = columna 5
+        */
+
+        const codigo =
+            fila.cells[0]
+                ?.textContent
+                .trim() || "";
+
+        const lote =
+            fila.cells[1]
+                ?.textContent
+                .trim() || "";
+
+        const descripcion =
+            fila.cells[4]
+                ?.textContent
+                .trim() || "";
+
+
+        const clave =
+            codigo +
+            "|" +
+            lote +
+            "|" +
+            descripcion;
+
+
+        if (
+            !valorSeleccionado ||
+            clave === valorSeleccionado
+        ) {
+
+            fila.style.display =
+                "";
+
+        } else {
+
+            fila.style.display =
+                "none";
+
+        }
+
+    });
+
+}
+
+
+// =========================================================
+// CARGAR KARDEX DESDE SUPABASE
+// =========================================================
+
+async function cargarKardex() {
+
+    const mensaje =
+        document.getElementById("mensaje");
+
+    const tabla =
+        document.getElementById("tablaKardex");
+
+    const boton =
+        document.getElementById("btnActualizar");
+
+
+    tabla.innerHTML = "";
+
+
+    mensaje.textContent =
+        "Cargando Kardex desde Supabase...";
+
+
+    boton.disabled = true;
+
+
+    try {
+
+        // =====================================================
+        // CONSULTAR DIRECTAMENTE KARDEX_PRODUCTO
+        // =====================================================
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+
+            .from(TABLA_KARDEX_PRODUCTO)
+
+            .select(
+                'Codigo, Lote, Tipo, Unidad_Medida, Descripcion, "Saldo Inicial", Entradas, Salidas, "Saldo Final"'
+            );
+
+
+        // =====================================================
+        // COMPROBAR ERROR
+        // =====================================================
+
+        if (error) {
+
+            throw new Error(
+                "Error cargando Kardex_Producto: " +
+                error.message
+            );
+
+        }
+
+
+        // =====================================================
+        // ORDENAR POR TIPO
+        // =====================================================
+
+        data.sort((a, b) => {
+
+            const ordenTipos = {
+
+                "Producto Terminado": 1,
+                "Materia Prima": 2,
+                "Material Empaque": 3,
+                "Material de Empaque": 3,
+                "Sin tipo": 4
+
+            };
+
+
+            const tipoA =
+                ordenTipos[a.Tipo] || 99;
+
+            const tipoB =
+                ordenTipos[b.Tipo] || 99;
+
+
+            if (
+                tipoA !== tipoB
+            ) {
+
+                return tipoA - tipoB;
+
+            }
+
+
+            return String(
+                a.Descripcion || ""
+            ).localeCompare(
+
+                String(
+                    b.Descripcion || ""
+                ),
+
+                "es"
+
+            );
+
+        });
+
+
+        // =====================================================
+        // CARGAR PRODUCTOS EN EL FILTRO
+        // =====================================================
+
+        cargarFiltroProductos(
+            data
+        );
+
+
+        // =====================================================
+        // MOSTRAR DATOS
+        // =====================================================
+
+        data.forEach(producto => {
+
+            const fila =
+                document.createElement("tr");
+
+
+            fila.innerHTML = `
+
+                <td>
+                    ${escaparHTML(
+                        valorMostrar(
+                            producto.Codigo
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        valorMostrar(
+                            producto.Lote
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        valorMostrar(
+                            producto.Tipo
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        valorMostrar(
+                            producto.Unidad_Medida
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        valorMostrar(
+                            producto.Descripcion
+                        )
+                    )}
+                </td>
+
+                <td class="numero">
+                    ${formatearNumero(
+                        producto["Saldo Inicial"]
+                    )}
+                </td>
+
+                <td class="numero">
+                    ${formatearNumero(
+                        producto.Entradas
+                    )}
+                </td>
+
+                <td class="numero">
+                    ${formatearNumero(
+                        producto.Salidas
+                    )}
+                </td>
+
+                <td class="numero saldo-final">
+                    ${formatearNumero(
+                        producto["Saldo Final"]
+                    )}
+                </td>
+
+            `;
+
+
+            tabla.appendChild(
+                fila
+            );
+
+        });
+
+
+        // =====================================================
+        // VOLVER A APLICAR EL FILTRO SELECCIONADO
+        // =====================================================
+
+        aplicarFiltroProducto();
+
+
+        // =====================================================
+        // MENSAJE
+        // =====================================================
+
+        mensaje.textContent =
+            "Kardex cargado desde Supabase. " +
+            data.length +
+            " productos.";
+
+
+    } catch (error) {
+
+        console.error(
+            "Error completo:",
+            error
+        );
+
+
+        mensaje.textContent =
+            error.message;
+
+
+    } finally {
+
+        boton.disabled = false;
+
+    }
+
+}
+
+
+// =========================================================
+// CARGAR AL ABRIR LA PÁGINA
+// =========================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    cargarKardex
+);
+
+</script>
+
+</body>
+
+</html>

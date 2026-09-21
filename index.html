@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cacaotería S.R.L. - Sistema de Gestión Operativa</title>
+
+    <style>
+
+        :root {
+            --sidebar-bg: #1c1917;
+            --sidebar-hover: #292524;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-hover: #ffffff;
+            --text-main: #1c1917;
+            --text-muted: #5a3825;
+            --brand-primary: #5a3825;
+            --border-color: rgba(90, 56, 37, 0.2);
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 6px 15px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-image: url("imagenes/fondo_pgn.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* =====================================================
+           PANTALLA DE INICIO DE SESIÓN
+           ===================================================== */
+
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background-image:
+                linear-gradient(
+                    rgba(28, 25, 23, 0.55),
+                    rgba(28, 25, 23, 0.55)
+                ),
+                url("imagenes/fondo_pgn.png");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid rgba(90, 56, 37, 0.25);
+            border-radius: 16px;
+
+            padding: 40px 35px;
+
+            text-align: center;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
+        }
+
+        .login-logo {
+            width: 90px;
+            height: 90px;
+
+            object-fit: contain;
+
+            margin-bottom: 15px;
+        }
+
+        .login-box h1 {
+            color: var(--brand-primary);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .login-field {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .login-field label {
+            display: block;
+
+            color: var(--brand-primary);
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+            font-size: 1rem;
+        }
+
+        .login-field input {
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid rgba(90, 56, 37, 0.30);
+            border-radius: 8px;
+
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1rem;
+
+            outline: none;
+
+            transition: border-color 0.2s,
+                        box-shadow 0.2s;
+        }
+
+        .login-field input:focus {
+            border-color: var(--brand-primary);
+
+            box-shadow:
+                0 0 0 3px rgba(90, 56, 37, 0.10);
+        }
+
+        .login-button {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 12px;
+
+            border: none;
+            border-radius: 8px;
+
+            background-color: var(--brand-primary);
+            color: white;
+
+            font-family: "Times New Roman", Times, serif;
+
+            font-size: 1.05rem;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: background-color 0.2s,
+                        transform 0.1s;
+        }
+
+        .login-button:hover {
+            background-color: #6b4530;
+        }
+
+        .login-button:active {
+            transform: scale(0.98);
+        }
+
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        #login-message {
+            min-height: 22px;
+
+            margin-top: 15px;
+
+            font-size: 0.95rem;
+
+            color: #a00000;
+        }
+
+        /* =====================================================
+           BARRA LATERAL DESPLEGABLE
+           ===================================================== */
+
+        aside {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: #d6d3d1;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 24px 16px;
+
+            position: fixed;
+
+            top: 0;
+            bottom: 0;
+            left: -250px;
+
+            z-index: 1000;
+
+            transition: left 0.3s ease-in-out;
+
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+        }
+
+        aside.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+
+            padding-left: 8px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.1rem;
+
+            font-weight: bold;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.05em;
+
+            color: #a8a29e;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+
+            color: #a8a29e;
+
+            font-size: 1.5rem;
+
+            cursor: pointer;
+
+            padding: 0 8px;
+        }
+
+        .btn-close:hover {
+            color: #ffffff;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+        .sidebar-nav a {
+            color: #e7e5e4;
+
+            text-decoration: none;
+
+            padding: 12px 14px;
+
+            border-radius: 8px;
+
+            font-size: 1.05rem;
+
+            display: block;
+
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: var(--sidebar-hover);
+
+            color: #ffffff;
+        }
+
+        .overlay {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            background-color: rgba(0, 0, 0, 0.4);
+
+            display: none;
+
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* =====================================================
+           CONTENEDOR PRINCIPAL
+           ===================================================== */
+
+        .main-wrapper {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+
+            width: 100%;
+        }
+
+        /* =====================================================
+           ENCABEZADO
+           ===================================================== */
+
+        header {
+            background-color: var(--header-bg);
+
+            border-bottom: 1px solid var(--border-color);
+
+            padding: 16px 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+            backdrop-filter: blur(5px);
+
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-menu {
+            background: none;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 8px;
+
+            font-size: 1.4rem;
+
+            padding: 6px 12px;
+
+            cursor: pointer;
+
+            color: var(--brand-primary);
+
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(90, 56, 37, 0.1);
+        }
+
+        .header-company {
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+        }
+
+        .logo {
+            height: 50px;
+
+            width: auto;
+
+            object-fit: contain;
+        }
+
+        .company-info h1 {
+            font-size: 1.6rem;
+
+            font-weight: bold;
+
+            color: var(--brand-primary);
+
+            line-height: 1.2;
+        }
+
+        .company-info p {
+            font-size: 1rem;
+
+            color: var(--text-muted);
+        }
+
+        /* =====================================================
+           ÁREA DE CONTENIDO
+           ===================================================== */
+
+        .content {
+            padding: 40px 30px;
+
+            max-width: 1200px;
+
+            width: 100%;
+
+            margin: 0 auto;
+
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+
+            font-weight: bold;
+
+            color: var(--brand-primary);
+
+            margin-bottom: 24px;
+
+            text-shadow:
+                0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        /* =====================================================
+           GRID DE MÓDULOS
+           ===================================================== */
+
+        .modulos-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(280px, 1fr));
+
+            gap: 20px;
+        }
+
+        .modulo-card {
+            background-color: var(--card-bg);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: var(--radius);
+
+            padding: 35px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            box-shadow: var(--shadow-sm);
+
+            cursor: pointer;
+
+            backdrop-filter: blur(4px);
+
+            transition: all 0.2s ease-in-out;
+        }
+
+        .modulo-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow: var(--shadow-md);
+
+            background-color: var(--card-hover);
+        }
+
+        .modulo-card h3 {
+            font-size: 1.3rem;
+
+            font-weight: bold;
+
+            color: var(--brand-primary);
+        }
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        footer {
+            padding: 20px;
+
+            border-top: 1px solid var(--border-color);
+
+            text-align: center;
+
+            font-size: 0.95rem;
+
+            color: var(--brand-primary);
+
+            background-color: var(--header-bg);
+
+            backdrop-filter: blur(5px);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .content {
+                padding: 24px 16px;
+            }
+
+            header {
+                padding: 16px;
+            }
+
+            .login-box {
+                padding: 35px 25px;
+            }
+
+            .login-logo {
+                width: 75px;
+                height: 75px;
+            }
+
+            .login-box h1 {
+                font-size: 1.5rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         PANTALLA DE INICIO DE SESIÓN
+         ===================================================== -->
+
+    <div id="login-screen">
+
+        <div class="login-box">
+
+            <img
+                src="imagenes/logo_pgn.png"
+                alt="Logo Cacaotería S.R.L."
+                class="login-logo"
+            >
+
+            <h1>Cacaotería S.R.L.</h1>
+
+            <p class="login-subtitle">
+                Sistema de Gestión Operativa
+            </p>
+
+            <form id="login-form">
+
+                <div class="login-field">
+
+                    <label for="login-email">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        id="login-email"
+                        placeholder="Ingrese su correo"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="login-field">
+
+                    <label for="login-password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="login-password"
+                        placeholder="Ingrese su contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="login-button">
+                    Ingresar
+                </button>
+
+                <p id="login-message"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CAPA OSCURA AL ABRIR MENÚ
+         ===================================================== -->
+
+    <div
+        class="overlay"
+        id="overlay"
+        onclick="toggleMenu()">
+    </div>
+
+
+    <!-- =====================================================
+         BARRA LATERAL DESPLEGABLE
+         ===================================================== -->
+
+    <aside id="sidebar">
+
+        <div class="sidebar-header">
+
+            <span class="sidebar-brand">
+                Menú
+            </span>
+
+            <button
+                class="btn-close"
+                onclick="toggleMenu()">
+                &times;
+            </button>
+
+        </div>
+
+        <ul class="sidebar-nav">
+
+            <li>
+                <a href="#" onclick="toggleMenu()">
+                    Inicio
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="toggleMenu()">
+                    Reportes
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="toggleMenu()">
+                    Ajustes
+                </a>
+            </li>
+
+            <li>
+                <a href="lote.html" onclick="toggleMenu()">
+                    Lote
+                </a>
+            </li>
+
+            <li>
+                <a href="personal.html" onclick="toggleMenu()">
+                    Personal
+                </a>
+            </li>
+
+            <li>
+                <a href="proveedores.html" onclick="toggleMenu()">
+                    Proveedores
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENEDOR PRINCIPAL
+         ===================================================== -->
+
+    <div class="main-wrapper">
+
+        <header>
+
+            <button
+                class="btn-menu"
+                onclick="toggleMenu()"
+                title="Abrir menú">
+                ☰
+            </button>
+
+            <div class="header-company">
+
+                <img
+                    src="imagenes/logo_pgn.png"
+                    alt="Logo Cacaotería S.R.L."
+                    class="logo"
+                >
+
+                <div class="company-info">
+
+                    <h1>
+                        Cacaotería S.R.L.
+                    </h1>
+
+                    <p>
+                        Sistema de Gestión Operativa
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+
+        <main class="content">
+
+            <h2 class="page-title">
+                Módulos del Sistema
+            </h2>
+
+            <div class="modulos-grid">
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('productos.html')">
+
+                    <h3>
+                        Base de Productos
+                    </h3>
+
+                </div>
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('inventario.html')">
+
+                    <h3>
+                        Inventario
+                    </h3>
+
+                </div>
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('ventas.html')">
+
+                    <h3>
+                        Ventas
+                    </h3>
+
+                </div>
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('movimientos.html')">
+
+                    <h3>
+                        Movimientos
+                    </h3>
+
+                </div>
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('kardex-responsable.html')">
+
+                    <h3>
+                        Kardex por Responsable
+                    </h3>
+
+                </div>
+
+                <div
+                    class="modulo-card"
+                    onclick="abrirPagina('kardex-producto.html')">
+
+                    <h3>
+                        Kardex por Producto
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- PIE DE PÁGINA -->
+
+        <footer>
+
+            Cacaotería S.R.L.
+            &copy; 2026 · Sistema de Gestión Operativa v3.1
+
+        </footer>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIBRERÍA DE SUPABASE
+         ===================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+        /* =====================================================
+           DATOS DE SUPABASE
+           ===================================================== */
+
+        const SUPABASE_URL =
+            "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+
+        /* =====================================================
+           CREAR CLIENTE SUPABASE
+           ===================================================== */
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /* =====================================================
+           FUNCIONES DEL MENÚ
+           ===================================================== */
+
+        function toggleMenu() {
+
+            const sidebar =
+                document.getElementById('sidebar');
+
+            const overlay =
+                document.getElementById('overlay');
+
+            sidebar.classList.toggle('active');
+
+            overlay.classList.toggle('active');
+
+        }
+
+
+        /* =====================================================
+           ABRIR MÓDULOS
+           ===================================================== */
+
+        function abrirPagina(pagina) {
+
+            window.location.href = pagina;
+
+        }
+
+
+        /* =====================================================
+           INICIO DE SESIÓN
+           ===================================================== */
+
+        const loginForm =
+            document.getElementById('login-form');
+
+        const loginMessage =
+            document.getElementById('login-message');
+
+        const loginButton =
+            document.getElementById('login-button');
+
+
+        loginForm.addEventListener(
+            'submit',
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const email =
+                    document
+                        .getElementById('login-email')
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById('login-password')
+                        .value;
+
+
+                loginMessage.textContent =
+                    "Ingresando...";
+
+                loginMessage.style.color =
+                    "#5a3825";
+
+                loginButton.disabled = true;
+
+
+                try {
+
+                    const { data, error } =
+                        await supabaseClient.auth
+                            .signInWithPassword({
+
+                                email: email,
+
+                                password: password
+
+                            });
+
+
+                    if (error) {
+
+                        console.error(
+                            "Error de Supabase:",
+                            error
+                        );
+
+                        loginMessage.textContent =
+                            "Error: " + error.message;
+
+                        loginMessage.style.color =
+                            "#a00000";
+
+                        loginButton.disabled = false;
+
+                        return;
+
+                    }
+
+
+                    console.log(
+                        "Inicio de sesión correcto:",
+                        data.user
+                    );
+
+
+                    loginMessage.textContent =
+                        "Inicio de sesión correcto.";
+
+                    loginMessage.style.color =
+                        "#2e6b3e";
+
+
+                    setTimeout(function() {
+
+                        document
+                            .getElementById('login-screen')
+                            .style
+                            .display = "none";
+
+                    }, 300);
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Error inesperado:",
+                        error
+                    );
+
+                    loginMessage.textContent =
+                        "No se pudo iniciar sesión. " +
+                        error.message;
+
+                    loginMessage.style.color =
+                        "#a00000";
+
+                    loginButton.disabled = false;
+
+                }
+
+            }
+
+        );
+
+
+        /* =====================================================
+           COMPROBAR SESIÓN AL CARGAR
+           ===================================================== */
+
+        async function comprobarSesion() {
+
+            try {
+
+                const { data, error } =
+                    await supabaseClient.auth.getSession();
+
+
+                if (error) {
+
+                    console.error(
+                        "Error al comprobar sesión:",
+                        error
+                    );
+
+                    return;
+
+                }
+
+
+                if (data.session) {
+
+                    document
+                        .getElementById('login-screen')
+                        .style
+                        .display = "none";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Error inesperado al comprobar sesión:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        comprobarSesion();
+
+    </script>
+
+</body>
+
+</html>

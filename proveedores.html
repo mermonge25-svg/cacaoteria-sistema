@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Proveedores - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+.contenedor {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.barra-superior h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 24px;
+    text-align: left;
+}
+
+.barra-superior .btn-agregar {
+    margin-left: auto;
+}
+
+.btn-agregar {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-agregar:hover {
+    background-color: #6b4530;
+}
+
+
+/* =========================================================
+   BOTONES EDITAR Y ELIMINAR
+   ========================================================= */
+
+.btn-editar,
+.btn-eliminar {
+    background: transparent;
+    border: none;
+    padding: 3px;
+    margin-right: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-editar svg,
+.btn-eliminar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-editar {
+    color: #6b4530;
+}
+
+.btn-editar:hover {
+    color: #402719;
+}
+
+.btn-eliminar {
+    color: #aaa;
+}
+
+.btn-eliminar:hover {
+    color: #777;
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.filtros {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.filtros input,
+.filtros select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 15px;
+    background-color: white;
+}
+
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5) {
+    text-align: left;
+}
+
+tbody tr {
+    background-color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1e9e4;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-contenedor::-webkit-scrollbar {
+    height: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb {
+    background: #8a6d5a;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb:hover {
+    background: #5a3825;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    width: 90%;
+    max-width: 750px;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    color: #5a3825;
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo input,
+.campo select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.campo input[readonly] {
+    background-color: #f5f5f5;
+}
+
+.botones-modal {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cerrar {
+    background-color: #777;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-cerrar:hover {
+    background-color: #5f5f5f;
+}
+
+.mensaje {
+    text-align: center;
+    padding: 25px;
+    font-size: 18px;
+}
+
+.mensaje.error {
+    color: #a94442;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-completo {
+        grid-column: auto;
+    }
+
+    .botones-modal {
+        grid-column: auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+
+<div class="contenedor">
+
+
+<div class="barra-superior">
+
+<h2>Base de datos proveedores</h2>
+
+<button
+    class="btn-agregar"
+    onclick="abrirFormulario()">
+
+    + Agregar proveedor
+
+</button>
+
+</div>
+
+
+<div class="filtros">
+
+<input
+    type="text"
+    id="buscador"
+    placeholder="Buscar por proveedor..."
+    oninput="filtrarProveedores()"
+>
+
+</div>
+
+
+<div class="tabla-contenedor">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID Proveedor</th>
+<th>Proveedor</th>
+<th>Contacto</th>
+<th>Direccion</th>
+<th>Correo_Electronico</th>
+<th>Notas</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="cuerpoTabla">
+
+<tr>
+
+<td
+    colspan="7"
+    class="mensaje">
+
+    Cargando proveedores...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL
+     ========================================================= -->
+
+<div
+    class="modal"
+    id="modalProveedor">
+
+<div class="modal-contenido">
+
+<h2 id="tituloFormulario">
+    Agregar proveedor
+</h2>
+
+
+<form
+    id="formProveedor"
+    class="formulario">
+
+
+<!-- =========================================================
+     ID PROVEEDOR
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="idProveedor">
+    ID Proveedor
+</label>
+
+<input
+    type="text"
+    id="idProveedor"
+    required
+>
+
+</div>
+
+
+<!-- =========================================================
+     PROVEEDOR
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="nombreProveedor">
+    Proveedor
+</label>
+
+<input
+    type="text"
+    id="nombreProveedor"
+    required
+>
+
+</div>
+
+
+<!-- =========================================================
+     CONTACTO
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="contacto">
+    Contacto
+</label>
+
+<input
+    type="text"
+    id="contacto"
+    required
+>
+
+</div>
+
+
+<!-- =========================================================
+     DIRECCION
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="direccion">
+    Direccion
+</label>
+
+<input
+    type="text"
+    id="direccion"
+    required
+>
+
+</div>
+
+
+<!-- =========================================================
+     CORREO_ELECTRONICO
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="correo">
+    Correo_Electronico
+</label>
+
+<input
+    type="email"
+    id="correo"
+    required
+>
+
+</div>
+
+
+<!-- =========================================================
+     NOTAS
+     ========================================================= -->
+
+<div class="campo">
+
+<label for="notas">
+    Notas
+</label>
+
+<input
+    type="text"
+    id="notas"
+>
+
+</div>
+
+
+<!-- =========================================================
+     BOTONES
+     ========================================================= -->
+
+<div class="botones-modal">
+
+<button
+    type="button"
+    class="btn-cerrar"
+    onclick="cerrarFormulario()">
+
+    Cancelar
+
+</button>
+
+
+<button
+    type="submit"
+    class="btn-agregar">
+
+    Guardar
+
+</button>
+
+</div>
+
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let proveedores = [];
+
+
+/* =========================================================
+   CARGAR PROVEEDORES
+   ========================================================= */
+
+async function cargarProveedores() {
+
+    const cuerpoTabla =
+        document.getElementById(
+            "cuerpoTabla"
+        );
+
+    cuerpoTabla.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="mensaje">
+
+                Cargando proveedores...
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("Proveedores")
+            .select("*")
+            .order(
+                "ID_Proveedor",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error cargando proveedores:",
+                error
+            );
+
+            cuerpoTabla.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="mensaje error">
+
+                        Error al cargar los proveedores:<br><br>
+
+                        ${escaparHTML(
+                            error.message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        proveedores =
+            data || [];
+
+
+        mostrarProveedores();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        cuerpoTabla.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="mensaje error">
+
+                    No se pudo conectar con Supabase.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR PROVEEDORES
+   ========================================================= */
+
+function mostrarProveedores(
+    lista = proveedores
+) {
+
+    const cuerpoTabla =
+        document.getElementById(
+            "cuerpoTabla"
+        );
+
+
+    cuerpoTabla.innerHTML = "";
+
+
+    if (lista.length === 0) {
+
+        cuerpoTabla.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="mensaje">
+
+                    No se encontraron proveedores.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    lista.forEach(
+        function(proveedor) {
+
+            const indice =
+                proveedores.findIndex(
+                    function(p) {
+
+                        return p === proveedor;
+
+                    }
+                );
+
+
+            const fila =
+                document.createElement(
+                    "tr"
+                );
+
+
+            fila.innerHTML = `
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.ID_Proveedor || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.Proveedor || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.Contacto || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.Direccion || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.Correo_Electronico || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHTML(
+                        proveedor.Notas || ""
+                    )}
+                </td>
+
+
+                <td>
+
+                    <button
+                        class="btn-editar"
+                        title="Editar proveedor"
+                        onclick="editarProveedor(${indice})"
+                        aria-label="Editar proveedor">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+
+                            <path
+                                d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"/>
+
+                            <path
+                                d="M14.5 5.5L18.5 9.5"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"/>
+
+                        </svg>
+
+                    </button>
+
+
+                    <button
+                        class="btn-eliminar"
+                        title="Eliminar proveedor"
+                        onclick="eliminarProveedor(${indice})"
+                        aria-label="Eliminar proveedor">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+
+                            <path
+                                d="M5 7H19"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"/>
+
+                            <path
+                                d="M9 7V4H15V7"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"/>
+
+                            <path
+                                d="M7 7L8 20H16L17 7"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"/>
+
+                            <path
+                                d="M10 11V17"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"/>
+
+                            <path
+                                d="M14 11V17"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"/>
+
+                        </svg>
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            cuerpoTabla.appendChild(
+                fila
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR FORMULARIO
+   ========================================================= */
+
+function abrirFormulario() {
+
+    document.getElementById(
+        "tituloFormulario"
+    ).textContent =
+        "Agregar proveedor";
+
+
+    document.getElementById(
+        "formProveedor"
+    ).reset();
+
+
+    document.getElementById(
+        "formProveedor"
+    ).dataset.indice = "";
+
+
+    document.getElementById(
+        "modalProveedor"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   CERRAR FORMULARIO
+   ========================================================= */
+
+function cerrarFormulario() {
+
+    document.getElementById(
+        "modalProveedor"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   GUARDAR PROVEEDOR
+   ========================================================= */
+
+document
+    .getElementById("formProveedor")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const proveedor = {
+
+                ID_Proveedor:
+                    document
+                        .getElementById(
+                            "idProveedor"
+                        )
+                        .value
+                        .trim(),
+
+                Proveedor:
+                    document
+                        .getElementById(
+                            "nombreProveedor"
+                        )
+                        .value
+                        .trim(),
+
+                Contacto:
+                    document
+                        .getElementById(
+                            "contacto"
+                        )
+                        .value
+                        .trim(),
+
+                Direccion:
+                    document
+                        .getElementById(
+                            "direccion"
+                        )
+                        .value
+                        .trim(),
+
+                Correo_Electronico:
+                    document
+                        .getElementById(
+                            "correo"
+                        )
+                        .value
+                        .trim(),
+
+                Notas:
+                    document
+                        .getElementById(
+                            "notas"
+                        )
+                        .value
+                        .trim()
+
+            };
+
+
+            const indice =
+                document
+                    .getElementById(
+                        "formProveedor"
+                    )
+                    .dataset
+                    .indice;
+
+
+            /* =================================================
+               AGREGAR
+               ================================================= */
+
+            if (indice === "") {
+
+                /*
+                Verificar que el ID no esté repetido
+                */
+
+                const {
+                    data: existente,
+                    error: errorBusqueda
+                } = await supabaseClient
+                    .from("Proveedores")
+                    .select("ID_Proveedor")
+                    .eq(
+                        "ID_Proveedor",
+                        proveedor.ID_Proveedor
+                    )
+                    .maybeSingle();
+
+
+                if (errorBusqueda) {
+
+                    console.error(
+                        "Error verificando ID del proveedor:",
+                        errorBusqueda
+                    );
+
+                    alert(
+                        "No fue posible verificar el ID del proveedor.\n\n" +
+                        errorBusqueda.message
+                    );
+
+                    return;
+
+                }
+
+
+                if (existente) {
+
+                    alert(
+                        "Ya existe un proveedor con el ID " +
+                        proveedor.ID_Proveedor +
+                        ".\n\nIngrese un ID diferente."
+                    );
+
+                    return;
+
+                }
+
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from("Proveedores")
+                    .insert([
+                        proveedor
+                    ]);
+
+
+                if (error) {
+
+                    console.error(
+                        "Error al guardar proveedor:",
+                        error
+                    );
+
+                    alert(
+                        "No fue posible guardar el proveedor en Supabase.\n\n" +
+                        error.message
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Proveedor guardado correctamente."
+                );
+
+            }
+
+
+            /* =================================================
+               EDITAR
+               ================================================= */
+
+            else {
+
+                const proveedorAnterior =
+                    proveedores[indice];
+
+
+                if (!proveedorAnterior) {
+
+                    alert(
+                        "No se encontró el proveedor seleccionado."
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                El ID anterior se utiliza para encontrar
+                exactamente el proveedor que se está editando.
+                */
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from("Proveedores")
+                    .update({
+
+                        ID_Proveedor:
+                            proveedor.ID_Proveedor,
+
+                        Proveedor:
+                            proveedor.Proveedor,
+
+                        Contacto:
+                            proveedor.Contacto,
+
+                        Direccion:
+                            proveedor.Direccion,
+
+                        Correo_Electronico:
+                            proveedor.Correo_Electronico,
+
+                        Notas:
+                            proveedor.Notas
+
+                    })
+                    .eq(
+                        "ID_Proveedor",
+                        proveedorAnterior.ID_Proveedor
+                    );
+
+
+                if (error) {
+
+                    console.error(
+                        "Error al editar proveedor:",
+                        error
+                    );
+
+                    alert(
+                        "No fue posible actualizar el proveedor en Supabase.\n\n" +
+                        error.message
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Proveedor actualizado correctamente."
+                );
+
+            }
+
+
+            await cargarProveedores();
+
+            cerrarFormulario();
+
+        }
+    );
+
+
+/* =========================================================
+   EDITAR PROVEEDOR
+   ========================================================= */
+
+function editarProveedor(indice) {
+
+    const proveedor =
+        proveedores[indice];
+
+
+    if (!proveedor) {
+        return;
+    }
+
+
+    document.getElementById(
+        "tituloFormulario"
+    ).textContent =
+        "Editar proveedor";
+
+
+    document.getElementById(
+        "idProveedor"
+    ).value =
+        proveedor.ID_Proveedor || "";
+
+
+    document.getElementById(
+        "nombreProveedor"
+    ).value =
+        proveedor.Proveedor || "";
+
+
+    document.getElementById(
+        "contacto"
+    ).value =
+        proveedor.Contacto || "";
+
+
+    document.getElementById(
+        "direccion"
+    ).value =
+        proveedor.Direccion || "";
+
+
+    document.getElementById(
+        "correo"
+    ).value =
+        proveedor.Correo_Electronico || "";
+
+
+    document.getElementById(
+        "notas"
+    ).value =
+        proveedor.Notas || "";
+
+
+    document.getElementById(
+        "formProveedor"
+    ).dataset.indice =
+        indice;
+
+
+    document.getElementById(
+        "modalProveedor"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   ELIMINAR PROVEEDOR
+   ========================================================= */
+
+async function eliminarProveedor(indice) {
+
+    const proveedor =
+        proveedores[indice];
+
+
+    if (!proveedor) {
+        return;
+    }
+
+
+    const confirmar =
+        confirm(
+
+            "¿Está seguro de eliminar este proveedor?\n\n" +
+
+            proveedor.Proveedor
+
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient
+            .from("Proveedores")
+            .delete()
+            .eq(
+                "ID_Proveedor",
+                proveedor.ID_Proveedor
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error al eliminar proveedor:",
+                error
+            );
+
+            alert(
+                "No fue posible eliminar el proveedor de Supabase.\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Proveedor eliminado correctamente."
+        );
+
+
+        await cargarProveedores();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al eliminar el proveedor:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FILTRAR PROVEEDORES
+   ========================================================= */
+
+function filtrarProveedores() {
+
+    const texto =
+        document
+            .getElementById(
+                "buscador"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const filtrados =
+        proveedores.filter(
+            function(proveedor) {
+
+                return (
+
+                    (proveedor.ID_Proveedor || "")
+                        .toLowerCase()
+                        .includes(texto)
+
+                    ||
+
+                    (proveedor.Proveedor || "")
+                        .toLowerCase()
+                        .includes(texto)
+
+                    ||
+
+                    (proveedor.Contacto || "")
+                        .toLowerCase()
+                        .includes(texto)
+
+                    ||
+
+                    (proveedor.Direccion || "")
+                        .toLowerCase()
+                        .includes(texto)
+
+                    ||
+
+                    (proveedor.Correo_Electronico || "")
+                        .toLowerCase()
+                        .includes(texto)
+
+                );
+
+            }
+        );
+
+
+    mostrarProveedores(
+        filtrados
+    );
+
+}
+
+
+/* =========================================================
+   SEGURIDAD HTML
+   ========================================================= */
+
+function escaparHTML(valor) {
+
+    return String(
+        valor ?? ""
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL AL HACER CLIC AFUERA
+   ========================================================= */
+
+window.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "modalProveedor"
+            );
+
+
+        if (
+            event.target ===
+            modal
+        ) {
+
+            cerrarFormulario();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+
+cargarProveedores();
+
+</script>
+
+</body>
+
+</html>

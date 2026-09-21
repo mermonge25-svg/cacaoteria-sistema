@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Inventario - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+.contenedor {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.barra-superior h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 25px;
+}
+
+.btn-agregar {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-agregar:hover {
+    background-color: #402719;
+}
+
+.btn-editar,
+.btn-eliminar {
+    background: transparent;
+    border: none;
+    padding: 3px;
+    margin-right: 8px;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-editar svg,
+.btn-eliminar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-editar {
+    color: #6b4530;
+}
+
+.btn-editar:hover {
+    color: #402719;
+}
+
+.btn-eliminar {
+    color: #777;
+}
+
+.btn-eliminar:hover {
+    color: #555;
+}
+
+.filtros {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(200px, 1fr)
+    );
+
+    gap: 12px;
+}
+
+.filtros input,
+.filtros select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.tabla-contenedor {
+    background-color: white;
+    border-radius: 8px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #6b4530;
+    color: white;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: #f3eee9;
+}
+
+.total {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0,0,0,0.5);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+
+    width: 90%;
+    max-width: 650px;
+
+    padding: 25px;
+    border-radius: 10px;
+
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    color: #5a3825;
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo input,
+.campo select {
+    padding: 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    font-size: 16px;
+}
+
+.campo input[readonly] {
+    background-color: #eeeeee;
+}
+
+.campo-manual {
+    display: none;
+}
+
+.campo-manual.visible {
+    display: flex;
+}
+
+.campo-manual input {
+    border-color: #6b4530;
+}
+
+.campo-manual small {
+    margin-top: 5px;
+    color: #777;
+    font-size: 13px;
+}
+
+.botones-modal {
+    grid-column: 1 / -1;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.btn-cerrar {
+    background-color: #777;
+    color: white;
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.btn-cerrar:hover {
+    background-color: #5f5f5f;
+}
+
+.mensaje {
+    text-align: center;
+    padding: 25px;
+    font-size: 18px;
+}
+
+.mensaje.error {
+    color: #a94442;
+}
+
+@media (max-width: 700px) {
+
+    .formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-completo {
+        grid-column: auto;
+    }
+
+    .botones-modal {
+        grid-column: auto;
+    }
+
+    table {
+        min-width: 1100px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Cacaotería S.R.L.</h1>
+
+    <p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="contenedor">
+
+<div class="barra-superior">
+
+    <h2>Inventario Inicial</h2>
+
+    <button
+        class="btn-agregar"
+        onclick="abrirFormulario()">
+
+        + Agregar inventario
+
+    </button>
+
+</div>
+
+<div class="filtros">
+
+    <input
+        type="text"
+        id="filtroTexto"
+        placeholder="Buscar producto..."
+        oninput="aplicarFiltros()"
+    >
+
+    <input
+        type="text"
+        id="filtroCodigo"
+        placeholder="Buscar por código..."
+        oninput="aplicarFiltros()"
+    >
+
+    <select
+        id="filtroTipo"
+        onchange="aplicarFiltros()">
+
+        <option value="">
+            Todos los tipos
+        </option>
+
+        <option value="Producto Terminado">
+            Producto Terminado
+        </option>
+
+        <option value="Materia Prima">
+            Materia Prima
+        </option>
+
+        <option value="Material Empaque">
+            Material Empaque
+        </option>
+
+        <option value="Uniformes">
+            Uniformes
+        </option>
+
+    </select>
+
+</div>
+
+<div class="tabla-contenedor">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Código</th>
+                <th>Lote #</th>
+                <th>Tipo</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Und. Medida</th>
+                <th>Acciones</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="cuerpoTabla">
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="mensaje">
+
+                    Cargando inventario...
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div
+    class="total"
+    id="totalInventario">
+
+    Total de registros: 0
+
+</div>
+
+</div>
+
+<div
+    class="modal"
+    id="modalInventario">
+
+<div class="modal-contenido">
+
+    <h2 id="tituloModal">
+        Agregar inventario
+    </h2>
+
+    <form
+        class="formulario"
+        onsubmit="guardarInventario(event)">
+
+        <!-- PRODUCTO -->
+
+        <div class="campo campo-completo">
+
+            <label for="producto">
+                Producto
+            </label>
+
+            <select
+                id="producto"
+                required
+                onchange="seleccionarProducto()">
+
+                <option value="">
+                    Seleccione un producto...
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- CODIGO -->
+
+        <div class="campo">
+
+            <label for="codigo">
+                Código
+            </label>
+
+            <input
+                type="text"
+                id="codigo"
+                readonly
+            >
+
+        </div>
+
+        <!-- LOTE -->
+
+        <div class="campo">
+
+            <label for="lote">
+                Lote #
+            </label>
+
+            <select
+                id="lote">
+
+                <option value="">
+                    Seleccione un lote...
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- TIPO -->
+
+        <div class="campo">
+
+            <label for="tipo">
+                Tipo
+            </label>
+
+            <input
+                type="text"
+                id="tipo"
+                readonly
+            >
+
+        </div>
+
+        <!-- RESPONSABLE -->
+
+        <div class="campo">
+
+            <label for="responsable">
+                Responsable
+            </label>
+
+            <select
+                id="responsable"
+                required
+                onchange="cambiarResponsable()">
+
+                <option value="">
+                    Cargando responsables...
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- RESPONSABLE MANUAL -->
+
+        <div
+            class="campo campo-manual"
+            id="campoResponsableManual">
+
+            <label for="responsableManual">
+                Escribir responsable
+            </label>
+
+            <input
+                type="text"
+                id="responsableManual"
+                placeholder="Ingrese el nombre del responsable"
+                maxlength="150"
+            >
+
+            <small>
+                Este responsable se guardará únicamente en este registro de inventario.
+            </small>
+
+        </div>
+
+        <!-- UBICACION -->
+
+        <div class="campo">
+
+            <label for="ubicacion">
+                Ubicación
+            </label>
+
+            <select
+                id="ubicacion"
+                required
+                onchange="cambiarUbicacion()">
+
+                <option value="">
+                    Cargando ubicaciones...
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- UBICACION MANUAL -->
+
+        <div
+            class="campo campo-manual"
+            id="campoUbicacionManual">
+
+            <label for="ubicacionManual">
+                Escribir ubicación
+            </label>
+
+            <input
+                type="text"
+                id="ubicacionManual"
+                placeholder="Ingrese la ubicación"
+                maxlength="150"
+            >
+
+            <small>
+                Esta ubicación se guardará únicamente en este registro de inventario.
+            </small>
+
+        </div>
+
+        <!-- CANTIDAD -->
+
+        <div class="campo">
+
+            <label for="cantidad">
+                Cantidad
+            </label>
+
+            <input
+                type="number"
+                id="cantidad"
+                min="0"
+                step="any"
+                required
+            >
+
+        </div>
+
+        <!-- DESCRIPCION -->
+
+        <div class="campo campo-completo">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <input
+                type="text"
+                id="descripcion"
+                readonly
+            >
+
+        </div>
+
+        <!-- UNIDAD -->
+
+        <div class="campo">
+
+            <label for="unidad">
+                Und. Medida
+            </label>
+
+            <input
+                type="text"
+                id="unidad"
+                readonly
+            >
+
+        </div>
+
+        <!-- BOTONES -->
+
+        <div class="botones-modal">
+
+            <button
+                type="button"
+                class="btn-cerrar"
+                onclick="cerrarFormulario()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-agregar">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let productos = [];
+
+let lotes = [];
+
+let inventario = [];
+
+let personal = [];
+
+let indiceEditando = null;
+
+
+/* =========================================================
+   NORMALIZAR TEXTO
+   ========================================================= */
+
+function normalizarTexto(valor) {
+
+    return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   OBTENER PROPIEDAD
+   ========================================================= */
+
+function encontrarPropiedad(objeto, nombre) {
+
+    const buscado =
+        normalizarTexto(nombre)
+            .replace(/_/g, "");
+
+    return Object.keys(objeto || {})
+        .find(clave =>
+            normalizarTexto(clave)
+                .replace(/_/g, "") === buscado
+        );
+
+}
+
+
+function obtenerValor(objeto, nombre) {
+
+    const propiedad =
+        encontrarPropiedad(
+            objeto,
+            nombre
+        );
+
+    return propiedad
+        ? objeto[propiedad]
+        : "";
+
+}
+
+
+/* =========================================================
+   BUSCAR PRODUCTO POR DESCRIPCIÓN
+   ========================================================= */
+
+function buscarProductoPorDescripcion(descripcion) {
+
+    const descripcionNormalizada =
+        normalizarTexto(descripcion);
+
+    return productos.find(producto => {
+
+        return normalizarTexto(
+            producto.Descripcion
+        ) === descripcionNormalizada;
+
+    });
+
+}
+
+
+/* =========================================================
+   CARGAR PRODUCTOS
+   ========================================================= */
+
+async function cargarProductos() {
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("Productos")
+                .select(
+                    "id, Codigo, Tipo, Descripcion, Unidad_Medida"
+                )
+                .order("id", {
+                    ascending: true
+                });
+
+        if (error) {
+
+            console.error(
+                "Error cargando productos:",
+                error
+            );
+
+            alert(
+                "No se pudieron cargar los productos:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        productos = data || [];
+
+        llenarSelectProductos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo conectar con Supabase."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LLENAR SELECT PRODUCTOS
+   ========================================================= */
+
+function llenarSelectProductos() {
+
+    const select =
+        document.getElementById(
+            "producto"
+        );
+
+    select.innerHTML = `
+
+        <option value="">
+
+            Seleccione un producto...
+
+        </option>
+
+    `;
+
+    productos.forEach(
+        (producto, indice) => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                indice;
+
+            option.textContent =
+                `${producto.Codigo || ""} - ${producto.Descripcion || ""}`;
+
+            select.appendChild(option);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CARGAR LOTES DESDE SUPABASE
+   ========================================================= */
+
+async function cargarLotes() {
+
+    const select =
+        document.getElementById(
+            "lote"
+        );
+
+    select.innerHTML = `
+
+        <option value="">
+
+            Cargando lotes...
+
+        </option>
+
+    `;
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("Lotes")
+                .select('"Lote", "Fecha vencimiento"')
+                .order("Lote", {
+                    ascending: true
+                });
+
+        if (error) {
+
+            console.error(
+                "Error cargando lotes:",
+                error
+            );
+
+            select.innerHTML = `
+
+                <option value="">
+
+                    No se pudieron cargar los lotes
+
+                </option>
+
+            `;
+
+            alert(
+                "No se pudieron cargar los lotes:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        lotes = data || [];
+
+        select.innerHTML = `
+
+            <option value="">
+
+                Seleccione un lote...
+
+            </option>
+
+        `;
+
+        lotes.forEach(
+            lote => {
+
+                const numeroLote =
+                    String(
+                        lote["Lote"] ?? ""
+                    ).trim();
+
+                if (!numeroLote) {
+
+                    return;
+
+                }
+
+                const fechaVencimiento =
+                    lote["Fecha vencimiento"];
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    numeroLote;
+
+                if (fechaVencimiento) {
+
+                    const fecha =
+                        formatearFecha(
+                            fechaVencimiento
+                        );
+
+                    option.textContent =
+                        `${numeroLote} — Vence: ${fecha}`;
+
+                } else {
+
+                    option.textContent =
+                        numeroLote;
+
+                }
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        select.innerHTML = `
+
+            <option value="">
+
+                No se pudieron cargar los lotes
+
+            </option>
+
+        `;
+
+        alert(
+            "No se pudo conectar con la tabla Lotes."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMATEAR FECHA DE VENCIMIENTO
+   ========================================================= */
+
+function formatearFecha(fecha) {
+
+    if (!fecha) {
+
+        return "";
+
+    }
+
+    const fechaObjeto =
+        new Date(
+            fecha + "T00:00:00"
+        );
+
+    if (
+        isNaN(
+            fechaObjeto.getTime()
+        )
+    ) {
+
+        return fecha;
+
+    }
+
+    return fechaObjeto.toLocaleDateString(
+        "es-CR"
+    );
+
+}
+
+
+/* =========================================================
+   CARGAR PERSONAL Y UBICACIONES ACTIVAS
+   ========================================================= */
+
+async function cargarPersonal() {
+
+    const selectResponsable =
+        document.getElementById(
+            "responsable"
+        );
+
+    const selectUbicacion =
+        document.getElementById(
+            "ubicacion"
+        );
+
+    selectResponsable.innerHTML = `
+
+        <option value="">
+
+            Cargando responsables...
+
+        </option>
+
+    `;
+
+    selectUbicacion.innerHTML = `
+
+        <option value="">
+
+            Cargando ubicaciones...
+
+        </option>
+
+    `;
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("Personal")
+                .select(
+                    "Responsable, Ubicacion, Estado"
+                )
+                .eq(
+                    "Estado",
+                    "Activo"
+                )
+                .order(
+                    "Responsable",
+                    {
+                        ascending: true
+                    }
+                );
+
+        if (error) {
+
+            console.error(
+                "Error cargando personal:",
+                error
+            );
+
+            selectResponsable.innerHTML = `
+
+                <option value="">
+
+                    No se pudieron cargar los responsables
+
+                </option>
+
+            `;
+
+            selectUbicacion.innerHTML = `
+
+                <option value="">
+
+                    No se pudieron cargar las ubicaciones
+
+                </option>
+
+            `;
+
+            alert(
+                "No se pudieron cargar los responsables y ubicaciones:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        personal = data || [];
+
+
+        /* =================================================
+           RESPONSABLES ACTIVOS
+           ================================================= */
+
+        selectResponsable.innerHTML = `
+
+            <option value="">
+
+                Seleccione...
+
+            </option>
+
+        `;
+
+        personal.forEach(
+            persona => {
+
+                const responsable =
+                    String(
+                        persona.Responsable || ""
+                    ).trim();
+
+                if (!responsable) {
+                    return;
+                }
+
+                const existe =
+                    Array.from(
+                        selectResponsable.options
+                    ).some(
+                        option =>
+                            option.value ===
+                            responsable
+                    );
+
+                if (existe) {
+                    return;
+                }
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    responsable;
+
+                option.textContent =
+                    responsable;
+
+                selectResponsable.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           OPCIÓN RESPONSABLE MANUAL
+           ================================================= */
+
+        const opcionOtroResponsable =
+            document.createElement(
+                "option"
+            );
+
+        opcionOtroResponsable.value =
+            "__OTRO_RESPONSABLE__";
+
+        opcionOtroResponsable.textContent =
+            "➕ Otro / Escribir manualmente";
+
+        selectResponsable.appendChild(
+            opcionOtroResponsable
+        );
+
+
+        /* =================================================
+           UBICACIONES ACTIVAS
+           ================================================= */
+
+        selectUbicacion.innerHTML = `
+
+            <option value="">
+
+                Seleccione...
+
+            </option>
+
+        `;
+
+        const ubicaciones =
+            [];
+
+        personal.forEach(
+            persona => {
+
+                const ubicacion =
+                    String(
+                        persona.Ubicacion || ""
+                    ).trim();
+
+                if (!ubicacion) {
+                    return;
+                }
+
+                const yaExiste =
+                    ubicaciones.some(
+                        existente =>
+                            normalizarTexto(
+                                existente
+                            ) ===
+                            normalizarTexto(
+                                ubicacion
+                            )
+                    );
+
+                if (!yaExiste) {
+
+                    ubicaciones.push(
+                        ubicacion
+                    );
+
+                }
+
+            }
+        );
+
+        ubicaciones.sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "es",
+                    {
+                        sensitivity: "base"
+                    }
+                )
+        );
+
+        ubicaciones.forEach(
+            ubicacion => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    ubicacion;
+
+                option.textContent =
+                    ubicacion;
+
+                selectUbicacion.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           OPCIÓN UBICACIÓN MANUAL
+           ================================================= */
+
+        const opcionOtraUbicacion =
+            document.createElement(
+                "option"
+            );
+
+        opcionOtraUbicacion.value =
+            "__OTRA_UBICACION__";
+
+        opcionOtraUbicacion.textContent =
+            "➕ Otra / Escribir manualmente";
+
+        selectUbicacion.appendChild(
+            opcionOtraUbicacion
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        selectResponsable.innerHTML = `
+
+            <option value="">
+
+                No se pudieron cargar los responsables
+
+            </option>
+
+        `;
+
+        selectUbicacion.innerHTML = `
+
+            <option value="">
+
+                No se pudieron cargar las ubicaciones
+
+            </option>
+
+        `;
+
+        alert(
+            "No se pudo conectar con la tabla Personal."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CAMBIAR RESPONSABLE
+   ========================================================= */
+
+function cambiarResponsable() {
+
+    const select =
+        document.getElementById(
+            "responsable"
+        );
+
+    const campoManual =
+        document.getElementById(
+            "campoResponsableManual"
+        );
+
+    const inputManual =
+        document.getElementById(
+            "responsableManual"
+        );
+
+    if (
+        select.value ===
+        "__OTRO_RESPONSABLE__"
+    ) {
+
+        campoManual.classList.add(
+            "visible"
+        );
+
+        inputManual.required = true;
+
+        setTimeout(
+            function() {
+
+                inputManual.focus();
+
+            },
+            50
+        );
+
+    } else {
+
+        campoManual.classList.remove(
+            "visible"
+        );
+
+        inputManual.required = false;
+
+        inputManual.value = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   CAMBIAR UBICACIÓN
+   ========================================================= */
+
+function cambiarUbicacion() {
+
+    const select =
+        document.getElementById(
+            "ubicacion"
+        );
+
+    const campoManual =
+        document.getElementById(
+            "campoUbicacionManual"
+        );
+
+    const inputManual =
+        document.getElementById(
+            "ubicacionManual"
+        );
+
+    if (
+        select.value ===
+        "__OTRA_UBICACION__"
+    ) {
+
+        campoManual.classList.add(
+            "visible"
+        );
+
+        inputManual.required = true;
+
+        setTimeout(
+            function() {
+
+                inputManual.focus();
+
+            },
+            50
+        );
+
+    } else {
+
+        campoManual.classList.remove(
+            "visible"
+        );
+
+        inputManual.required = false;
+
+        inputManual.value = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   OBTENER RESPONSABLE FINAL
+   ========================================================= */
+
+function obtenerResponsableFinal() {
+
+    const select =
+        document.getElementById(
+            "responsable"
+        );
+
+    if (
+        select.value ===
+        "__OTRO_RESPONSABLE__"
+    ) {
+
+        return document
+            .getElementById(
+                "responsableManual"
+            )
+            .value
+            .trim();
+
+    }
+
+    return select.value.trim();
+
+}
+
+
+/* =========================================================
+   OBTENER UBICACIÓN FINAL
+   ========================================================= */
+
+function obtenerUbicacionFinal() {
+
+    const select =
+        document.getElementById(
+            "ubicacion"
+        );
+
+    if (
+        select.value ===
+        "__OTRA_UBICACION__"
+    ) {
+
+        return document
+            .getElementById(
+                "ubicacionManual"
+            )
+            .value
+            .trim();
+
+    }
+
+    return select.value.trim();
+
+}
+
+
+/* =========================================================
+   CARGAR INVENTARIO
+   ========================================================= */
+
+async function cargarInventario() {
+
+    const cuerpoTabla =
+        document.getElementById(
+            "cuerpoTabla"
+        );
+
+    cuerpoTabla.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="9"
+                class="mensaje">
+
+                Cargando inventario...
+
+            </td>
+
+        </tr>
+
+    `;
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("Inventario")
+                .select("*")
+                .order("id", {
+                    ascending: true
+                });
+
+        if (error) {
+
+            console.error(
+                "Error cargando inventario:",
+                error
+            );
+
+            cuerpoTabla.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="mensaje error">
+
+                        Error al cargar el inventario:<br><br>
+
+                        ${escaparHTML(
+                            error.message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        inventario = data || [];
+
+        inventario = inventario.map(
+            registro => {
+
+                const descripcion =
+                    obtenerValor(
+                        registro,
+                        "Descripcion"
+                    );
+
+                const producto =
+                    buscarProductoPorDescripcion(
+                        descripcion
+                    );
+
+                if (producto) {
+
+                    return {
+
+                        ...registro,
+
+                        Codigo:
+                            producto.Codigo,
+
+                        Tipo:
+                            producto.Tipo,
+
+                        Descripcion:
+                            producto.Descripcion,
+
+                        Unidad_Medida:
+                            producto.Unidad_Medida
+
+                    };
+
+                }
+
+                return registro;
+
+            }
+        );
+
+        aplicarFiltros();
+
+    } catch (error) {
+
+        console.error(error);
+
+        cuerpoTabla.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="mensaje error">
+
+                    No se pudo conectar con Supabase.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR INVENTARIO
+   ========================================================= */
+
+function mostrarInventario(lista) {
+
+    const cuerpoTabla =
+        document.getElementById(
+            "cuerpoTabla"
+        );
+
+    const total =
+        document.getElementById(
+            "totalInventario"
+        );
+
+    total.textContent =
+        "Total de registros: " +
+        lista.length;
+
+    if (lista.length === 0) {
+
+        cuerpoTabla.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="mensaje">
+
+                    No hay registros para mostrar.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    cuerpoTabla.innerHTML =
+
+        lista.map(
+            registro => {
+
+                const indice =
+                    inventario.findIndex(
+                        item =>
+                            item.id ===
+                            registro.id
+                    );
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Codigo"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Lote"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Tipo"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Ubicacion"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Responsable"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Descripcion"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Cantidad"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                obtenerValor(
+                                    registro,
+                                    "Unidad_Medida"
+                                )
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn-editar"
+                                title="Editar inventario"
+                                onclick="editarInventario(${indice})"
+                                aria-label="Editar inventario">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+
+                                    <path
+                                        d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linejoin="round"/>
+
+                                    <path
+                                        d="M14.5 5.5L18.5 9.5"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"/>
+
+                                </svg>
+
+                            </button>
+
+                            <button
+                                class="btn-eliminar"
+                                title="Eliminar inventario"
+                                onclick="eliminarInventario(${indice})"
+                                aria-label="Eliminar inventario">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+
+                                    <path
+                                        d="M5 7H19"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"/>
+
+                                    <path
+                                        d="M9 7V4H15V7"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linejoin="round"/>
+
+                                    <path
+                                        d="M7 7L8 20H16L17 7"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linejoin="round"/>
+
+                                    <path
+                                        d="M10 11V17"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"/>
+
+                                    <path
+                                        d="M14 11V17"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"/>
+
+                                </svg>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        ).join("");
+
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+function aplicarFiltros() {
+
+    const texto =
+        document
+            .getElementById(
+                "filtroTexto"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+    const codigo =
+        document
+            .getElementById(
+                "filtroCodigo"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+    const tipo =
+        document
+            .getElementById(
+                "filtroTipo"
+            )
+            .value;
+
+    const filtrados =
+        inventario.filter(
+            registro => {
+
+                const descripcion =
+                    String(
+                        obtenerValor(
+                            registro,
+                            "Descripcion"
+                        )
+                    )
+                    .toLowerCase();
+
+                const codigoRegistro =
+                    String(
+                        obtenerValor(
+                            registro,
+                            "Codigo"
+                        )
+                    )
+                    .toLowerCase();
+
+                const tipoRegistro =
+                    String(
+                        obtenerValor(
+                            registro,
+                            "Tipo"
+                        )
+                    );
+
+                const coincideTexto =
+                    !texto ||
+                    descripcion.includes(
+                        texto
+                    );
+
+                const coincideCodigo =
+                    !codigo ||
+                    codigoRegistro.includes(
+                        codigo
+                    );
+
+                const coincideTipo =
+                    !tipo ||
+                    tipoRegistro === tipo;
+
+                return (
+                    coincideTexto &&
+                    coincideCodigo &&
+                    coincideTipo
+                );
+
+            }
+
+        );
+
+    mostrarInventario(
+        filtrados
+    );
+
+}
+
+
+/* =========================================================
+   RESTABLECER CAMPOS MANUALES
+   ========================================================= */
+
+function restablecerCamposManuales() {
+
+    const campoResponsable =
+        document.getElementById(
+            "campoResponsableManual"
+        );
+
+    const inputResponsable =
+        document.getElementById(
+            "responsableManual"
+        );
+
+    const campoUbicacion =
+        document.getElementById(
+            "campoUbicacionManual"
+        );
+
+    const inputUbicacion =
+        document.getElementById(
+            "ubicacionManual"
+        );
+
+    campoResponsable.classList.remove(
+        "visible"
+    );
+
+    campoUbicacion.classList.remove(
+        "visible"
+    );
+
+    inputResponsable.required = false;
+
+    inputUbicacion.required = false;
+
+    inputResponsable.value = "";
+
+    inputUbicacion.value = "";
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR REQUISITOS DE CÓDIGO Y LOTE
+   ========================================================= */
+
+function actualizarRequisitosInventario() {
+
+    const codigo =
+        document.getElementById(
+            "codigo"
+        );
+
+    const lote =
+        document.getElementById(
+            "lote"
+        );
+
+    const tipo =
+        document.getElementById(
+            "tipo"
+        ).value.trim();
+
+    const indice =
+        document.getElementById(
+            "producto"
+        ).value;
+
+    let productoSeleccionado =
+        null;
+
+    if (
+        indice !== "" &&
+        productos[indice]
+    ) {
+
+        productoSeleccionado =
+            productos[indice];
+
+    }
+
+    /*
+       CÓDIGO
+
+       El código solamente es obligatorio
+       si el producto seleccionado en la tabla
+       Productos tiene un código.
+    */
+
+    const codigoProducto =
+        productoSeleccionado
+            ? String(
+                productoSeleccionado.Codigo ?? ""
+            ).trim()
+            : "";
+
+    if (codigoProducto) {
+
+        codigo.required = true;
+
+    } else {
+
+        codigo.required = false;
+
+    }
+
+
+    /*
+       LOTE
+
+       Materia Prima y Material Empaque
+       NO requieren lote.
+
+       Producto Terminado y Uniformes
+       mantienen el lote obligatorio.
+    */
+
+    const tipoNormalizado =
+        normalizarTexto(
+            tipo
+        );
+
+    const loteOpcional =
+        tipoNormalizado === "materia prima" ||
+        tipoNormalizado === "material empaque";
+
+    lote.required =
+        !loteOpcional;
+
+}
+
+
+/* =========================================================
+   ABRIR FORMULARIO
+   ========================================================= */
+
+function abrirFormulario() {
+
+    indiceEditando = null;
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Agregar inventario";
+
+    document.getElementById(
+        "producto"
+    ).value = "";
+
+    document.getElementById(
+        "codigo"
+    ).value = "";
+
+    document.getElementById(
+        "lote"
+    ).value = "";
+
+    document.getElementById(
+        "tipo"
+    ).value = "";
+
+    document.getElementById(
+        "responsable"
+    ).value = "";
+
+    document.getElementById(
+        "ubicacion"
+    ).value = "";
+
+    document.getElementById(
+        "cantidad"
+    ).value = "";
+
+    document.getElementById(
+        "descripcion"
+    ).value = "";
+
+    document.getElementById(
+        "unidad"
+    ).value = "";
+
+    restablecerCamposManuales();
+
+    actualizarRequisitosInventario();
+
+    document.getElementById(
+        "modalInventario"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   SELECCIONAR PRODUCTO
+   ========================================================= */
+
+function seleccionarProducto() {
+
+    const indice =
+        document.getElementById(
+            "producto"
+        ).value;
+
+    if (
+        indice === "" ||
+        !productos[indice]
+    ) {
+
+        document.getElementById(
+            "codigo"
+        ).value = "";
+
+        document.getElementById(
+            "tipo"
+        ).value = "";
+
+        document.getElementById(
+            "descripcion"
+        ).value = "";
+
+        document.getElementById(
+            "unidad"
+        ).value = "";
+
+        actualizarRequisitosInventario();
+
+        return;
+
+    }
+
+    const producto =
+        productos[indice];
+
+    document.getElementById(
+        "codigo"
+    ).value =
+        producto.Codigo || "";
+
+    document.getElementById(
+        "tipo"
+    ).value =
+        producto.Tipo || "";
+
+    document.getElementById(
+        "descripcion"
+    ).value =
+        producto.Descripcion || "";
+
+    document.getElementById(
+        "unidad"
+    ).value =
+        producto.Unidad_Medida || "";
+
+    actualizarRequisitosInventario();
+
+}
+
+
+/* =========================================================
+   CERRAR FORMULARIO
+   ========================================================= */
+
+function cerrarFormulario() {
+
+    document.getElementById(
+        "modalInventario"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   EDITAR INVENTARIO
+   ========================================================= */
+
+function editarInventario(indice) {
+
+    const registro =
+        inventario[indice];
+
+    if (!registro) {
+
+        return;
+
+    }
+
+    indiceEditando = indice;
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Editar inventario";
+
+    const descripcion =
+        obtenerValor(
+            registro,
+            "Descripcion"
+        );
+
+    const productoEncontrado =
+        buscarProductoPorDescripcion(
+            descripcion
+        );
+
+    if (productoEncontrado) {
+
+        const indiceProducto =
+            productos.findIndex(
+                producto =>
+                    producto.id ===
+                    productoEncontrado.id
+            );
+
+        document.getElementById(
+            "producto"
+        ).value =
+            indiceProducto;
+
+    } else {
+
+        document.getElementById(
+            "producto"
+        ).value = "";
+
+    }
+
+    document.getElementById(
+        "codigo"
+    ).value =
+        productoEncontrado
+            ? productoEncontrado.Codigo || ""
+            : obtenerValor(
+                registro,
+                "Codigo"
+            );
+
+
+    /* =====================================================
+       LOTE
+       ===================================================== */
+
+    const loteActual =
+        obtenerValor(
+            registro,
+            "Lote"
+        );
+
+    const selectLote =
+        document.getElementById(
+            "lote"
+        );
+
+    const existeLote =
+        Array.from(
+            selectLote.options
+        ).some(
+            option =>
+                option.value ===
+                String(loteActual)
+        );
+
+    if (
+        loteActual &&
+        existeLote
+    ) {
+
+        selectLote.value =
+            loteActual;
+
+    } else {
+
+        selectLote.value = "";
+
+    }
+
+
+    /* =====================================================
+       TIPO
+       ===================================================== */
+
+    document.getElementById(
+        "tipo"
+    ).value =
+        productoEncontrado
+            ? productoEncontrado.Tipo
+            : obtenerValor(
+                registro,
+                "Tipo"
+            );
+
+    actualizarRequisitosInventario();
+
+
+    /* =====================================================
+       RESPONSABLE
+       ===================================================== */
+
+    const responsableActual =
+        obtenerValor(
+            registro,
+            "Responsable"
+        );
+
+    const selectResponsable =
+        document.getElementById(
+            "responsable"
+        );
+
+    const inputResponsableManual =
+        document.getElementById(
+            "responsableManual"
+        );
+
+    const campoResponsableManual =
+        document.getElementById(
+            "campoResponsableManual"
+        );
+
+    const existeResponsable =
+        Array.from(
+            selectResponsable.options
+        ).some(
+            option =>
+                option.value ===
+                responsableActual
+        );
+
+    if (
+        responsableActual &&
+        existeResponsable
+    ) {
+
+        selectResponsable.value =
+            responsableActual;
+
+        campoResponsableManual.classList.remove(
+            "visible"
+        );
+
+        inputResponsableManual.required =
+            false;
+
+        inputResponsableManual.value =
+            "";
+
+    } else if (responsableActual) {
+
+        selectResponsable.value =
+            "__OTRO_RESPONSABLE__";
+
+        campoResponsableManual.classList.add(
+            "visible"
+        );
+
+        inputResponsableManual.required =
+            true;
+
+        inputResponsableManual.value =
+            responsableActual;
+
+    } else {
+
+        selectResponsable.value =
+            "";
+
+        campoResponsableManual.classList.remove(
+            "visible"
+        );
+
+        inputResponsableManual.required =
+            false;
+
+        inputResponsableManual.value =
+            "";
+
+    }
+
+
+    /* =====================================================
+       UBICACIÓN
+       ===================================================== */
+
+    const ubicacionActual =
+        obtenerValor(
+            registro,
+            "Ubicacion"
+        );
+
+    const selectUbicacion =
+        document.getElementById(
+            "ubicacion"
+        );
+
+    const inputUbicacionManual =
+        document.getElementById(
+            "ubicacionManual"
+        );
+
+    const campoUbicacionManual =
+        document.getElementById(
+            "campoUbicacionManual"
+        );
+
+    const existeUbicacion =
+        Array.from(
+            selectUbicacion.options
+        ).some(
+            option =>
+                option.value ===
+                ubicacionActual
+        );
+
+    if (
+        ubicacionActual &&
+        existeUbicacion
+    ) {
+
+        selectUbicacion.value =
+            ubicacionActual;
+
+        campoUbicacionManual.classList.remove(
+            "visible"
+        );
+
+        inputUbicacionManual.required =
+            false;
+
+        inputUbicacionManual.value =
+            "";
+
+    } else if (ubicacionActual) {
+
+        selectUbicacion.value =
+            "__OTRA_UBICACION__";
+
+        campoUbicacionManual.classList.add(
+            "visible"
+        );
+
+        inputUbicacionManual.required =
+            true;
+
+        inputUbicacionManual.value =
+            ubicacionActual;
+
+    } else {
+
+        selectUbicacion.value =
+            "";
+
+        campoUbicacionManual.classList.remove(
+            "visible"
+        );
+
+        inputUbicacionManual.required =
+            false;
+
+        inputUbicacionManual.value =
+            "";
+
+    }
+
+
+    document.getElementById(
+        "cantidad"
+    ).value =
+        obtenerValor(
+            registro,
+            "Cantidad"
+        );
+
+    document.getElementById(
+        "descripcion"
+    ).value =
+        productoEncontrado
+            ? productoEncontrado.Descripcion
+            : descripcion;
+
+    document.getElementById(
+        "unidad"
+    ).value =
+        productoEncontrado
+            ? productoEncontrado.Unidad_Medida
+            : obtenerValor(
+                registro,
+                "Unidad_Medida"
+            );
+
+    document.getElementById(
+        "modalInventario"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   GUARDAR INVENTARIO
+   ========================================================= */
+
+async function guardarInventario(event) {
+
+    event.preventDefault();
+
+    const Codigo =
+        document.getElementById(
+            "codigo"
+        ).value.trim();
+
+    const Lote =
+        document.getElementById(
+            "lote"
+        ).value.trim();
+
+    const Tipo =
+        document.getElementById(
+            "tipo"
+        ).value.trim();
+
+    const Ubicacion =
+        obtenerUbicacionFinal();
+
+    const Responsable =
+        obtenerResponsableFinal();
+
+    const Descripcion =
+        document.getElementById(
+            "descripcion"
+        ).value.trim();
+
+    const Cantidad =
+        document.getElementById(
+            "cantidad"
+        ).value;
+
+    const Unidad_Medida =
+        document.getElementById(
+            "unidad"
+        ).value.trim();
+
+
+    /* =====================================================
+       DETERMINAR SI EL PRODUCTO TIENE CÓDIGO
+       ===================================================== */
+
+    const indiceProducto =
+        document.getElementById(
+            "producto"
+        ).value;
+
+    let productoSeleccionado =
+        null;
+
+    if (
+        indiceProducto !== "" &&
+        productos[indiceProducto]
+    ) {
+
+        productoSeleccionado =
+            productos[indiceProducto];
+
+    }
+
+    const codigoProducto =
+        productoSeleccionado
+            ? String(
+                productoSeleccionado.Codigo ?? ""
+            ).trim()
+            : "";
+
+    const codigoEsObligatorio =
+        codigoProducto !== "";
+
+
+    /* =====================================================
+       VALIDACIÓN GENERAL
+       ===================================================== */
+
+    if (
+        (codigoEsObligatorio && !Codigo) ||
+        !Tipo ||
+        !Ubicacion ||
+        !Responsable ||
+        !Descripcion ||
+        Cantidad === ""
+    ) {
+
+        alert(
+            "Complete los campos obligatorios."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       VALIDACIÓN DEL LOTE
+
+       SOLO PRODUCTO TERMINADO Y UNIFORMES
+       REQUIEREN LOTE.
+
+       MATERIA PRIMA Y MATERIAL EMPAQUE
+       PUEDEN QUEDAR SIN LOTE.
+       ===================================================== */
+
+    const tipoNormalizado =
+        normalizarTexto(
+            Tipo
+        );
+
+    const loteEsOpcional =
+        tipoNormalizado === "materia prima" ||
+        tipoNormalizado === "material empaque";
+
+    if (
+        !loteEsOpcional &&
+        !Lote
+    ) {
+
+        alert(
+            "Debe seleccionar un lote para este tipo de producto."
+        );
+
+        document.getElementById(
+            "lote"
+        ).focus();
+
+        return;
+
+    }
+
+
+    const datos = {
+
+        /*
+           Si el producto no tiene código
+           en la tabla Productos, se guarda
+           como null.
+        */
+
+        Codigo:
+            Codigo || null,
+
+        /*
+           Materia Prima y Material Empaque
+           pueden guardarse sin lote.
+        */
+
+        Lote:
+            Lote || null,
+
+        Tipo:
+            Tipo,
+
+        Ubicacion:
+            Ubicacion,
+
+        Responsable:
+            Responsable,
+
+        Descripcion:
+            Descripcion,
+
+        Cantidad:
+            Number(Cantidad),
+
+        Unidad_Medida:
+            Unidad_Medida
+
+    };
+
+
+    try {
+
+
+        /* =================================================
+           AGREGAR
+           ================================================= */
+
+        if (
+            indiceEditando === null
+        ) {
+
+            const { error } =
+                await supabaseClient
+                    .from("Inventario")
+                    .insert([
+                        datos
+                    ]);
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo agregar el inventario:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+            alert(
+                "Registro de inventario agregado correctamente."
+            );
+
+        }
+
+
+        /* =================================================
+           EDITAR
+           ================================================= */
+
+        else {
+
+            const registroActual =
+                inventario[
+                    indiceEditando
+                ];
+
+            if (!registroActual) {
+
+                alert(
+                    "No se encontró el registro de inventario."
+                );
+
+                return;
+
+            }
+
+            const { error } =
+                await supabaseClient
+                    .from("Inventario")
+                    .update(datos)
+                    .eq(
+                        "id",
+                        registroActual.id
+                    );
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo editar el inventario:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+            alert(
+                "Inventario actualizado correctamente."
+            );
+
+        }
+
+
+        cerrarFormulario();
+
+        await cargarProductos();
+
+        await cargarLotes();
+
+        await cargarPersonal();
+
+        await cargarInventario();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al guardar el inventario:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ELIMINAR INVENTARIO
+   ========================================================= */
+
+async function eliminarInventario(indice) {
+
+    const registro =
+        inventario[indice];
+
+    if (!registro) {
+
+        return;
+
+    }
+
+    const descripcion =
+        obtenerValor(
+            registro,
+            "Descripcion"
+        );
+
+    const confirmar =
+        confirm(
+
+            "¿Está seguro de eliminar este registro?\n\n" +
+            descripcion
+
+        );
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from("Inventario")
+                .delete()
+                .eq(
+                    "id",
+                    registro.id
+                );
+
+        if (error) {
+
+            console.error(error);
+
+            alert(
+                "No se pudo eliminar el registro:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Registro eliminado correctamente."
+        );
+
+        await cargarInventario();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al eliminar el registro."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEGURIDAD HTML
+   ========================================================= */
+
+function escaparHTML(valor) {
+
+    return String(valor ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL AL HACER CLIC AFUERA
+   ========================================================= */
+
+window.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "modalInventario"
+            );
+
+        if (
+            event.target ===
+            modal
+        ) {
+
+            cerrarFormulario();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+
+async function iniciar() {
+
+    await cargarProductos();
+
+    await cargarLotes();
+
+    await cargarPersonal();
+
+    await cargarInventario();
+
+}
+
+iniciar();
+
+</script>
+
+</body>
+
+</html>

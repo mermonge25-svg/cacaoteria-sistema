@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Productos - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background-color: #5a3825;
+    color: white;
+    padding: 18px 30px;
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 16px;
+}
+
+.contenedor {
+    width: 95%;
+    max-width: 1500px;
+    margin: 25px auto;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.barra-superior h2 {
+    margin: 0;
+    color: #5a3825;
+    font-size: 24px;
+    text-align: left;
+}
+
+.barra-superior .btn-agregar {
+    margin-left: auto;
+}
+
+.btn-agregar {
+    background-color: #5a3825;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-agregar:hover {
+    background-color: #6b4530;
+}
+
+.btn-editar,
+.btn-eliminar {
+    background: transparent;
+    border: none;
+    padding: 3px;
+    margin-right: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-editar svg,
+.btn-eliminar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-editar {
+    color: #6b4530;
+}
+
+.btn-editar:hover {
+    color: #402719;
+}
+
+.btn-eliminar {
+    color: #aaa;
+}
+
+.btn-eliminar:hover {
+    color: #777;
+}
+
+.filtros {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.filtros input,
+.filtros select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    background-color: #6b4530;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 15px;
+    background-color: white;
+}
+
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4) {
+    text-align: left;
+}
+
+tbody tr {
+    background-color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1e9e4;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-contenedor::-webkit-scrollbar {
+    height: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb {
+    background: #8a6d5a;
+    border-radius: 10px;
+}
+
+.tabla-contenedor::-webkit-scrollbar-thumb:hover {
+    background: #5a3825;
+}
+
+.total {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #5a3825;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    width: 90%;
+    max-width: 600px;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    color: #5a3825;
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo input,
+.campo select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.botones-modal {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cerrar {
+    background-color: #777;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-cerrar:hover {
+    background-color: #5f5f5f;
+}
+
+.mensaje {
+    text-align: center;
+    padding: 25px;
+    font-size: 18px;
+}
+
+.mensaje.error {
+    color: #a94442;
+}
+
+@media (max-width: 700px) {
+
+    .formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-completo {
+        grid-column: auto;
+    }
+
+    .botones-modal {
+        grid-column: auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cacaotería S.R.L.</h1>
+
+<p>Sistema de Gestión Operativa</p>
+
+</header>
+
+<div class="contenedor">
+
+<div class="barra-superior">
+
+<h2>Base de Datos Productos</h2>
+
+<button
+    class="btn-agregar"
+    onclick="abrirFormulario()">
+
+    + Agregar producto
+
+</button>
+
+</div>
+
+<div class="filtros">
+
+<input
+    type="text"
+    id="filtroTexto"
+    placeholder="Buscar producto..."
+    oninput="aplicarFiltros()"
+>
+
+<input
+    type="text"
+    id="filtroCodigo"
+    placeholder="Buscar por código..."
+    oninput="aplicarFiltros()"
+>
+
+<select
+    id="filtroTipo"
+    onchange="aplicarFiltros()">
+
+    <option value="">
+        Todos los tipos
+    </option>
+
+    <option value="Producto Terminado">
+        Producto Terminado
+    </option>
+
+    <option value="Materia Prima">
+        Materia Prima
+    </option>
+
+    <option value="Material Empaque">
+        Material Empaque
+    </option>
+
+    <option value="Uniformes">
+        Uniformes
+    </option>
+
+    <option value="Otro">
+        Otro
+    </option>
+
+</select>
+
+</div>
+
+<div class="tabla-contenedor">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Código</th>
+<th>Tipo</th>
+<th>Descripción</th>
+<th>Und. Medida</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody id="cuerpoTabla">
+
+<tr>
+
+<td
+    colspan="5"
+    class="mensaje">
+
+    Cargando productos...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div
+    class="total"
+    id="totalProductos">
+
+    Total de productos: 0
+
+</div>
+
+</div>
+
+<div
+    class="modal"
+    id="modalProducto">
+
+<div class="modal-contenido">
+
+<h2 id="tituloModal">
+    Agregar producto
+</h2>
+
+<form
+    class="formulario"
+    onsubmit="guardarProducto(event)">
+
+    <div class="campo">
+
+        <label for="codigo">
+            Código
+        </label>
+
+        <input
+            type="text"
+            id="codigo"
+        >
+
+    </div>
+
+    <div class="campo">
+
+        <label for="tipo">
+            Tipo
+        </label>
+
+        <select
+            id="tipo"
+            required>
+
+            <option value="">
+                Seleccione...
+            </option>
+
+            <option value="Producto Terminado">
+                Producto Terminado
+            </option>
+
+            <option value="Materia Prima">
+                Materia Prima
+            </option>
+
+            <option value="Material Empaque">
+                Material Empaque
+            </option>
+
+            <option value="Uniformes">
+                Uniformes
+            </option>
+
+            <option value="Otro">
+                Otro
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="campo">
+
+        <label for="unidad">
+            Unidad de medida
+        </label>
+
+        <input
+            type="text"
+            id="unidad"
+            placeholder="Ej. unidad, kg, g, caja..."
+        >
+
+    </div>
+
+    <div class="campo campo-completo">
+
+        <label for="descripcion">
+            Descripción
+        </label>
+
+        <input
+            type="text"
+            id="descripcion"
+            required
+        >
+
+    </div>
+
+    <div class="botones-modal">
+
+        <button
+            type="button"
+            class="btn-cerrar"
+            onclick="cerrarFormulario()">
+
+            Cancelar
+
+        </button>
+
+        <button
+            type="submit"
+            class="btn-agregar">
+
+            Guardar
+
+        </button>
+
+    </div>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let productos = [];
+
+let indiceEditando = null;
+
+
+/* =========================================================
+   CARGAR PRODUCTOS
+   ========================================================= */
+
+async function cargarProductos() {
+
+    const cuerpoTabla =
+        document.getElementById("cuerpoTabla");
+
+    cuerpoTabla.innerHTML = `
+        <tr>
+            <td colspan="5" class="mensaje">
+                Cargando productos...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("Productos")
+                .select(
+                    "id, Codigo, Tipo, Descripcion, Unidad_Medida"
+                )
+                .order("id", {
+                    ascending: true
+                });
+
+        if (error) {
+
+            console.error(
+                "Error cargando productos:",
+                error
+            );
+
+            cuerpoTabla.innerHTML = `
+                <tr>
+                    <td
+                        colspan="5"
+                        class="mensaje error">
+
+                        Error al cargar los productos:<br><br>
+
+                        ${escaparHTML(error.message)}
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+        productos = data || [];
+
+        aplicarFiltros();
+
+    } catch (error) {
+
+        console.error(error);
+
+        cuerpoTabla.innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    class="mensaje error">
+
+                    No se pudo conectar con Supabase.
+
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR PRODUCTOS
+   ========================================================= */
+
+function mostrarProductos(lista) {
+
+    const cuerpoTabla =
+        document.getElementById("cuerpoTabla");
+
+    const total =
+        document.getElementById("totalProductos");
+
+    total.textContent =
+        "Total de productos: " + lista.length;
+
+    if (lista.length === 0) {
+
+        cuerpoTabla.innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    class="mensaje">
+
+                    No hay productos para mostrar.
+
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    /*
+    =========================================================
+    ORDEN DE LOS PRODUCTOS
+    =========================================================
+
+    1. Materia Prima
+    2. Material Empaque
+    3. Producto Terminado
+    4. Uniformes
+    5. Otro
+
+    Dentro de cada tipo se mantiene el orden original.
+    =========================================================
+    */
+
+    const ordenTipos = {
+        "Materia Prima": 1,
+        "Material Empaque": 2,
+        "Producto Terminado": 3,
+        "Uniformes": 4,
+        "Otro": 5
+    };
+
+    const listaOrdenada = [...lista].sort((a, b) => {
+
+        const ordenA =
+            ordenTipos[a.Tipo] || 99;
+
+        const ordenB =
+            ordenTipos[b.Tipo] || 99;
+
+        return ordenA - ordenB;
+
+    });
+
+    cuerpoTabla.innerHTML =
+        listaOrdenada.map((producto) => {
+
+            const indice =
+                productos.findIndex(
+                    p => p.id === producto.id
+                );
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${escaparHTML(
+                            producto.Codigo || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(
+                            producto.Tipo || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(
+                            producto.Descripcion || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(
+                            producto.Unidad_Medida || ""
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-editar"
+                            title="Editar producto"
+                            onclick="editarProducto(${indice})"
+                            aria-label="Editar producto">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+
+                                <path
+                                    d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M14.5 5.5L18.5 9.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+                        </button>
+
+                        <button
+                            class="btn-eliminar"
+                            title="Eliminar producto"
+                            onclick="eliminarProducto(${indice})"
+                            aria-label="Eliminar producto">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+
+                                <path
+                                    d="M5 7H19"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                                <path
+                                    d="M9 7V4H15V7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M7 7L8 20H16L17 7"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"/>
+
+                                <path
+                                    d="M10 11V17"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                                <path
+                                    d="M14 11V17"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+function aplicarFiltros() {
+
+    const texto =
+        document
+            .getElementById("filtroTexto")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const codigo =
+        document
+            .getElementById("filtroCodigo")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const tipo =
+        document
+            .getElementById("filtroTipo")
+            .value;
+
+    const filtrados =
+        productos.filter(producto => {
+
+            const coincideTexto =
+                !texto ||
+                String(
+                    producto.Descripcion || ""
+                )
+                .toLowerCase()
+                .includes(texto);
+
+            const coincideCodigo =
+                !codigo ||
+                String(
+                    producto.Codigo || ""
+                )
+                .toLowerCase()
+                .includes(codigo);
+
+            const coincideTipo =
+                !tipo ||
+                producto.Tipo === tipo;
+
+            return (
+                coincideTexto &&
+                coincideCodigo &&
+                coincideTipo
+            );
+
+        });
+
+    mostrarProductos(filtrados);
+
+}
+
+
+/* =========================================================
+   ABRIR FORMULARIO
+   ========================================================= */
+
+function abrirFormulario() {
+
+    indiceEditando = null;
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Agregar producto";
+
+    document.getElementById(
+        "codigo"
+    ).value = "";
+
+    document.getElementById(
+        "tipo"
+    ).value = "";
+
+    document.getElementById(
+        "descripcion"
+    ).value = "";
+
+    document.getElementById(
+        "unidad"
+    ).value = "";
+
+    document.getElementById(
+        "modalProducto"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   CERRAR FORMULARIO
+   ========================================================= */
+
+function cerrarFormulario() {
+
+    document.getElementById(
+        "modalProducto"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   EDITAR PRODUCTO
+   ========================================================= */
+
+function editarProducto(indice) {
+
+    const producto =
+        productos[indice];
+
+    if (!producto) {
+        return;
+    }
+
+    indiceEditando = indice;
+
+    document.getElementById(
+        "tituloModal"
+    ).textContent =
+        "Editar producto";
+
+    document.getElementById(
+        "codigo"
+    ).value =
+        producto.Codigo || "";
+
+    document.getElementById(
+        "tipo"
+    ).value =
+        producto.Tipo || "";
+
+    document.getElementById(
+        "descripcion"
+    ).value =
+        producto.Descripcion || "";
+
+    document.getElementById(
+        "unidad"
+    ).value =
+        producto.Unidad_Medida || "";
+
+    document.getElementById(
+        "modalProducto"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   VERIFICAR CÓDIGO DUPLICADO
+   ========================================================= */
+
+async function verificarCodigoDuplicado(
+    codigo,
+    idExcluir = null
+) {
+
+    if (!codigo) {
+        return false;
+    }
+
+    let consulta =
+        supabaseClient
+            .from("Productos")
+            .select("id")
+            .eq(
+                "Codigo",
+                codigo
+            );
+
+    if (idExcluir !== null) {
+
+        consulta =
+            consulta.neq(
+                "id",
+                idExcluir
+            );
+
+    }
+
+    const {
+        data,
+        error
+    } = await consulta;
+
+    if (error) {
+
+        throw new Error(
+            "No se pudo verificar el código: " +
+            error.message
+        );
+
+    }
+
+    return (
+        data &&
+        data.length > 0
+    );
+
+}
+
+
+/* =========================================================
+   GUARDAR PRODUCTO
+   ========================================================= */
+
+async function guardarProducto(event) {
+
+    event.preventDefault();
+
+    const Codigo =
+        document.getElementById("codigo")
+            .value
+            .trim();
+
+    const Tipo =
+        document.getElementById("tipo")
+            .value
+            .trim();
+
+    const Descripcion =
+        document.getElementById("descripcion")
+            .value
+            .trim();
+
+    const Unidad_Medida =
+        document.getElementById("unidad")
+            .value
+            .trim();
+
+
+    if (!Tipo || !Descripcion) {
+
+        alert(
+            "Complete los campos obligatorios."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+
+        /* =================================================
+           AGREGAR PRODUCTO
+           ================================================= */
+
+        if (indiceEditando === null) {
+
+            const codigoDuplicado =
+                await verificarCodigoDuplicado(
+                    Codigo
+                );
+
+            if (codigoDuplicado) {
+
+                alert(
+                    "Ese código ya existe en Productos."
+                );
+
+                return;
+
+            }
+
+
+            const producto = {
+
+                Codigo:
+                    Codigo || null,
+
+                Tipo:
+                    Tipo,
+
+                Descripcion:
+                    Descripcion,
+
+                Unidad_Medida:
+                    Unidad_Medida || null
+
+            };
+
+
+            const { error } =
+                await supabaseClient
+                    .from("Productos")
+                    .insert([
+                        producto
+                    ]);
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo agregar el producto:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Producto agregado correctamente."
+            );
+
+        }
+
+
+        /* =================================================
+           EDITAR PRODUCTO
+           ================================================= */
+
+        else {
+
+            const productoActual =
+                productos[indiceEditando];
+
+            if (!productoActual) {
+
+                alert(
+                    "No se encontró el producto."
+                );
+
+                return;
+
+            }
+
+
+            const codigoDuplicado =
+                await verificarCodigoDuplicado(
+                    Codigo,
+                    productoActual.id
+                );
+
+
+            if (codigoDuplicado) {
+
+                alert(
+                    "Ese código ya pertenece a otro producto."
+                );
+
+                return;
+
+            }
+
+
+            /*
+            =================================================
+            ACTUALIZACIÓN CENTRALIZADA
+
+            Supabase recibe:
+
+            ID del producto
+            Código nuevo
+            Tipo nuevo
+            Descripción nueva
+            Unidad nueva
+
+            La función actualiza:
+
+            Productos
+            Inventario
+            Movimientos
+            Ventas
+
+            y los triggers actualizan:
+
+            Kardex_Responsable
+            Kardex_Producto
+            =================================================
+            */
+
+            const {
+                error
+            } = await supabaseClient
+                .rpc(
+                    "actualizar_producto_completo",
+                    {
+                        p_id:
+                            productoActual.id,
+
+                        p_codigo:
+                            Codigo,
+
+                        p_tipo:
+                            Tipo,
+
+                        p_descripcion:
+                            Descripcion,
+
+                        p_unidad_medida:
+                            Unidad_Medida
+                    }
+                );
+
+
+            if (error) {
+
+                console.error(
+                    "Error actualizando producto completo:",
+                    error
+                );
+
+                alert(
+                    "No se pudo actualizar el producto:\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            /*
+            =================================================
+            NOTIFICACIÓN DE ACTUALIZACIÓN
+            =================================================
+
+            La actualización se realiza mediante la función
+            de Supabase y los datos relacionados se sincronizan.
+            
+            No mostramos cantidades porque la función RPC
+            actualmente no está devolviendo esos conteos
+            de forma confiable.
+            =================================================
+            */
+
+            alert(
+
+                "Producto actualizado correctamente.\n\n" +
+
+                "Los datos relacionados de Inventario, " +
+                "Movimientos y Ventas también fueron " +
+                "actualizados.\n\n" +
+
+                "El Kardex se actualiza automáticamente."
+
+            );
+
+        }
+
+
+        cerrarFormulario();
+
+        await cargarProductos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al guardar el producto:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ELIMINAR PRODUCTO
+   ========================================================= */
+
+async function eliminarProducto(indice) {
+
+    const producto =
+        productos[indice];
+
+    if (!producto) {
+        return;
+    }
+
+    const confirmar =
+        confirm(
+
+            "¿Está seguro de eliminar este producto?\n\n" +
+
+            producto.Descripcion
+
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from("Productos")
+                .delete()
+                .eq(
+                    "id",
+                    producto.id
+                );
+
+        if (error) {
+
+            console.error(error);
+
+            alert(
+                "No se pudo eliminar el producto:\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Producto eliminado correctamente."
+        );
+
+        await cargarProductos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Ocurrió un error al eliminar el producto:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEGURIDAD HTML
+   ========================================================= */
+
+function escaparHTML(valor) {
+
+    return String(valor ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL AL HACER CLIC AFUERA
+   ========================================================= */
+
+window.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "modalProducto"
+            );
+
+        if (
+            event.target ===
+            modal
+        ) {
+
+            cerrarFormulario();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+
+cargarProductos();
+
+</script>
+
+</body>
+
+</html>
