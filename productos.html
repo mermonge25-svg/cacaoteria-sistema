@@ -9,12 +9,49 @@
 
 <title>Productos - Cacaotería S.R.L.</title>
 
+<!-- =====================================================
+     TIPOGRAFÍA BARLOW
+     ===================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
+/* =========================================================
+   COLORES OFICIALES DE LA MARCA
+   ========================================================= */
+
+:root {
+
+    /* Marrón - Pantone 490 C - 60% */
+    --marron: #5B2326;
+
+    /* Naranja - Pantone 7417 C - 30% */
+    --naranja: #E14E39;
+
+    /* Celeste - Pantone 638 C - 5% */
+    --celeste: #2DADD6;
+
+    /* Verde - Pantone 7726 C - 5% */
+    --verde: #007F49;
+
+}
+
+
+/* =========================================================
+   ESTILOS GENERALES
+   ========================================================= */
+
 * {
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", sans-serif;
     box-sizing: border-box;
 }
 
@@ -24,11 +61,17 @@ body {
     color: #333;
 }
 
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
 header {
-    background-color: #5a3825;
+    background-color: var(--marron);
     color: white;
     padding: 18px 30px;
     text-align: left;
+    border-bottom: 4px solid var(--naranja);
 }
 
 header h1 {
@@ -41,11 +84,21 @@ header p {
     font-size: 16px;
 }
 
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
+
 .contenedor {
     width: 95%;
     max-width: 1500px;
     margin: 25px auto;
 }
+
+
+/* =========================================================
+   BARRA SUPERIOR
+   ========================================================= */
 
 .barra-superior {
     display: flex;
@@ -58,28 +111,41 @@ header p {
 
 .barra-superior h2 {
     margin: 0;
-    color: #5a3825;
+    color: var(--marron);
     font-size: 24px;
     text-align: left;
+    border-left: 5px solid var(--naranja);
+    padding-left: 10px;
 }
 
 .barra-superior .btn-agregar {
     margin-left: auto;
 }
 
+
+/* =========================================================
+   BOTÓN AGREGAR
+   ========================================================= */
+
 .btn-agregar {
-    background-color: #5a3825;
+    background-color: var(--naranja);
     color: white;
     border: none;
     padding: 10px 18px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
 }
 
 .btn-agregar:hover {
-    background-color: #6b4530;
+    background-color: var(--marron);
 }
+
+
+/* =========================================================
+   BOTONES EDITAR / ELIMINAR
+   ========================================================= */
 
 .btn-editar,
 .btn-eliminar {
@@ -100,11 +166,11 @@ header p {
 }
 
 .btn-editar {
-    color: #6b4530;
+    color: var(--naranja);
 }
 
 .btn-editar:hover {
-    color: #402719;
+    color: var(--marron);
 }
 
 .btn-eliminar {
@@ -112,35 +178,72 @@ header p {
 }
 
 .btn-eliminar:hover {
-    color: #777;
+    color: var(--marron);
 }
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
 
 .filtros {
     background-color: white;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.1);
+
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+
     gap: 12px;
+
+    border-left: 4px solid var(--celeste);
 }
 
 .filtros input,
 .filtros select {
     padding: 10px;
-    border: 1px solid #ccc;
+
+    border:
+        1px solid #ccc;
+
     border-radius: 5px;
+
     font-size: 15px;
+
+    font-family: "Barlow", sans-serif;
+
+    outline: none;
 }
+
+.filtros input:focus,
+.filtros select:focus {
+    border-color: var(--celeste);
+
+    box-shadow:
+        0 0 0 2px rgba(45, 173, 214, 0.15);
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
 
 .tabla-contenedor {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+
     background-color: white;
+
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.1);
 }
 
 table {
@@ -151,24 +254,39 @@ table {
 }
 
 th {
-    background-color: #6b4530;
+    background-color: var(--marron);
     color: white;
+
     padding: 12px;
+
     border: none;
-    border-bottom: 1px solid #ddd;
+
+    border-bottom:
+        1px solid #ddd;
+
     text-align: center;
+
     white-space: nowrap;
+
     font-size: 16px;
-    font-weight: bold;
+
+    font-weight: 600;
 }
 
 td {
     padding: 12px;
+
     border: none;
-    border-bottom: 1px solid #ddd;
+
+    border-bottom:
+        1px solid #ddd;
+
     text-align: center;
+
     white-space: nowrap;
+
     font-size: 15px;
+
     background-color: white;
 }
 
@@ -188,12 +306,17 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:hover {
-    background-color: #f1e9e4;
+    background-color: rgba(225, 78, 57, 0.08);
 }
 
 tbody tr:last-child td {
     border-bottom: none;
 }
+
+
+/* =========================================================
+   BARRA DE DESPLAZAMIENTO
+   ========================================================= */
 
 .tabla-contenedor::-webkit-scrollbar {
     height: 10px;
@@ -205,55 +328,100 @@ tbody tr:last-child td {
 }
 
 .tabla-contenedor::-webkit-scrollbar-thumb {
-    background: #8a6d5a;
+    background: var(--celeste);
     border-radius: 10px;
 }
 
 .tabla-contenedor::-webkit-scrollbar-thumb:hover {
-    background: #5a3825;
+    background: var(--verde);
 }
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
 
 .total {
     margin-top: 15px;
+
     font-size: 18px;
-    font-weight: bold;
-    color: #5a3825;
+
+    font-weight: 600;
+
+    color: var(--marron);
+
+    border-left:
+        4px solid var(--verde);
+
+    padding-left: 10px;
 }
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 .modal {
     display: none;
+
     position: fixed;
+
     z-index: 1000;
+
     left: 0;
     top: 0;
+
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+
+    /* Fondo neutro para evitar la pantalla roja */
+    background-color:
+        rgba(0, 0, 0, 0.25);
+
     justify-content: center;
     align-items: center;
 }
 
 .modal-contenido {
     background-color: white;
+
     width: 90%;
+
     max-width: 600px;
+
     padding: 25px;
+
     border-radius: 10px;
+
+    border-top:
+        5px solid var(--naranja);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.20);
 }
 
 .modal-contenido h2 {
     margin-top: 0;
-    color: #5a3825;
+
+    color: var(--marron);
 }
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
 
 .formulario {
     display: grid;
+
     grid-template-columns: 1fr 1fr;
+
     gap: 15px;
 }
 
 .campo {
     display: flex;
+
     flex-direction: column;
 }
 
@@ -263,48 +431,96 @@ tbody tr:last-child td {
 
 .campo label {
     margin-bottom: 5px;
-    font-weight: bold;
+
+    font-weight: 600;
+
+    color: var(--marron);
 }
 
 .campo input,
 .campo select {
     padding: 10px;
-    border: 1px solid #ccc;
+
+    border:
+        1px solid #ccc;
+
     border-radius: 5px;
+
     font-size: 16px;
+
+    font-family: "Barlow", sans-serif;
+
+    outline: none;
 }
+
+.campo input:focus,
+.campo select:focus {
+    border-color: var(--celeste);
+
+    box-shadow:
+        0 0 0 2px rgba(45, 173, 214, 0.15);
+}
+
+
+/* =========================================================
+   BOTONES DEL MODAL
+   ========================================================= */
 
 .botones-modal {
     grid-column: 1 / -1;
+
     display: flex;
+
     justify-content: flex-end;
+
     gap: 10px;
+
     margin-top: 10px;
 }
 
 .btn-cerrar {
     background-color: #777;
+
     color: white;
+
     border: none;
+
     padding: 10px 18px;
+
     border-radius: 6px;
+
     cursor: pointer;
+
     font-size: 16px;
+
+    font-family: "Barlow", sans-serif;
 }
 
 .btn-cerrar:hover {
-    background-color: #5f5f5f;
+    background-color: var(--marron);
 }
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
 
 .mensaje {
     text-align: center;
+
     padding: 25px;
+
     font-size: 18px;
 }
 
 .mensaje.error {
     color: #a94442;
 }
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 700px) {
 
@@ -358,7 +574,7 @@ tbody tr:last-child td {
     type="text"
     id="filtroTexto"
     placeholder="Buscar producto..."
-    oninput="aplicarFiltros()"
+    oninput="aplicarFiltros"
 >
 
 <input
@@ -447,6 +663,7 @@ tbody tr:last-child td {
 </div>
 
 </div>
+
 
 <div
     class="modal"
@@ -567,6 +784,7 @@ tbody tr:last-child td {
 </div>
 
 </div>
+
 
 <script>
 
@@ -1227,7 +1445,7 @@ async function guardarProducto(event) {
             }
 
 
-            /*
+            /* 
             =================================================
             ACTUALIZACIÓN CENTRALIZADA
 
@@ -1294,14 +1512,14 @@ async function guardarProducto(event) {
             }
 
 
-            /*
+            /* 
             =================================================
             NOTIFICACIÓN DE ACTUALIZACIÓN
             =================================================
 
             La actualización se realiza mediante la función
             de Supabase y los datos relacionados se sincronizan.
-            
+
             No mostramos cantidades porque la función RPC
             actualmente no está devolviendo esos conteos
             de forma confiable.
@@ -1487,3 +1705,4 @@ cargarProductos();
 </body>
 
 </html>
+
