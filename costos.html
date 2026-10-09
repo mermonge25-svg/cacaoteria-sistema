@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Costos - Cacaotería S.R.L.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* {
+box-sizing: border-box;
+}
+body {
+margin: 0;
+font-family: 'Barlow', sans-serif;
+background: #f5f5f5;
+color: #333;
+}
+header {
+background: #5B2326;
+color: white;
+padding: 22px 30px;
+border-bottom: 5px solid #E14E39;
+}
+header h1 {
+margin: 0;
+font-size: 30px;
+font-weight: 700;
+}
+header p {
+margin: 4px 0 0;
+font-size: 17px;
+}
+main {
+width: 95%;
+max-width: 1600px;
+margin: 30px auto;
+}
+.barra-superior {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+gap: 15px;
+flex-wrap: wrap;
+}
+.titulo {
+color: #5B2326;
+font-size: 27px;
+font-weight: 700;
+margin: 0;
+}
+.botones {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+}
+button {
+border: none;
+background: #E14E39;
+color: white;
+padding: 11px 18px;
+border-radius: 7px;
+cursor: pointer;
+font-family: 'Barlow', sans-serif;
+font-size: 15px;
+font-weight: 600;
+}
+button:hover {
+background: #5B2326;
+}
+.btn-secundario {
+background: #2DADD6;
+}
+.btn-secundario:hover {
+background: #007F49;
+}
+.tabla-contenedor {
+background: white;
+border-radius: 10px;
+padding: 15px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+overflow-x: auto;
+}
+table {
+width: 100%;
+min-width: 1500px;
+border-collapse: collapse;
+}
+th {
+background: #5B2326;
+color: white;
+padding: 12px 10px;
+text-align: left;
+font-size: 14px;
+white-space: nowrap;
+border-bottom: 4px solid #E14E39;
+}
+td {
+padding: 11px 10px;
+border-bottom: 1px solid #ddd;
+font-size: 14px;
+vertical-align: middle;
+}
+tr:hover td {
+background: #faf4f4;
+}
+.numero {
+text-align: right;
+white-space: nowrap;
+}
+.acciones {
+white-space: nowrap;
+}
+.btn-editar {
+background: #2DADD6;
+padding: 7px 12px;
+font-size: 13px;
+}
+.btn-editar:hover {
+background: #007F49;
+}
+.btn-eliminar {
+background: #E14E39;
+padding: 7px 12px;
+font-size: 13px;
+margin-left: 5px;
+}
+.btn-eliminar:hover {
+background: #5B2326;
+}
+.estado-activo {
+color: #007F49;
+font-weight: 700;
+}
+.estado-inactivo {
+color: #E14E39;
+font-weight: 700;
+}
+.mensaje {
+padding: 15px;
+border-radius: 7px;
+margin-bottom: 20px;
+display: none;
+font-weight: 500;
+}
+.mensaje.exito {
+display: block;
+background: #e8f6ef;
+color: #007F49;
+border: 1px solid #b8dfca;
+}
+.mensaje.error {
+display: block;
+background: #fdecea;
+color: #b42318;
+border: 1px solid #f2b8b5;
+}
+.cargando {
+text-align: center;
+padding: 30px;
+color: #666;
+}
+.modal {
+display: none;
+position: fixed;
+z-index: 1000;
+inset: 0;
+background: rgba(0,0,0,0.55);
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+.modal-contenido {
+background: white;
+width: 100%;
+max-width: 1000px;
+max-height: 92vh;
+overflow-y: auto;
+border-radius: 12px;
+padding: 25px;
+}
+.modal-titulo {
+margin-top: 0;
+margin-bottom: 20px;
+color: #5B2326;
+font-size: 25px;
+}
+.formulario {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 16px;
+}
+.campo {
+display: flex;
+flex-direction: column;
+}
+.campo-completo {
+grid-column: 1 / -1;
+}
+label {
+font-weight: 600;
+margin-bottom: 6px;
+color: #5B2326;
+}
+input,
+select,
+textarea {
+width: 100%;
+padding: 10px 12px;
+border: 1px solid #ccc;
+border-radius: 6px;
+font-family: 'Barlow', sans-serif;
+font-size: 15px;
+}
+input:focus,
+select:focus,
+textarea:focus {
+outline: none;
+border-color: #2DADD6;
+box-shadow: 0 0 0 2px rgba(45,173,214,0.15);
+}
+input[readonly] {
+background: #eeeeee;
+color: #555;
+cursor: not-allowed;
+}
+.ayuda {
+margin-top: 4px;
+font-size: 12px;
+color: #777;
+}
+.separador {
+grid-column: 1 / -1;
+border-top: 1px solid #ddd;
+margin: 5px 0;
+}
+.producto-info {
+background: #f8f8f8;
+border: 1px solid #ddd;
+border-radius: 8px;
+padding: 15px;
+grid-column: 1 / -1;
+}
+.producto-info-titulo {
+color: #5B2326;
+font-weight: 700;
+margin-bottom: 12px;
+}
+.modal-botones {
+margin-top: 25px;
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+}
+.btn-cancelar {
+background: #777;
+}
+.btn-cancelar:hover {
+background: #555;
+}
+@media (max-width: 700px) {
+.formulario {
+grid-template-columns: 1fr;
+}
+.campo-completo {
+grid-column: auto;
+}
+header h1 {
+font-size: 24px;
+}
+.titulo {
+font-size: 23px;
+}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Cacaotería S.R.L.</h1>
+<p>Sistema de Gestión Operativa</p>
+</header>
+<main>
+<div class="barra-superior">
+<h2 class="titulo">
+Costos
+</h2>
+<div class="botones">
+<button onclick="abrirNuevoCosto()">
++ Nuevo costo
+</button>
+<button
+class="btn-secundario"
+onclick="cargarCostos()"
+>
+↻ Actualizar
+</button>
+</div>
+</div>
+<div
+id="mensaje"
+class="mensaje"
+></div>
+<div class="tabla-contenedor">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Código</th>
+<th>Tipo</th>
+<th>Unidad de medida</th>
+<th>Descripción</th>
+<th>
+Costo unitario sin impuesto
+</th>
+<th>Tipo de cambio</th>
+<th>
+Precio unitario sin impuesto
+</th>
+<th>
+Precio unitario con impuesto
+</th>
+<th>Activo</th>
+<th>IVA</th>
+<th>Moneda costo</th>
+<th>Moneda precio</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody id="tablaCostos">
+<tr>
+<td
+colspan="14"
+class="cargando"
+>
+Cargando información...
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<div
+id="modalCosto"
+class="modal"
+>
+<div class="modal-contenido">
+<h2
+id="modalTitulo"
+class="modal-titulo"
+>
+Nuevo costo
+</h2>
+<form id="formCosto">
+<div class="formulario">
+<div class="campo campo-completo">
+<label for="producto">
+Producto
+</label>
+<select id="producto">
+<option value="">
+Seleccione un producto...
+</option>
+</select>
+<span class="ayuda">
+Seleccione el producto. Los datos de
+código, tipo, unidad de medida y
+descripción se completarán automáticamente.
+</span>
+</div>
+<div
+id="productoInfo"
+class="producto-info"
+style="display:none;"
+>
+<div class="producto-info-titulo">
+Información del producto
+</div>
+<div class="formulario">
+<div class="campo">
+<label for="codigo">
+Código
+</label>
+<input
+type="text"
+id="codigo"
+readonly
+>
+</div>
+<div class="campo">
+<label for="tipo">
+Tipo
+</label>
+<input
+type="text"
+id="tipo"
+readonly
+>
+</div>
+<div class="campo">
+<label for="unidad_medida">
+Unidad de medida
+</label>
+<input
+type="text"
+id="unidad_medida"
+readonly
+>
+</div>
+<div class="campo">
+<label for="descripcion">
+Descripción
+</label>
+<input
+type="text"
+id="descripcion"
+readonly
+>
+</div>
+</div>
+</div>
+<div class="separador"></div>
+<div class="campo">
+<label for="costo_unitario">
+Costo unitario sin impuesto
+</label>
+<input
+type="number"
+id="costo_unitario"
+step="0.000001"
+min="0"
+>
+<span class="ayuda">
+Costo unitario del producto.
+</span>
+</div>
+<div class="campo">
+<label for="tipo_cambio">
+Tipo de cambio
+</label>
+<input
+type="number"
+id="tipo_cambio"
+step="0.000001"
+min="0"
+>
+</div>
+<div class="campo">
+<label for="precio_sin_impuesto">
+Precio unitario sin impuesto
+</label>
+<input
+type="number"
+id="precio_sin_impuesto"
+step="0.000001"
+min="0"
+>
+</div>
+<div class="campo">
+<label for="iva">
+IVA
+</label>
+<input
+type="number"
+id="iva"
+step="0.01"
+min="0"
+placeholder="Ej.: 0.13"
+>
+<span class="ayuda">
+Ejemplo: 1% = 0.01 | 13% = 0.13
+</span>
+</div>
+<div class="campo">
+<label for="precio_con_impuesto">
+Precio unitario con impuesto
+</label>
+<input
+type="number"
+id="precio_con_impuesto"
+step="0.01"
+readonly
+>
+<span class="ayuda">
+Se calcula automáticamente:
+precio sin impuesto × (1 + IVA).
+</span>
+</div>
+<div class="separador"></div>
+<div class="campo">
+<label for="activo">
+Activo
+</label>
+<select id="activo">
+<option value="Si">
+Sí
+</option>
+<option value="No">
+No
+</option>
+</select>
+</div>
+<div class="campo">
+<label for="moneda_costo">
+Moneda del costo unitario
+</label>
+<select id="moneda_costo">
+<option value="">
+Seleccione...
+</option>
+<option value="CRC">
+CRC
+</option>
+<option value="USD">
+USD
+</option>
+</select>
+</div>
+<div class="campo">
+<label for="moneda_precio">
+Moneda del precio unitario
+</label>
+<select id="moneda_precio">
+<option value="">
+Seleccione...
+</option>
+<option value="CRC">
+CRC
+</option>
+<option value="USD">
+USD
+</option>
+</select>
+</div>
+</div>
+<div class="modal-botones">
+<button
+type="button"
+class="btn-cancelar"
+onclick="cerrarModal()"
+>
+Cancelar
+</button>
+<button type="submit">
+Guardar
+</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+const SUPABASE_URL =
+"https://shjfohkiyfnqedrzjqpy.supabase.co";
+const SUPABASE_KEY =
+"sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+let idEditando = null;
+let productos = [];
+async function cargarProductos() {
+const select =
+document.getElementById("producto");
+select.innerHTML = `
+<option value="">
+Cargando productos...
+</option>
+`;
+const { data, error } =
+await supabaseClient
+.from("Productos")
+.select(
+"id, Codigo, Tipo, Descripcion, Unidad_Medida"
+)
+.order(
+"Descripcion",
+{
+ascending: true
+}
+);
+if (error) {
+console.error(error);
+select.innerHTML = `
+<option value="">
+Error al cargar productos
+</option>
+`;
+mostrarMensaje(
+"Error al cargar los productos: " +
+error.message,
+"error"
+);
+return;
+}
+productos =
+data || [];
+select.innerHTML = `
+<option value="">
+Seleccione un producto...
+</option>
+`;
+productos.forEach(producto => {
+const option =
+document.createElement("option");
+option.value =
+producto.id;
+let texto =
+producto.Descripcion ||
+"Sin descripción";
+if (
+producto.Codigo !== null &&
+producto.Codigo !== undefined &&
+String(producto.Codigo).trim() !== ""
+) {
+texto +=
+" — " +
+String(producto.Codigo).trim();
+}
+option.textContent =
+texto;
+select.appendChild(option);
+});
+}
+function mostrarProductoSeleccionado() {
+const productoId =
+document.getElementById(
+"producto"
+).value;
+const producto =
+productos.find(
+p =>
+String(p.id) ===
+String(productoId)
+);
+const informacion =
+document.getElementById(
+"productoInfo"
+);
+if (!producto) {
+informacion.style.display =
+"none";
+document.getElementById(
+"codigo"
+).value = "";
+document.getElementById(
+"tipo"
+).value = "";
+document.getElementById(
+"unidad_medida"
+).value = "";
+document.getElementById(
+"descripcion"
+).value = "";
+return;
+}
+informacion.style.display =
+"block";
+document.getElementById(
+"codigo"
+).value =
+producto.Codigo ?? "";
+document.getElementById(
+"tipo"
+).value =
+producto.Tipo ?? "";
+document.getElementById(
+"unidad_medida"
+).value =
+producto.Unidad_Medida ?? "";
+document.getElementById(
+"descripcion"
+).value =
+producto.Descripcion ?? "";
+}
+document.getElementById(
+"producto"
+).addEventListener(
+"change",
+mostrarProductoSeleccionado
+);
+async function cargarCostos() {
+const tabla =
+document.getElementById(
+"tablaCostos"
+);
+tabla.innerHTML = `
+<tr>
+<td
+colspan="14"
+class="cargando"
+>
+Cargando información...
+</td>
+</tr>
+`;
+const { data, error } =
+await supabaseClient
+.from("Costos")
+.select("*")
+.order(
+"id",
+{
+ascending: true
+}
+);
+if (error) {
+console.error(error);
+tabla.innerHTML = `
+<tr>
+<td
+colspan="14"
+class="cargando"
+>
+Error al cargar los costos.
+</td>
+</tr>
+`;
+mostrarMensaje(
+"Error al cargar la información: " +
+error.message,
+"error"
+);
+return;
+}
+if (
+!data ||
+data.length === 0
+) {
+tabla.innerHTML = `
+<tr>
+<td
+colspan="14"
+class="cargando"
+>
+No hay registros de costos.
+</td>
+</tr>
+`;
+return;
+}
+tabla.innerHTML = "";
+data.forEach(costo => {
+const fila =
+document.createElement("tr");
+let precioConImpuesto =
+costo[
+"Precio unitario con impuesto"
+];
+if (
+precioConImpuesto === null ||
+precioConImpuesto === undefined ||
+precioConImpuesto === ""
+) {
+precioConImpuesto =
+calcularPrecioConImpuesto(
+costo[
+"Precio unitario sin impuesto"
+],
+costo.IVA
+);
+}
+fila.innerHTML = `
+<td>
+${escapeHTML(costo.id)}
+</td>
+<td>
+${escapeHTML(costo.Codigo)}
+</td>
+<td>
+${escapeHTML(costo.Tipo)}
+</td>
+<td>
+${escapeHTML(costo.Unidad_Medida)}
+</td>
+<td>
+${escapeHTML(costo.Descripcion)}
+</td>
+<td class="numero">
+${formatearNumero(
+costo[
+"Costo unitario sin impuesto"
+]
+)}
+</td>
+<td class="numero">
+${formatearNumero(
+costo["Tipo de cambio"]
+)}
+</td>
+<td class="numero">
+${formatearNumero(
+costo[
+"Precio unitario sin impuesto"
+]
+)}
+</td>
+<td class="numero">
+${formatearNumero(
+precioConImpuesto
+)}
+</td>
+<td>
+${
+costo.Activo === "Si"
+? '<span class="estado-activo">Sí</span>'
+: '<span class="estado-inactivo">No</span>'
+}
+</td>
+<td class="numero">
+${formatearIVA(costo.IVA)}
+</td>
+<td>
+${escapeHTML(
+costo[
+"Moneda del costo unitario sin impuesto"
+]
+)}
+</td>
+<td>
+${escapeHTML(
+costo[
+"Moneda del precio unitario sin impuesto"
+]
+)}
+</td>
+<td class="acciones">
+<button
+class="btn-editar"
+onclick="editarCosto(${costo.id})"
+>
+Editar
+</button>
+<button
+class="btn-eliminar"
+onclick="eliminarCosto(${costo.id})"
+>
+Eliminar
+</button>
+</td>
+`;
+tabla.appendChild(fila);
+});
+}
+function calcularPrecioConImpuesto(
+precioSinImpuesto,
+iva
+) {
+if (
+precioSinImpuesto === null ||
+precioSinImpuesto === undefined ||
+precioSinImpuesto === ""
+) {
+return null;
+}
+if (
+iva === null ||
+iva === undefined ||
+iva === ""
+) {
+return null;
+}
+const precio =
+parseFloat(
+precioSinImpuesto
+);
+const impuesto =
+parseFloat(
+iva
+);
+if (
+Number.isNaN(precio) ||
+Number.isNaN(impuesto)
+) {
+return null;
+}
+return precio *
+(1 + impuesto);
+}
+function actualizarPrecioConImpuesto() {
+const precio =
+parseFloat(
+document.getElementById(
+"precio_sin_impuesto"
+).value
+);
+const iva =
+parseFloat(
+document.getElementById(
+"iva"
+).value
+);
+const campo =
+document.getElementById(
+"precio_con_impuesto"
+);
+if (
+Number.isNaN(precio) ||
+Number.isNaN(iva)
+) {
+campo.value = "";
+return;
+}
+const resultado =
+calcularPrecioConImpuesto(
+precio,
+iva
+);
+if (
+resultado === null
+) {
+campo.value = "";
+} else {
+campo.value =
+resultado.toFixed(2);
+}
+}
+async function abrirNuevoCosto() {
+idEditando = null;
+document.getElementById(
+"modalTitulo"
+).textContent =
+"Nuevo costo";
+document.getElementById(
+"formCosto"
+).reset();
+document.getElementById(
+"productoInfo"
+).style.display =
+"none";
+document.getElementById(
+"activo"
+).value =
+"Si";
+document.getElementById(
+"precio_con_impuesto"
+).value =
+"";
+await cargarProductos();
+document.getElementById(
+"modalCosto"
+).style.display =
+"flex";
+}
+async function editarCosto(id) {
+const { data, error } =
+await supabaseClient
+.from("Costos")
+.select("*")
+.eq(
+"id",
+id
+)
+.single();
+if (error) {
+console.error(error);
+mostrarMensaje(
+"No se pudo cargar el registro: " +
+error.message,
+"error"
+);
+return;
+}
+if (!data) {
+return;
+}
+idEditando = id;
+document.getElementById(
+"modalTitulo"
+).textContent =
+"Editar costo";
+await cargarProductos();
+if (
+data.producto_id !== null &&
+data.producto_id !== undefined
+) {
+document.getElementById(
+"producto"
+).value =
+data.producto_id;
+mostrarProductoSeleccionado();
+} else {
+document.getElementById(
+"productoInfo"
+).style.display =
+"block";
+document.getElementById(
+"codigo"
+).value =
+data.Codigo ?? "";
+document.getElementById(
+"tipo"
+).value =
+data.Tipo ?? "";
+document.getElementById(
+"unidad_medida"
+).value =
+data.Unidad_Medida ?? "";
+document.getElementById(
+"descripcion"
+).value =
+data.Descripcion ?? "";
+}
+document.getElementById(
+"costo_unitario"
+).value =
+data[
+"Costo unitario sin impuesto"
+] ?? "";
+document.getElementById(
+"tipo_cambio"
+).value =
+data["Tipo de cambio"] ?? "";
+document.getElementById(
+"precio_sin_impuesto"
+).value =
+data[
+"Precio unitario sin impuesto"
+] ?? "";
+document.getElementById(
+"iva"
+).value =
+data.IVA ?? "";
+document.getElementById(
+"activo"
+).value =
+data.Activo ?? "Si";
+document.getElementById(
+"moneda_costo"
+).value =
+data[
+"Moneda del costo unitario sin impuesto"
+] ?? "";
+document.getElementById(
+"moneda_precio"
+).value =
+data[
+"Moneda del precio unitario sin impuesto"
+] ?? "";
+actualizarPrecioConImpuesto();
+document.getElementById(
+"modalCosto"
+).style.display =
+"flex";
+}
+async function eliminarCosto(id) {
+const confirmar =
+confirm(
+"¿Está seguro de que desea eliminar este registro de costos?"
+);
+if (!confirmar) {
+return;
+}
+const { error } =
+await supabaseClient
+.from("Costos")
+.delete()
+.eq(
+"id",
+id
+);
+if (error) {
+console.error(error);
+mostrarMensaje(
+"No se pudo eliminar el costo: " +
+error.message,
+"error"
+);
+return;
+}
+mostrarMensaje(
+"Costo eliminado correctamente.",
+"exito"
+);
+await cargarCostos();
+}
+document.getElementById(
+"formCosto"
+).addEventListener(
+"submit",
+async function(event) {
+event.preventDefault();
+const productoId =
+document.getElementById(
+"producto"
+).value;
+if (
+productoId === ""
+) {
+mostrarMensaje(
+"Debe seleccionar un producto.",
+"error"
+);
+return;
+}
+const producto =
+productos.find(
+p =>
+String(p.id) ===
+String(productoId)
+);
+if (!producto) {
+mostrarMensaje(
+"No se encontró el producto seleccionado.",
+"error"
+);
+return;
+}
+const precioSinImpuesto =
+obtenerNumero(
+"precio_sin_impuesto"
+);
+const iva =
+obtenerNumero(
+"iva"
+);
+const precioConImpuesto =
+calcularPrecioConImpuesto(
+precioSinImpuesto,
+iva
+);
+const datos = {
+producto_id:
+Number(productoId),
+Codigo:
+producto.Codigo || null,
+Tipo:
+producto.Tipo || null,
+Unidad_Medida:
+producto.Unidad_Medida || null,
+Descripcion:
+producto.Descripcion || null,
+"Costo unitario sin impuesto":
+obtenerNumero(
+"costo_unitario"
+),
+"Tipo de cambio":
+obtenerNumero(
+"tipo_cambio"
+),
+"Precio unitario sin impuesto":
+precioSinImpuesto,
+"Precio unitario con impuesto":
+precioConImpuesto,
+Activo:
+obtenerTexto(
+"activo"
+),
+IVA:
+iva,
+"Moneda del costo unitario sin impuesto":
+obtenerTexto(
+"moneda_costo"
+),
+"Moneda del precio unitario sin impuesto":
+obtenerTexto(
+"moneda_precio"
+)
+};
+console.log(
+"Datos que se enviarán a Supabase:",
+datos
+);
+let resultado;
+if (
+idEditando !== null
+) {
+resultado =
+await supabaseClient
+.from("Costos")
+.update(datos)
+.eq(
+"id",
+idEditando
+);
+}
+else {
+resultado =
+await supabaseClient
+.from("Costos")
+.insert([
+datos
+]);
+}
+if (
+resultado.error
+) {
+console.error(
+resultado.error
+);
+mostrarMensaje(
+"Error al guardar: " +
+resultado.error.message,
+"error"
+);
+return;
+}
+cerrarModal();
+mostrarMensaje(
+idEditando !== null
+? "Costo actualizado correctamente."
+: "Costo agregado correctamente.",
+"exito"
+);
+idEditando = null;
+await cargarCostos();
+}
+);
+document.getElementById(
+"precio_sin_impuesto"
+).addEventListener(
+"input",
+actualizarPrecioConImpuesto
+);
+document.getElementById(
+"iva"
+).addEventListener(
+"input",
+actualizarPrecioConImpuesto
+);
+function cerrarModal() {
+document.getElementById(
+"modalCosto"
+).style.display =
+"none";
+}
+document.getElementById(
+"modalCosto"
+).addEventListener(
+"click",
+function(event) {
+if (
+event.target ===
+document.getElementById(
+"modalCosto"
+)
+) {
+cerrarModal();
+}
+}
+);
+function mostrarMensaje(
+texto,
+tipo
+) {
+const mensaje =
+document.getElementById(
+"mensaje"
+);
+mensaje.textContent =
+texto;
+mensaje.className =
+"mensaje " + tipo;
+setTimeout(
+function() {
+mensaje.className =
+"mensaje";
+},
+4000
+);
+}
+function obtenerTexto(id) {
+const valor =
+document.getElementById(
+id
+).value;
+return valor.trim() === ""
+? null
+: valor.trim();
+}
+function obtenerNumero(id) {
+const valor =
+document.getElementById(
+id
+).value;
+if (
+valor === "" ||
+valor === null ||
+valor === undefined
+) {
+return null;
+}
+const numero =
+parseFloat(valor);
+return Number.isNaN(numero)
+? null
+: numero;
+}
+function formatearNumero(valor) {
+if (
+valor === null ||
+valor === undefined ||
+valor === ""
+) {
+return "—";
+}
+const numero =
+Number(valor);
+if (
+Number.isNaN(numero)
+) {
+return "—";
+}
+return numero.toLocaleString(
+"es-CR",
+{
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}
+);
+}
+function formatearIVA(valor) {
+if (
+valor === null ||
+valor === undefined ||
+valor === ""
+) {
+return "—";
+}
+const numero =
+Number(valor);
+if (
+Number.isNaN(numero)
+) {
+return "—";
+}
+return (
+numero * 100
+).toLocaleString(
+"es-CR",
+{
+minimumFractionDigits: 0,
+maximumFractionDigits: 2
+}
+) + "%";
+}
+function escapeHTML(valor) {
+if (
+valor === null ||
+valor === undefined
+) {
+return "";
+}
+return String(valor)
+.replace(
+/&/g,
+"&amp;"
+)
+.replace(
+/</g,
+"&lt;"
+)
+.replace(
+/>/g,
+"&gt;"
+)
+.replace(
+/"/g,
+"&quot;"
+)
+.replace(
+/'/g,
+"&#039;"
+);
+}
+async function iniciarPagina() {
+await cargarProductos();
+await cargarCostos();
+}
+iniciarPagina();
+</script>
+</body>
+</html>
