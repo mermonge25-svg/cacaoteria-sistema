@@ -11,11 +11,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
 * {
     box-sizing: border-box;
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", Arial, sans-serif;
 }
 
 body {
@@ -25,9 +29,10 @@ body {
 }
 
 header {
-    background-color: #5a3825;
+    background-color: #5B2326;
     color: white;
     padding: 20px 30px;
+    border-bottom: 4px solid #E14E39;
 }
 
 header h1 {
@@ -56,7 +61,7 @@ header p {
 
 .encabezado h2 {
     margin: 0;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .acciones-superior {
@@ -81,12 +86,12 @@ header p {
 
 .filtro-responsable label {
     font-weight: bold;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .filtro-responsable select {
     padding: 10px 12px;
-    border: 1px solid #ccc;
+    border: 1px solid #2DADD6;
     border-radius: 6px;
     background-color: white;
     font-size: 14px;
@@ -95,11 +100,11 @@ header p {
 
 .filtro-responsable select:focus {
     outline: none;
-    border-color: #5a3825;
+    border-color: #007F49;
 }
 
 .btn-agregar {
-    background-color: #5a3825;
+    background-color: #E14E39;
     color: white;
     border: none;
     padding: 12px 18px;
@@ -110,7 +115,7 @@ header p {
 }
 
 .btn-agregar:hover {
-    background-color: #43291c;
+    background-color: #5B2326;
 }
 
 .btn-editar,
@@ -132,11 +137,11 @@ header p {
 }
 
 .btn-editar {
-    color: #6b4530;
+    color: #E14E39;
 }
 
 .btn-editar:hover {
-    color: #402719;
+    color: #5B2326;
 }
 
 .btn-eliminar {
@@ -162,11 +167,12 @@ table {
 }
 
 th {
-    background-color: #6b4530;
+    background-color: #5B2326;
     color: white;
     padding: 14px 12px;
     text-align: left;
     white-space: nowrap;
+    border-bottom: 3px solid #E14E39;
 }
 
 td {
@@ -176,7 +182,7 @@ td {
 }
 
 tr:hover {
-    background-color: #f9f3ef;
+    background-color: rgba(225, 78, 57, 0.08);
 }
 
 .sin-dato {
@@ -197,7 +203,7 @@ td.acciones {
 .mensaje-cargando {
     text-align: center;
     padding: 30px;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .modal {
@@ -227,7 +233,7 @@ td.acciones {
 
 .modal-contenido h3 {
     margin: 0 0 20px 0;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .form-grid {
@@ -261,7 +267,7 @@ td.acciones {
 .campo input:focus,
 .campo select:focus {
     outline: none;
-    border-color: #5a3825;
+    border-color: #2DADD6;
 }
 
 .campo input[readonly] {
@@ -271,22 +277,22 @@ td.acciones {
 
 .grupo-origen {
     grid-column: span 2;
-    background-color: #faf7f4;
-    border: 1px solid #e3d7ce;
+    background-color: rgba(45, 173, 214, 0.06);
+    border: 1px solid #2DADD6;
     border-radius: 8px;
     padding: 15px;
 }
 
 .grupo-destino {
     grid-column: span 2;
-    background-color: #faf7f4;
-    border: 1px solid #e3d7ce;
+    background-color: rgba(0, 127, 73, 0.06);
+    border: 1px solid #007F49;
     border-radius: 8px;
     padding: 15px;
 }
 
 .grupo-titulo {
-    color: #5a3825;
+    color: #5B2326;
     font-weight: bold;
     margin-bottom: 12px;
     font-size: 15px;
@@ -310,11 +316,11 @@ td.acciones {
 .aviso-producto-nuevo {
     grid-column: 1 / -1;
     display: none;
-    background-color: #f9f3ef;
-    border-left: 4px solid #5a3825;
+    background-color: rgba(225, 78, 57, 0.08);
+    border-left: 4px solid #E14E39;
     padding: 10px 12px;
     border-radius: 5px;
-    color: #5a3825;
+    color: #5B2326;
     font-size: 13px;
 }
 
@@ -339,7 +345,7 @@ td.acciones {
 }
 
 .btn-guardar {
-    background-color: #5a3825;
+    background-color: #E14E39;
     color: white;
     border: none;
     padding: 10px 18px;
@@ -349,7 +355,7 @@ td.acciones {
 }
 
 .btn-guardar:hover {
-    background-color: #43291c;
+    background-color: #5B2326;
 }
 
 .btn-guardar:disabled {
@@ -536,6 +542,7 @@ td.acciones {
 
 </div>
 
+
 <div
     id="modalMovimiento"
     class="modal"
@@ -565,6 +572,7 @@ td.acciones {
 
                 </div>
 
+
                 <div class="campo">
 
                     <label for="codigo">
@@ -579,6 +587,7 @@ td.acciones {
                     >
 
                 </div>
+
 
                 <div class="campo">
 
@@ -597,6 +606,7 @@ td.acciones {
                     </select>
 
                 </div>
+
 
                 <div class="campo">
 
@@ -617,6 +627,7 @@ td.acciones {
 
                 </div>
 
+
                 <div
                     class="campo campo-producto-nuevo"
                     id="campoDescripcionNueva"
@@ -634,6 +645,7 @@ td.acciones {
 
                 </div>
 
+
                 <div
                     class="campo campo-producto-nuevo"
                     id="campoCodigoNuevo"
@@ -650,6 +662,7 @@ td.acciones {
                     >
 
                 </div>
+
 
                 <div class="campo">
 
@@ -686,6 +699,7 @@ td.acciones {
 
                 </div>
 
+
                 <div class="campo">
 
                     <label for="unidadMedida">
@@ -699,6 +713,11 @@ td.acciones {
                     >
 
                 </div>
+
+
+                <!-- =====================================
+                     ORIGEN
+                     ===================================== -->
 
                 <div class="grupo-origen">
 
@@ -718,10 +737,12 @@ td.acciones {
                                 type="text"
                                 id="ubicacionOrigen"
                                 list="listaUbicaciones"
-                                placeholder="Escriba la ubicacion"
+                                placeholder="Escriba o seleccione una ubicacion"
+                                autocomplete="off"
                             >
 
                         </div>
+
 
                         <div class="campo">
 
@@ -733,7 +754,8 @@ td.acciones {
                                 type="text"
                                 id="responsableOrigen"
                                 list="listaResponsables"
-                                placeholder="Escriba el responsable"
+                                placeholder="Escriba o seleccione un responsable"
+                                autocomplete="off"
                             >
 
                         </div>
@@ -741,6 +763,11 @@ td.acciones {
                     </div>
 
                 </div>
+
+
+                <!-- =====================================
+                     DESTINO
+                     ===================================== -->
 
                 <div class="grupo-destino">
 
@@ -760,10 +787,12 @@ td.acciones {
                                 type="text"
                                 id="ubicacionDestino"
                                 list="listaUbicaciones"
-                                placeholder="Escriba la ubicacion"
+                                placeholder="Escriba cualquier ubicacion"
+                                autocomplete="off"
                             >
 
                         </div>
+
 
                         <div class="campo">
 
@@ -775,7 +804,8 @@ td.acciones {
                                 type="text"
                                 id="responsableDestino"
                                 list="listaResponsables"
-                                placeholder="Escriba el responsable"
+                                placeholder="Escriba cualquier responsable"
+                                autocomplete="off"
                             >
 
                         </div>
@@ -784,9 +814,11 @@ td.acciones {
 
                 </div>
 
+
                 <datalist id="listaUbicaciones"></datalist>
 
                 <datalist id="listaResponsables"></datalist>
+
 
                 <div
                     class="aviso-producto-nuevo"
@@ -799,6 +831,7 @@ td.acciones {
                     Inventario.
 
                 </div>
+
 
                 <div class="campo">
 
@@ -816,6 +849,7 @@ td.acciones {
                     >
 
                 </div>
+
 
                 <div class="campo">
 
@@ -849,6 +883,7 @@ td.acciones {
 
                 </div>
 
+
                 <div class="campo">
 
                     <label for="motivo">
@@ -869,6 +904,7 @@ td.acciones {
                 </div>
 
             </div>
+
 
             <div class="botones-formulario">
 
@@ -896,6 +932,7 @@ td.acciones {
 
 </div>
 
+
 <script>
 
 const SUPABASE_URL =
@@ -910,12 +947,15 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
+
 let productos = [];
 let movimientos = [];
+let productosDisponibles = [];
 let personal = [];
 let lotes = [];
 let indiceEdicion = null;
 let responsableSeleccionado = "";
+
 
 function obtenerValor(objeto, nombres) {
 
@@ -952,6 +992,7 @@ function obtenerValor(objeto, nombres) {
 
 }
 
+
 function normalizarTexto(valor) {
 
     return String(valor || "")
@@ -962,12 +1003,6 @@ function normalizarTexto(valor) {
 
 }
 
-/* Codigo y Lote:
-   - Materia Prima: opcionales
-   - Material Empaque: opcionales
-   - Producto Terminado: obligatorios
-   - Otro: opcionales
-*/
 
 function actualizarObligatoriedadCodigoYLote() {
 
@@ -975,6 +1010,12 @@ function actualizarObligatoriedadCodigoYLote() {
         normalizarTexto(
             document.getElementById("tipo").value
         );
+
+    const selectorProducto =
+        document.getElementById("descripcion");
+
+    const indiceProducto =
+        selectorProducto.value;
 
     const codigo =
         document.getElementById("codigo");
@@ -986,12 +1027,17 @@ function actualizarObligatoriedadCodigoYLote() {
         tipo === "producto terminado";
 
     codigo.required =
-        esProductoTerminado;
+        false;
+
+    const productoManual =
+        indiceProducto === "__NUEVO__";
 
     lote.required =
-        esProductoTerminado;
+        esProductoTerminado &&
+        !productoManual;
 
 }
+
 
 async function cargarProductos() {
 
@@ -1015,64 +1061,6 @@ async function cargarProductos() {
         productos =
             data || [];
 
-        const selector =
-            document.getElementById(
-                "descripcion"
-            );
-
-        selector.innerHTML = `
-            <option value="">
-                Seleccione un producto
-            </option>
-        `;
-
-        productos.forEach(
-            function(producto, indice) {
-
-                const opcion =
-                    document.createElement(
-                        "option"
-                    );
-
-                opcion.value =
-                    indice;
-
-                const descripcion =
-                    obtenerValor(
-                        producto,
-                        [
-                            "Descripcion",
-                            "Producto",
-                            "Nombre"
-                        ]
-                    );
-
-                opcion.textContent =
-                    descripcion ||
-                    "Sin descripcion";
-
-                selector.appendChild(
-                    opcion
-                );
-
-            }
-        );
-
-        const opcionNuevo =
-            document.createElement(
-                "option"
-            );
-
-        opcionNuevo.value =
-            "__NUEVO__";
-
-        opcionNuevo.textContent =
-            "➕ Producto no registrado";
-
-        selector.appendChild(
-            opcionNuevo
-        );
-
     } catch (error) {
 
         console.error(
@@ -1085,9 +1073,260 @@ async function cargarProductos() {
             error.message
         );
 
+        productos = [];
+
     }
 
 }
+
+
+function construirListaProductosDisponibles() {
+
+    productosDisponibles = [];
+
+    productos.forEach(
+        function(producto) {
+
+            const descripcion =
+                String(
+                    obtenerValor(
+                        producto,
+                        [
+                            "Descripcion",
+                            "Producto",
+                            "Nombre"
+                        ]
+                    ) || ""
+                ).trim();
+
+            if (!descripcion) {
+                return;
+            }
+
+            const existe =
+                productosDisponibles.some(
+                    productoExistente =>
+                        normalizarTexto(
+                            productoExistente.descripcion
+                        ) ===
+                        normalizarTexto(
+                            descripcion
+                        )
+                );
+
+            if (!existe) {
+
+                productosDisponibles.push({
+
+                    origen: "Productos",
+
+                    producto: producto,
+
+                    descripcion:
+                        descripcion,
+
+                    codigo:
+                        obtenerValor(
+                            producto,
+                            ["Codigo"]
+                        ) || "",
+
+                    tipo:
+                        obtenerValor(
+                            producto,
+                            ["Tipo"]
+                        ) || "",
+
+                    unidadMedida:
+                        obtenerValor(
+                            producto,
+                            [
+                                "Unidad_Medida",
+                                "Unidad Medida",
+                                "Unidad"
+                            ]
+                        ) || ""
+
+                });
+
+            }
+
+        }
+    );
+
+
+    movimientos.forEach(
+        function(movimiento) {
+
+            const descripcion =
+                String(
+                    movimiento["Descripcion"] || ""
+                ).trim();
+
+            if (!descripcion) {
+                return;
+            }
+
+            const existe =
+                productosDisponibles.some(
+                    productoExistente =>
+                        normalizarTexto(
+                            productoExistente.descripcion
+                        ) ===
+                        normalizarTexto(
+                            descripcion
+                        )
+                );
+
+            if (existe) {
+                return;
+            }
+
+            productosDisponibles.push({
+
+                origen: "Movimientos",
+
+                producto: null,
+
+                descripcion:
+                    descripcion,
+
+                codigo:
+                    movimiento["Codigo"] || "",
+
+                tipo:
+                    movimiento["Tipo"] || "",
+
+                unidadMedida:
+                    movimiento["Unidad_Medida"] || ""
+
+            });
+
+        }
+    );
+
+
+    productosDisponibles.sort(
+        function(a, b) {
+
+            return a.descripcion.localeCompare(
+                b.descripcion,
+                "es",
+                {
+                    sensitivity: "base"
+                }
+            );
+
+        }
+    );
+
+
+    const selector =
+        document.getElementById(
+            "descripcion"
+        );
+
+    selector.innerHTML = `
+        <option value="">
+            Seleccione un producto
+        </option>
+    `;
+
+
+    productosDisponibles.forEach(
+        function(productoDisponible, indice) {
+
+            const opcion =
+                document.createElement(
+                    "option"
+                );
+
+            opcion.value =
+                indice;
+
+            let texto =
+                productoDisponible.descripcion;
+
+            if (
+                productoDisponible.origen ===
+                "Movimientos"
+            ) {
+
+                texto +=
+                    " — registrado en Movimientos";
+
+            }
+
+            opcion.textContent =
+                texto;
+
+            selector.appendChild(
+                opcion
+            );
+
+        }
+    );
+
+
+    const opcionNuevo =
+        document.createElement(
+            "option"
+        );
+
+    opcionNuevo.value =
+        "__NUEVO__";
+
+    opcionNuevo.textContent =
+        "➕ Producto no registrado";
+
+    selector.appendChild(
+        opcionNuevo
+    );
+
+}
+
+
+async function cargarProductosYMovimientosParaSelector() {
+
+    await cargarProductos();
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("Movimientos")
+                .select("*");
+
+        if (error) {
+            throw error;
+        }
+
+        movimientos =
+            data || [];
+
+    } catch (error) {
+
+        console.error(
+            "Error al cargar movimientos para el selector:",
+            error
+        );
+
+        movimientos = [];
+
+        alert(
+            "No se pudieron cargar los movimientos para construir la lista de productos.\n\n" +
+            error.message
+        );
+
+    }
+
+    construirListaProductosDisponibles();
+
+}
+
 
 async function cargarLotes() {
 
@@ -1184,6 +1423,7 @@ async function cargarLotes() {
 
 }
 
+
 async function cargarPersonal() {
 
     const listaResponsables =
@@ -1265,6 +1505,7 @@ async function cargarPersonal() {
             }
         );
 
+
         const ubicacionesAgregadas =
             [];
 
@@ -1310,6 +1551,7 @@ async function cargarPersonal() {
             }
         );
 
+
         const filtro =
             document.getElementById(
                 "filtroResponsable"
@@ -1320,6 +1562,7 @@ async function cargarPersonal() {
                 Todos los responsables
             </option>
         `;
+
 
         responsablesAgregados.forEach(
             function(responsable) {
@@ -1342,6 +1585,17 @@ async function cargarPersonal() {
             }
         );
 
+
+        /*
+         * IMPORTANTE:
+         *
+         * NO se agregan validaciones que obliguen
+         * a que destino esté dentro de esta lista.
+         *
+         * Los datalist solamente funcionan como
+         * sugerencias.
+         */
+
     } catch (error) {
 
         console.error(
@@ -1358,6 +1612,7 @@ async function cargarPersonal() {
 
 }
 
+
 function filtrarPorResponsable() {
 
     responsableSeleccionado =
@@ -1368,6 +1623,7 @@ function filtrarPorResponsable() {
     mostrarMovimientos();
 
 }
+
 
 function mostrarCamposProductoNuevo(mostrar) {
 
@@ -1401,6 +1657,7 @@ function mostrarCamposProductoNuevo(mostrar) {
             "codigo"
         );
 
+
     if (mostrar) {
 
         campoDescripcionNueva.classList.add(
@@ -1417,6 +1674,9 @@ function mostrarCamposProductoNuevo(mostrar) {
 
         descripcionNueva.required =
             true;
+
+        codigoNuevo.required =
+            false;
 
         codigo.readOnly =
             true;
@@ -1454,6 +1714,7 @@ function mostrarCamposProductoNuevo(mostrar) {
 
 }
 
+
 function actualizarProducto() {
 
     const selector =
@@ -1479,6 +1740,7 @@ function actualizarProducto() {
             "tipo"
         );
 
+
     if (
         indice === "__NUEVO__"
     ) {
@@ -1502,9 +1764,11 @@ function actualizarProducto() {
 
     }
 
+
     mostrarCamposProductoNuevo(
         false
     );
+
 
     if (indice === "") {
 
@@ -1523,12 +1787,14 @@ function actualizarProducto() {
 
     }
 
-    const producto =
-        productos[
+
+    const productoDisponible =
+        productosDisponibles[
             parseInt(indice)
         ];
 
-    if (!producto) {
+
+    if (!productoDisponible) {
 
         codigo.value =
             "";
@@ -1545,43 +1811,23 @@ function actualizarProducto() {
 
     }
 
-    const codigoProducto =
-        obtenerValor(
-            producto,
-            ["Codigo"]
-        );
 
     codigo.value =
-        codigoProducto ||
+        productoDisponible.codigo ||
         "";
-
-    const unidadProducto =
-        obtenerValor(
-            producto,
-            [
-                "Unidad_Medida",
-                "Unidad Medida",
-                "Unidad"
-            ]
-        );
 
     unidadMedida.value =
-        unidadProducto ||
+        productoDisponible.unidadMedida ||
         "";
 
-    const tipoProducto =
-        obtenerValor(
-            producto,
-            ["Tipo"]
-        );
-
     tipo.value =
-        tipoProducto ||
+        productoDisponible.tipo ||
         "";
 
     actualizarObligatoriedadCodigoYLote();
 
 }
+
 
 function actualizarMotivos() {
 
@@ -1604,7 +1850,9 @@ function actualizarMotivos() {
         </option>
     `;
 
+
     let motivos = [];
+
 
     if (
         movimiento === "Entrada"
@@ -1644,6 +1892,7 @@ function actualizarMotivos() {
 
     }
 
+
     motivos.forEach(
         function(motivo) {
 
@@ -1665,6 +1914,7 @@ function actualizarMotivos() {
         }
     );
 
+
     if (
         motivos.includes(
             motivoAnterior
@@ -1677,6 +1927,7 @@ function actualizarMotivos() {
     }
 
 }
+
 
 function actualizarCamposSegunMovimiento() {
 
@@ -1705,11 +1956,15 @@ function actualizarCamposSegunMovimiento() {
             "responsableDestino"
         );
 
+
     actualizarMotivos();
 
+
     /*
-     * Por defecto:
-     * Origen y destino NO son obligatorios.
+     * Ningún campo de destino está restringido
+     * a las opciones de los datalist.
+     *
+     * Se puede escribir cualquier valor.
      */
 
     ubicacionOrigen.required =
@@ -1724,10 +1979,6 @@ function actualizarCamposSegunMovimiento() {
     responsableDestino.required =
         false;
 
-    /*
-     * Solamente Salida y Traspaso
-     * requieren información de origen.
-     */
 
     if (
         movimiento === "Salida" ||
@@ -1744,6 +1995,7 @@ function actualizarCamposSegunMovimiento() {
 
 }
 
+
 async function cargarMovimientos() {
 
     try {
@@ -1758,6 +2010,7 @@ async function cargarMovimientos() {
         ).style.display =
             "none";
 
+
         const {
             data,
             error
@@ -1769,14 +2022,20 @@ async function cargarMovimientos() {
                     ascending: true
                 });
 
+
         if (error) {
             throw error;
         }
 
+
         movimientos =
             data || [];
 
+
+        construirListaProductosDisponibles();
+
         mostrarMovimientos();
+
 
     } catch (error) {
 
@@ -1785,20 +2044,24 @@ async function cargarMovimientos() {
             error
         );
 
+
         document.getElementById(
             "mensajeCargando"
         ).style.display =
             "none";
+
 
         document.getElementById(
             "mensajeVacio"
         ).textContent =
             "No se pudieron cargar los movimientos.";
 
+
         document.getElementById(
             "mensajeVacio"
         ).style.display =
             "block";
+
 
         alert(
             "No se pudieron cargar los movimientos desde Supabase.\n\n" +
@@ -1809,36 +2072,44 @@ async function cargarMovimientos() {
 
 }
 
+
 function abrirFormulario() {
 
     indiceEdicion =
         null;
+
 
     document.getElementById(
         "tituloFormulario"
     ).textContent =
         "Registrar movimiento";
 
+
     document.getElementById(
         "formMovimiento"
     ).reset();
+
 
     document.getElementById(
         "codigo"
     ).value =
         "";
 
+
     document.getElementById(
         "unidadMedida"
     ).value =
         "";
+
 
     document.getElementById(
         "tipo"
     ).value =
         "";
 
+
     actualizarObligatoriedadCodigoYLote();
+
 
     document.getElementById(
         "motivo"
@@ -1848,17 +2119,22 @@ function abrirFormulario() {
         </option>
     `;
 
+
     mostrarCamposProductoNuevo(
         false
     );
 
+
     actualizarCamposSegunMovimiento();
+
 
     const hoy =
         new Date();
 
+
     const anio =
         hoy.getFullYear();
+
 
     const mes =
         String(
@@ -1868,6 +2144,7 @@ function abrirFormulario() {
             "0"
         );
 
+
     const dia =
         String(
             hoy.getDate()
@@ -1876,10 +2153,12 @@ function abrirFormulario() {
             "0"
         );
 
+
     document.getElementById(
         "fecha"
     ).value =
         `${anio}-${mes}-${dia}`;
+
 
     document.getElementById(
         "modalMovimiento"
@@ -1887,6 +2166,7 @@ function abrirFormulario() {
         "flex";
 
 }
+
 
 function cerrarFormulario() {
 
@@ -1896,6 +2176,7 @@ function cerrarFormulario() {
         "none";
 
 }
+
 
 function crearRegistroMovimiento(
     producto,
@@ -1920,24 +2201,15 @@ function crearRegistroMovimiento(
     let descripcionFinal =
         null;
 
+
     if (producto) {
 
         codigoFinal =
-            obtenerValor(
-                producto,
-                ["Codigo"]
-            ) ||
+            producto.codigo ||
             null;
 
         descripcionFinal =
-            obtenerValor(
-                producto,
-                [
-                    "Descripcion",
-                    "Producto",
-                    "Nombre"
-                ]
-            ) ||
+            producto.descripcion ||
             null;
 
     }
@@ -1953,6 +2225,7 @@ function crearRegistroMovimiento(
             null;
 
     }
+
 
     return {
 
@@ -1993,12 +2266,6 @@ function crearRegistroMovimiento(
             unidadMedida ||
             null,
 
-        /*
-         * Se conserva exactamente el valor
-         * introducido por el usuario.
-         * No se utiliza toFixed() ni se
-         * redondea a 2 decimales.
-         */
         "Cantidad":
             cantidad,
 
@@ -2012,6 +2279,7 @@ function crearRegistroMovimiento(
 
 }
 
+
 document
     .getElementById(
         "formMovimiento"
@@ -2022,10 +2290,12 @@ document
 
             event.preventDefault();
 
+
             const indiceProducto =
                 document.getElementById(
                     "descripcion"
                 ).value;
+
 
             let productoSeleccionado =
                 null;
@@ -2036,17 +2306,19 @@ document
             let codigoManual =
                 "";
 
+
             if (
                 indiceProducto !== "" &&
                 indiceProducto !== "__NUEVO__"
             ) {
 
                 productoSeleccionado =
-                    productos[
+                    productosDisponibles[
                         parseInt(
                             indiceProducto
                         )
                     ];
+
 
                 if (!productoSeleccionado) {
 
@@ -2060,6 +2332,7 @@ document
 
             }
 
+
             else if (
                 indiceProducto === "__NUEVO__"
             ) {
@@ -2069,10 +2342,12 @@ document
                         "descripcionNueva"
                     ).value.trim();
 
+
                 codigoManual =
                     document.getElementById(
                         "codigoNuevo"
                     ).value.trim();
+
 
                 if (!descripcionManual) {
 
@@ -2090,6 +2365,7 @@ document
 
             }
 
+
             else {
 
                 alert(
@@ -2100,60 +2376,78 @@ document
 
             }
 
+
             const fecha =
                 document.getElementById(
                     "fecha"
                 ).value;
+
 
             const lote =
                 document.getElementById(
                     "lote"
                 ).value.trim();
 
+
+            /*
+             * Estos cuatro campos son TEXTO LIBRE.
+             * Pueden contener valores que no estén
+             * en los datalist.
+             */
+
             const ubicacionOrigen =
                 document.getElementById(
                     "ubicacionOrigen"
                 ).value.trim();
+
 
             const responsableOrigen =
                 document.getElementById(
                     "responsableOrigen"
                 ).value.trim();
 
+
             const ubicacionDestino =
                 document.getElementById(
                     "ubicacionDestino"
                 ).value.trim();
+
 
             const responsableDestino =
                 document.getElementById(
                     "responsableDestino"
                 ).value.trim();
 
+
             const tipo =
                 document.getElementById(
                     "tipo"
                 ).value;
+
 
             const unidadMedida =
                 document.getElementById(
                     "unidadMedida"
                 ).value.trim();
 
+
             const cantidad =
                 document.getElementById(
                     "cantidad"
                 ).value;
+
 
             const movimiento =
                 document.getElementById(
                     "movimiento"
                 ).value;
 
+
             const motivo =
                 document.getElementById(
                     "motivo"
                 ).value;
+
 
             if (!fecha) {
 
@@ -2165,6 +2459,7 @@ document
 
             }
 
+
             if (!tipo) {
 
                 alert(
@@ -2175,29 +2470,21 @@ document
 
             }
 
+
             const tipoNormalizado =
                 normalizarTexto(
                     tipo
                 );
 
+
             const esProductoTerminado =
                 tipoNormalizado ===
                 "producto terminado";
 
-            /*
-             * Codigo y Lote:
-             * Materia Prima y Material Empaque:
-             * opcionales.
-             *
-             * Producto Terminado:
-             * obligatorios.
-             *
-             * Otro:
-             * opcionales.
-             */
 
             if (
                 esProductoTerminado &&
+                indiceProducto !== "__NUEVO__" &&
                 !lote
             ) {
 
@@ -2213,45 +2500,6 @@ document
 
             }
 
-            if (
-                esProductoTerminado &&
-                indiceProducto === "__NUEVO__" &&
-                !codigoManual
-            ) {
-
-                alert(
-                    "Ingrese el codigo del Producto Terminado."
-                );
-
-                document.getElementById(
-                    "codigoNuevo"
-                ).focus();
-
-                return;
-
-            }
-
-            if (
-                esProductoTerminado &&
-                indiceProducto !== "__NUEVO__"
-            ) {
-
-                const codigoActual =
-                    document.getElementById(
-                        "codigo"
-                    ).value.trim();
-
-                if (!codigoActual) {
-
-                    alert(
-                        "El producto seleccionado no tiene codigo registrado."
-                    );
-
-                    return;
-
-                }
-
-            }
 
             if (!unidadMedida) {
 
@@ -2263,16 +2511,6 @@ document
 
             }
 
-            /*
-             * La cantidad puede tener cualquier
-             * cantidad de decimales.
-             *
-             * Ejemplos:
-             * 1.25
-             * 1.256
-             * 1.2567
-             * 0.12555
-             */
 
             if (
                 cantidad === "" ||
@@ -2294,6 +2532,7 @@ document
 
             }
 
+
             if (!movimiento) {
 
                 alert(
@@ -2303,6 +2542,7 @@ document
                 return;
 
             }
+
 
             if (!motivo) {
 
@@ -2314,68 +2554,9 @@ document
 
             }
 
-            /*
-             * ENTRADA:
-             * No requiere ubicacion origen,
-             * responsable origen,
-             * ubicacion destino
-             * ni responsable destino.
-             */
 
             if (
-                movimiento === "Entrada"
-            ) {
-
-                // Todos los campos de origen y destino
-                // permanecen opcionales para Entrada.
-
-            }
-
-            /*
-             * SALIDA:
-             * requiere origen.
-             */
-
-            if (
-                movimiento === "Salida"
-            ) {
-
-                if (!ubicacionOrigen) {
-
-                    alert(
-                        "Ingrese la ubicacion origen."
-                    );
-
-                    document.getElementById(
-                        "ubicacionOrigen"
-                    ).focus();
-
-                    return;
-
-                }
-
-                if (!responsableOrigen) {
-
-                    alert(
-                        "Ingrese el responsable origen."
-                    );
-
-                    document.getElementById(
-                        "responsableOrigen"
-                    ).focus();
-
-                    return;
-
-                }
-
-            }
-
-            /*
-             * TRASPASO:
-             * requiere origen.
-             */
-
-            if (
+                movimiento === "Salida" ||
                 movimiento === "Traspaso"
             ) {
 
@@ -2393,6 +2574,7 @@ document
 
                 }
 
+
                 if (!responsableOrigen) {
 
                     alert(
@@ -2408,6 +2590,7 @@ document
                 }
 
             }
+
 
             const registro =
                 crearRegistroMovimiento(
@@ -2427,10 +2610,12 @@ document
                     motivo
                 );
 
+
             const botonGuardar =
                 document.getElementById(
                     "btnGuardar"
                 );
+
 
             try {
 
@@ -2439,6 +2624,7 @@ document
 
                 botonGuardar.textContent =
                     "Guardando...";
+
 
                 if (
                     indiceEdicion !== null
@@ -2449,6 +2635,7 @@ document
                             indiceEdicion
                         ];
 
+
                     if (!movimientoActual) {
 
                         throw new Error(
@@ -2457,9 +2644,11 @@ document
 
                     }
 
+
                     const id =
                         movimientoActual.id ??
                         movimientoActual.ID;
+
 
                     if (!id) {
 
@@ -2469,10 +2658,12 @@ document
 
                     }
 
+
                     const columnaID =
                         movimientoActual.id !== undefined
                             ? "id"
                             : "ID";
+
 
                     const {
                         data,
@@ -2490,14 +2681,20 @@ document
                             .select()
                             .single();
 
+
                     if (error) {
                         throw error;
                     }
+
 
                     movimientos[
                         indiceEdicion
                     ] =
                         data;
+
+
+                    construirListaProductosDisponibles();
+
 
                     alert(
                         "Movimiento actualizado correctamente.\n\n" +
@@ -2505,6 +2702,7 @@ document
                     );
 
                 }
+
 
                 else {
 
@@ -2520,13 +2718,19 @@ document
                             .select()
                             .single();
 
+
                     if (error) {
                         throw error;
                     }
 
+
                     movimientos.push(
                         data
                     );
+
+
+                    construirListaProductosDisponibles();
+
 
                     alert(
                         "Movimiento registrado correctamente.\n\n" +
@@ -2535,9 +2739,11 @@ document
 
                 }
 
+
                 mostrarMovimientos();
 
                 cerrarFormulario();
+
 
             } catch (error) {
 
@@ -2546,10 +2752,12 @@ document
                     error
                 );
 
+
                 alert(
                     "No se pudo guardar el movimiento.\n\n" +
                     error.message
                 );
+
 
             } finally {
 
@@ -2564,6 +2772,7 @@ document
         }
     );
 
+
 function mostrarMovimientos() {
 
     const cuerpo =
@@ -2571,24 +2780,30 @@ function mostrarMovimientos() {
             "cuerpoMovimientos"
         );
 
+
     const mensajeCargando =
         document.getElementById(
             "mensajeCargando"
         );
+
 
     const mensajeVacio =
         document.getElementById(
             "mensajeVacio"
         );
 
+
     cuerpo.innerHTML =
         "";
+
 
     mensajeCargando.style.display =
         "none";
 
+
     let movimientosMostrar =
         movimientos;
+
 
     if (
         responsableSeleccionado
@@ -2599,6 +2814,7 @@ function mostrarMovimientos() {
                 function(registro) {
 
                     return (
+
                         normalizarTexto(
                             registro["Responsable destino"]
                         )
@@ -2606,7 +2822,9 @@ function mostrarMovimientos() {
                         normalizarTexto(
                             responsableSeleccionado
                         )
+
                         ||
+
                         normalizarTexto(
                             registro["Responsable origen"]
                         )
@@ -2614,6 +2832,7 @@ function mostrarMovimientos() {
                         normalizarTexto(
                             responsableSeleccionado
                         )
+
                     );
 
                 }
@@ -2621,20 +2840,24 @@ function mostrarMovimientos() {
 
     }
 
+
     document.getElementById(
         "totalMovimientos"
     ).textContent =
         movimientosMostrar.length;
+
 
     mensajeVacio.textContent =
         responsableSeleccionado
             ? "No hay movimientos registrados para este responsable."
             : "No hay movimientos registrados.";
 
+
     mensajeVacio.style.display =
         movimientosMostrar.length === 0
             ? "block"
             : "none";
+
 
     movimientosMostrar.forEach(
         function(registro) {
@@ -2644,62 +2867,77 @@ function mostrarMovimientos() {
                     registro
                 );
 
+
             const fila =
                 document.createElement(
                     "tr"
                 );
 
+
             const fecha =
                 registro["Fecha"] ||
                 "";
+
 
             const codigo =
                 registro["Codigo"] ||
                 "";
 
+
             const lote =
                 registro["Lote"] ||
                 "";
+
 
             const ubicacionOrigen =
                 registro["Ubicacion origen"] ||
                 "";
 
+
             const responsableOrigen =
                 registro["Responsable origen"] ||
                 "";
+
 
             const ubicacionDestino =
                 registro["Ubicacion destino"] ||
                 "";
 
+
             const responsableDestino =
                 registro["Responsable destino"] ||
                 "";
+
 
             const descripcion =
                 registro["Descripcion"] ||
                 "";
 
+
             const tipo =
                 registro["Tipo"] ||
                 "";
+
 
             const unidadMedida =
                 registro["Unidad_Medida"] ||
                 "";
 
+
             const cantidad =
                 registro["Cantidad"] ??
                 "";
+
 
             const movimiento =
                 registro["Movimiento"] ||
                 "";
 
+
             const motivo =
                 registro["Motivo"] ||
                 "";
+
 
             fila.innerHTML = `
 
@@ -2825,6 +3063,7 @@ function mostrarMovimientos() {
 
                     </button>
 
+
                     <button
                         type="button"
                         class="btn-eliminar"
@@ -2882,6 +3121,7 @@ function mostrarMovimientos() {
 
             `;
 
+
             cuerpo.appendChild(
                 fila
             );
@@ -2891,27 +3131,33 @@ function mostrarMovimientos() {
 
 }
 
+
 function editarMovimiento(indice) {
 
     const movimiento =
         movimientos[indice];
 
+
     if (!movimiento) {
         return;
     }
 
+
     indiceEdicion =
         indice;
+
 
     document.getElementById(
         "tituloFormulario"
     ).textContent =
         "Editar movimiento";
 
+
     document.getElementById(
         "modalMovimiento"
     ).style.display =
         "flex";
+
 
     document.getElementById(
         "fecha"
@@ -2919,39 +3165,34 @@ function editarMovimiento(indice) {
         movimiento["Fecha"] ||
         "";
 
+
     const codigo =
         movimiento["Codigo"] ||
         "";
+
 
     document.getElementById(
         "codigo"
     ).value =
         codigo;
 
+
     const descripcion =
         movimiento["Descripcion"] ||
         "";
 
+
     const productoIndex =
-        productos.findIndex(
+        productosDisponibles.findIndex(
             producto =>
-                String(
-                    obtenerValor(
-                        producto,
-                        [
-                            "Descripcion",
-                            "Producto",
-                            "Nombre"
-                        ]
-                    ) || ""
-                )
-                .trim()
-                ===
-                String(
+                normalizarTexto(
+                    producto.descripcion
+                ) ===
+                normalizarTexto(
                     descripcion
                 )
-                .trim()
         );
+
 
     if (
         productoIndex >= 0
@@ -2965,6 +3206,7 @@ function editarMovimiento(indice) {
         actualizarProducto();
 
     }
+
 
     else {
 
@@ -2985,9 +3227,11 @@ function editarMovimiento(indice) {
         document.getElementById(
             "codigoNuevo"
         ).value =
-            codigo || "";
+            codigo ||
+            "";
 
     }
+
 
     document.getElementById(
         "lote"
@@ -2995,11 +3239,21 @@ function editarMovimiento(indice) {
         movimiento["Lote"] ||
         "";
 
+
+    /*
+     * IMPORTANTE:
+     *
+     * Los valores personalizados guardados
+     * anteriormente también se cargan aquí,
+     * aunque no existan en Personal.
+     */
+
     document.getElementById(
         "ubicacionOrigen"
     ).value =
         movimiento["Ubicacion origen"] ||
         "";
+
 
     document.getElementById(
         "responsableOrigen"
@@ -3007,11 +3261,13 @@ function editarMovimiento(indice) {
         movimiento["Responsable origen"] ||
         "";
 
+
     document.getElementById(
         "ubicacionDestino"
     ).value =
         movimiento["Ubicacion destino"] ||
         "";
+
 
     document.getElementById(
         "responsableDestino"
@@ -3019,13 +3275,16 @@ function editarMovimiento(indice) {
         movimiento["Responsable destino"] ||
         "";
 
+
     document.getElementById(
         "tipo"
     ).value =
         movimiento["Tipo"] ||
         "";
 
+
     actualizarObligatoriedadCodigoYLote();
+
 
     document.getElementById(
         "unidadMedida"
@@ -3033,14 +3292,13 @@ function editarMovimiento(indice) {
         movimiento["Unidad_Medida"] ||
         "";
 
-    /*
-     * Se carga la cantidad tal como viene
-     * de Supabase, sin aplicar redondeos.
-     */
+
     document.getElementById(
         "cantidad"
     ).value =
-        movimiento["Cantidad"] ?? "";
+        movimiento["Cantidad"] ??
+        "";
+
 
     document.getElementById(
         "movimiento"
@@ -3048,7 +3306,9 @@ function editarMovimiento(indice) {
         movimiento["Movimiento"] ||
         "";
 
+
     actualizarMotivos();
+
 
     document.getElementById(
         "motivo"
@@ -3056,33 +3316,40 @@ function editarMovimiento(indice) {
         movimiento["Motivo"] ||
         "";
 
+
     actualizarCamposSegunMovimiento();
 
 }
+
 
 async function eliminarMovimiento(indice) {
 
     const movimiento =
         movimientos[indice];
 
+
     if (!movimiento) {
         return;
     }
+
 
     const confirmar =
         confirm(
             "¿Está seguro de eliminar este movimiento?"
         );
 
+
     if (!confirmar) {
         return;
     }
+
 
     try {
 
         const id =
             movimiento.id ??
             movimiento.ID;
+
 
         if (!id) {
 
@@ -3092,10 +3359,12 @@ async function eliminarMovimiento(indice) {
 
         }
 
+
         const columnaID =
             movimiento.id !== undefined
                 ? "id"
                 : "ID";
+
 
         const {
             error
@@ -3108,21 +3377,28 @@ async function eliminarMovimiento(indice) {
                     id
                 );
 
+
         if (error) {
             throw error;
         }
+
 
         movimientos.splice(
             indice,
             1
         );
 
+
+        construirListaProductosDisponibles();
+
         mostrarMovimientos();
+
 
         alert(
             "Movimiento eliminado correctamente.\n\n" +
             "El Kardex se actualizará automáticamente."
         );
+
 
     } catch (error) {
 
@@ -3130,6 +3406,7 @@ async function eliminarMovimiento(indice) {
             "Error eliminando movimiento:",
             error
         );
+
 
         alert(
             "No se pudo eliminar el movimiento.\n\n" +
@@ -3140,15 +3417,18 @@ async function eliminarMovimiento(indice) {
 
 }
 
+
 function formatearFecha(fecha) {
 
     if (!fecha) {
         return "";
     }
 
+
     const partes =
         String(fecha)
             .split("-");
+
 
     if (
         partes.length === 3
@@ -3164,9 +3444,11 @@ function formatearFecha(fecha) {
 
     }
 
+
     return fecha;
 
 }
+
 
 window.addEventListener(
     "click",
@@ -3176,6 +3458,7 @@ window.addEventListener(
             document.getElementById(
                 "modalMovimiento"
             );
+
 
         if (
             event.target ===
@@ -3189,9 +3472,10 @@ window.addEventListener(
     }
 );
 
+
 async function iniciar() {
 
-    await cargarProductos();
+    await cargarProductosYMovimientosParaSelector();
 
     await cargarLotes();
 
@@ -3204,6 +3488,7 @@ async function iniciar() {
     actualizarCamposSegunMovimiento();
 
 }
+
 
 iniciar();
 
