@@ -13,23 +13,31 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- =====================================================
+         FUENTE BARLOW
+         ===================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 
     <style>
 
         :root {
-            --sidebar-bg: #1c1917;
-            --sidebar-hover: #292524;
+            --sidebar-bg: #5B2326;
+            --sidebar-hover: #E14E39;
 
             --header-bg: rgba(255, 255, 255, 0.95);
             --card-bg: rgba(255, 255, 255, 0.92);
             --card-hover: #ffffff;
 
             --text-main: #1c1917;
-            --text-muted: #5a3825;
+            --text-muted: #5B2326;
 
-            --brand-primary: #5a3825;
+            --brand-primary: #5B2326;
 
-            --border-color: rgba(90, 56, 37, 0.2);
+            --border-color: rgba(91, 35, 38, 0.2);
 
             --shadow-sm:
                 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -46,15 +54,20 @@
 
             margin: 0;
             padding: 0;
+
+            font-family:
+                "Barlow",
+                Arial,
+                sans-serif;
         }
 
 
         body {
 
             font-family:
-                "Times New Roman",
-                Times,
-                serif;
+                "Barlow",
+                Arial,
+                sans-serif;
 
             background-image:
                 url("imagenes/fondo_pgn.png");
@@ -144,7 +157,7 @@
 
             letter-spacing: 0.05em;
 
-            color: #a8a29e;
+            color: #ffffff;
         }
 
 
@@ -154,7 +167,7 @@
 
             border: none;
 
-            color: #a8a29e;
+            color: #ffffff;
 
             font-size: 1.5rem;
 
@@ -166,7 +179,7 @@
 
         .btn-close:hover {
 
-            color: #ffffff;
+            color: #E14E39;
         }
 
 
@@ -184,7 +197,7 @@
 
         .sidebar-nav a {
 
-            color: #e7e5e4;
+            color: #ffffff;
 
             text-decoration: none;
 
@@ -260,7 +273,7 @@
                 var(--header-bg);
 
             border-bottom:
-                1px solid var(--border-color);
+                4px solid #E14E39;
 
             padding: 16px 30px;
 
@@ -304,7 +317,7 @@
         .btn-menu:hover {
 
             background-color:
-                rgba(90, 56, 37, 0.1);
+                rgba(225, 78, 57, 0.1);
         }
 
 
@@ -448,14 +461,14 @@
 
             border:
                 1px solid
-                rgba(90, 56, 37, 0.3);
+                rgba(91, 35, 38, 0.3);
 
             border-radius: 8px;
 
             font-family:
-                "Times New Roman",
-                Times,
-                serif;
+                "Barlow",
+                Arial,
+                sans-serif;
 
             font-size: 1rem;
 
@@ -470,11 +483,11 @@
         .form-group input:focus {
 
             border-color:
-                var(--brand-primary);
+                #2DADD6;
 
             box-shadow:
                 0 0 0 3px
-                rgba(90, 56, 37, 0.1);
+                rgba(45, 173, 214, 0.15);
         }
 
 
@@ -493,7 +506,7 @@
         .btn-primary {
 
             background-color:
-                var(--brand-primary);
+                #E14E39;
 
             color: white;
 
@@ -504,9 +517,9 @@
             padding: 11px 20px;
 
             font-family:
-                "Times New Roman",
-                Times,
-                serif;
+                "Barlow",
+                Arial,
+                sans-serif;
 
             font-size: 1rem;
 
@@ -521,7 +534,8 @@
 
         .btn-primary:hover {
 
-            background-color: #6b4530;
+            background-color:
+                #5B2326;
         }
 
 
@@ -540,9 +554,9 @@
             padding: 11px 20px;
 
             font-family:
-                "Times New Roman",
-                Times,
-                serif;
+                "Barlow",
+                Arial,
+                sans-serif;
 
             font-size: 1rem;
 
@@ -591,7 +605,7 @@
         thead {
 
             background-color:
-                rgba(90, 56, 37, 0.08);
+                rgba(91, 35, 38, 0.08);
         }
 
 
@@ -607,7 +621,7 @@
             font-size: 1rem;
 
             border-bottom:
-                1px solid var(--border-color);
+                2px solid #E14E39;
         }
 
 
@@ -617,7 +631,7 @@
 
             border-bottom:
                 1px solid
-                rgba(90, 56, 37, 0.12);
+                rgba(91, 35, 38, 0.12);
 
             font-size: 1rem;
         }
@@ -626,7 +640,7 @@
         tbody tr:hover {
 
             background-color:
-                rgba(90, 56, 37, 0.04);
+                rgba(225, 78, 57, 0.08);
         }
 
 
@@ -672,13 +686,13 @@
 
         .btn-editar {
 
-            color: #6b4530;
+            color: #E14E39;
         }
 
 
         .btn-editar:hover {
 
-            color: #402719;
+            color: #5B2326;
         }
 
 
@@ -717,13 +731,13 @@
             display: block;
 
             background-color:
-                rgba(46, 107, 62, 0.12);
+                rgba(0, 127, 73, 0.12);
 
-            color: #2e6b3e;
+            color: #007F49;
 
             border:
                 1px solid
-                rgba(46, 107, 62, 0.25);
+                rgba(0, 127, 73, 0.25);
         }
 
 
@@ -732,13 +746,13 @@
             display: block;
 
             background-color:
-                rgba(160, 0, 0, 0.08);
+                rgba(225, 78, 57, 0.08);
 
-            color: #a00000;
+            color: #A00000;
 
             border:
                 1px solid
-                rgba(160, 0, 0, 0.20);
+                rgba(225, 78, 57, 0.20);
         }
 
 
