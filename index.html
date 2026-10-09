@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,22 +7,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cacaotería S.R.L. - Sistema de Gestión Operativa</title>
 
+    <!-- =====================================================
+         TIPOGRAFÍA BARLOW
+         ===================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
 
         :root {
-            --sidebar-bg: #1c1917;
-            --sidebar-hover: #292524;
+            /* =====================================================
+               COLORES OFICIALES DE LA MARCA
+               ===================================================== */
+
+            /* Marrón - Pantone 490 C - 60% */
+            --brand-brown: #5B2326;
+
+            /* Naranja - Pantone 7417 C - 30% */
+            --brand-orange: #E14E39;
+
+            /* Celeste - Pantone 638 C - 5% */
+            --brand-blue: #2DADD6;
+
+            /* Verde - Pantone 7726 C - 5% */
+            --brand-green: #007F49;
+
+
+            /* =====================================================
+               VARIABLES GENERALES
+               ===================================================== */
+
+            --sidebar-bg: #5B2326;
+            --sidebar-hover: #E14E39;
+
             --header-bg: rgba(255, 255, 255, 0.95);
             --card-bg: rgba(255, 255, 255, 0.92);
             --card-hover: #ffffff;
-            --text-main: #1c1917;
-            --text-muted: #5a3825;
-            --brand-primary: #5a3825;
-            --border-color: rgba(90, 56, 37, 0.2);
+
+            --text-main: #2b2525;
+            --text-muted: #5B2326;
+
+            --brand-primary: #5B2326;
+
+            --border-color: rgba(91, 35, 38, 0.20);
+
             --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
             --shadow-md: 0 6px 15px rgba(0, 0, 0, 0.15);
+
             --radius: 12px;
         }
+
 
         * {
             box-sizing: border-box;
@@ -29,18 +70,26 @@
             padding: 0;
         }
 
+
         body {
-            font-family: "Times New Roman", Times, serif;
+            font-family: "Barlow", sans-serif;
+
             background-image: url("imagenes/fondo_pgn.png");
+
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+
             color: var(--text-main);
+
             display: flex;
+
             min-height: 100vh;
+
             position: relative;
         }
+
 
         /* =====================================================
            PANTALLA DE INICIO DE SESIÓN
@@ -48,17 +97,20 @@
 
         #login-screen {
             position: fixed;
+
             inset: 0;
+
             z-index: 5000;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
             background-image:
                 linear-gradient(
-                    rgba(28, 25, 23, 0.55),
-                    rgba(28, 25, 23, 0.55)
+                    rgba(91, 35, 38, 0.70),
+                    rgba(91, 35, 38, 0.70)
                 ),
                 url("imagenes/fondo_pgn.png");
 
@@ -69,21 +121,26 @@
             padding: 20px;
         }
 
+
         .login-box {
             width: 100%;
+
             max-width: 420px;
 
             background: rgba(255, 255, 255, 0.96);
 
-            border: 1px solid rgba(90, 56, 37, 0.25);
+            border: 1px solid rgba(91, 35, 38, 0.25);
+
             border-radius: 16px;
 
             padding: 40px 35px;
 
             text-align: center;
 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.30);
         }
+
 
         .login-logo {
             width: 90px;
@@ -94,58 +151,74 @@
             margin-bottom: 15px;
         }
 
+
         .login-box h1 {
             color: var(--brand-primary);
+
             font-size: 1.8rem;
+
             margin-bottom: 6px;
         }
 
+
         .login-subtitle {
             color: var(--text-muted);
+
             font-size: 1rem;
+
             margin-bottom: 30px;
         }
 
+
         .login-field {
             text-align: left;
+
             margin-bottom: 18px;
         }
+
 
         .login-field label {
             display: block;
 
             color: var(--brand-primary);
 
-            font-weight: bold;
+            font-weight: 600;
 
             margin-bottom: 7px;
 
             font-size: 1rem;
         }
 
+
         .login-field input {
             width: 100%;
 
             padding: 12px 14px;
 
-            border: 1px solid rgba(90, 56, 37, 0.30);
+            border:
+                1px solid rgba(91, 35, 38, 0.30);
+
             border-radius: 8px;
 
-            font-family: "Times New Roman", Times, serif;
+            font-family: "Barlow", sans-serif;
+
             font-size: 1rem;
 
             outline: none;
 
-            transition: border-color 0.2s,
-                        box-shadow 0.2s;
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
         }
+
 
         .login-field input:focus {
-            border-color: var(--brand-primary);
+            border-color: var(--brand-orange);
 
             box-shadow:
-                0 0 0 3px rgba(90, 56, 37, 0.10);
+                0 0 0 3px rgba(225, 78, 57, 0.15);
         }
+
 
         .login-button {
             width: 100%;
@@ -155,34 +228,43 @@
             padding: 12px;
 
             border: none;
+
             border-radius: 8px;
 
-            background-color: var(--brand-primary);
+            background-color: var(--brand-orange);
+
             color: white;
 
-            font-family: "Times New Roman", Times, serif;
+            font-family: "Barlow", sans-serif;
 
             font-size: 1.05rem;
-            font-weight: bold;
+
+            font-weight: 600;
 
             cursor: pointer;
 
-            transition: background-color 0.2s,
-                        transform 0.1s;
+            transition:
+                background-color 0.2s,
+                transform 0.1s;
         }
 
+
         .login-button:hover {
-            background-color: #6b4530;
+            background-color: var(--brand-brown);
         }
+
 
         .login-button:active {
             transform: scale(0.98);
         }
 
+
         .login-button:disabled {
             opacity: 0.7;
+
             cursor: wait;
         }
+
 
         #login-message {
             min-height: 22px;
@@ -191,8 +273,9 @@
 
             font-size: 0.95rem;
 
-            color: #a00000;
+            color: var(--brand-brown);
         }
+
 
         /* =====================================================
            BARRA LATERAL DESPLEGABLE
@@ -200,10 +283,13 @@
 
         aside {
             width: 250px;
+
             background-color: var(--sidebar-bg);
-            color: #d6d3d1;
+
+            color: #ffffff;
 
             display: flex;
+
             flex-direction: column;
 
             padding: 24px 16px;
@@ -212,18 +298,22 @@
 
             top: 0;
             bottom: 0;
+
             left: -250px;
 
             z-index: 1000;
 
             transition: left 0.3s ease-in-out;
 
-            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+            box-shadow:
+                4px 0 12px rgba(0, 0, 0, 0.3);
         }
+
 
         aside.active {
             left: 0;
         }
+
 
         .sidebar-header {
             display: flex;
@@ -236,23 +326,26 @@
             padding-left: 8px;
         }
 
+
         .sidebar-brand {
             font-size: 1.1rem;
 
-            font-weight: bold;
+            font-weight: 600;
 
             text-transform: uppercase;
 
             letter-spacing: 0.05em;
 
-            color: #a8a29e;
+            color: #ffffff;
         }
+
 
         .btn-close {
             background: none;
+
             border: none;
 
-            color: #a8a29e;
+            color: #ffffff;
 
             font-size: 1.5rem;
 
@@ -261,21 +354,25 @@
             padding: 0 8px;
         }
 
+
         .btn-close:hover {
-            color: #ffffff;
+            color: var(--brand-orange);
         }
+
 
         .sidebar-nav {
             list-style: none;
 
             display: flex;
+
             flex-direction: column;
 
             gap: 6px;
         }
 
+
         .sidebar-nav a {
-            color: #e7e5e4;
+            color: #ffffff;
 
             text-decoration: none;
 
@@ -287,14 +384,18 @@
 
             display: block;
 
-            transition: background-color 0.2s;
+            transition:
+                background-color 0.2s,
+                color 0.2s;
         }
 
+
         .sidebar-nav a:hover {
-            background-color: var(--sidebar-hover);
+            background-color: var(--brand-orange);
 
             color: #ffffff;
         }
+
 
         .overlay {
             position: fixed;
@@ -304,16 +405,18 @@
             right: 0;
             bottom: 0;
 
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(91, 35, 38, 0.45);
 
             display: none;
 
             z-index: 999;
         }
 
+
         .overlay.active {
             display: block;
         }
+
 
         /* =====================================================
            CONTENEDOR PRINCIPAL
@@ -323,10 +426,12 @@
             flex: 1;
 
             display: flex;
+
             flex-direction: column;
 
             width: 100%;
         }
+
 
         /* =====================================================
            ENCABEZADO
@@ -335,7 +440,8 @@
         header {
             background-color: var(--header-bg);
 
-            border-bottom: 1px solid var(--border-color);
+            border-bottom:
+                3px solid var(--brand-orange);
 
             padding: 16px 30px;
 
@@ -350,10 +456,12 @@
             box-shadow: var(--shadow-sm);
         }
 
+
         .btn-menu {
             background: none;
 
-            border: 1px solid var(--border-color);
+            border:
+                1px solid var(--brand-brown);
 
             border-radius: 8px;
 
@@ -363,14 +471,20 @@
 
             cursor: pointer;
 
-            color: var(--brand-primary);
+            color: var(--brand-brown);
 
-            transition: background-color 0.2s;
+            transition:
+                background-color 0.2s,
+                color 0.2s;
         }
+
 
         .btn-menu:hover {
-            background-color: rgba(90, 56, 37, 0.1);
+            background-color: var(--brand-orange);
+
+            color: #ffffff;
         }
+
 
         .header-company {
             display: flex;
@@ -380,29 +494,41 @@
             gap: 16px;
         }
 
+
+        /* =====================================================
+           LOGO PRINCIPAL
+           ===================================================== */
+
         .logo {
-            height: 50px;
+            height: 90px;
 
             width: auto;
 
             object-fit: contain;
         }
 
+
+        /* =====================================================
+           INFORMACIÓN DE LA EMPRESA
+           ===================================================== */
+
         .company-info h1 {
-            font-size: 1.6rem;
+            font-size: 1.9rem;
 
-            font-weight: bold;
+            font-weight: 700;
 
-            color: var(--brand-primary);
+            color: var(--brand-brown);
 
             line-height: 1.2;
         }
+
 
         .company-info p {
             font-size: 1rem;
 
             color: var(--text-muted);
         }
+
 
         /* =====================================================
            ÁREA DE CONTENIDO
@@ -420,18 +546,25 @@
             flex: 1;
         }
 
+
         .page-title {
             font-size: 1.8rem;
 
-            font-weight: bold;
+            font-weight: 700;
 
-            color: var(--brand-primary);
+            color: var(--brand-brown);
 
             margin-bottom: 24px;
 
             text-shadow:
                 0 1px 2px rgba(255, 255, 255, 0.8);
+
+            border-left:
+                5px solid var(--brand-orange);
+
+            padding-left: 12px;
         }
+
 
         /* =====================================================
            GRID DE MÓDULOS
@@ -446,10 +579,15 @@
             gap: 20px;
         }
 
+
         .modulo-card {
             background-color: var(--card-bg);
 
-            border: 1px solid var(--border-color);
+            border:
+                2px solid rgba(91, 35, 38, 0.18);
+
+            border-bottom:
+                4px solid var(--brand-orange);
 
             border-radius: var(--radius);
 
@@ -469,8 +607,10 @@
 
             backdrop-filter: blur(4px);
 
-            transition: all 0.2s ease-in-out;
+            transition:
+                all 0.2s ease-in-out;
         }
+
 
         .modulo-card:hover {
             transform: translateY(-3px);
@@ -478,15 +618,36 @@
             box-shadow: var(--shadow-md);
 
             background-color: var(--card-hover);
+
+            border-color: var(--brand-orange);
+
+            border-bottom-color: var(--brand-orange);
         }
+
 
         .modulo-card h3 {
             font-size: 1.3rem;
 
-            font-weight: bold;
+            font-weight: 600;
 
-            color: var(--brand-primary);
+            color: var(--brand-brown);
         }
+
+
+        /* =====================================================
+           ACENTO NARANJA EN TODOS LOS MÓDULOS
+           ===================================================== */
+
+        .modulo-card:nth-child(1),
+        .modulo-card:nth-child(2),
+        .modulo-card:nth-child(3),
+        .modulo-card:nth-child(4),
+        .modulo-card:nth-child(5),
+        .modulo-card:nth-child(6) {
+            border-bottom:
+                4px solid var(--brand-orange);
+        }
+
 
         /* =====================================================
            FOOTER
@@ -495,18 +656,20 @@
         footer {
             padding: 20px;
 
-            border-top: 1px solid var(--border-color);
+            border-top:
+                3px solid var(--brand-orange);
 
             text-align: center;
 
             font-size: 0.95rem;
 
-            color: var(--brand-primary);
+            color: var(--brand-brown);
 
             background-color: var(--header-bg);
 
             backdrop-filter: blur(5px);
         }
+
 
         /* =====================================================
            RESPONSIVE
@@ -518,20 +681,34 @@
                 padding: 24px 16px;
             }
 
+
             header {
                 padding: 16px;
             }
 
+
             .login-box {
                 padding: 35px 25px;
             }
+
 
             .login-logo {
                 width: 75px;
                 height: 75px;
             }
 
+
             .login-box h1 {
+                font-size: 1.5rem;
+            }
+
+
+            .logo {
+                height: 70px;
+            }
+
+
+            .company-info h1 {
                 font-size: 1.5rem;
             }
 
@@ -582,6 +759,7 @@
 
                 </div>
 
+
                 <div class="login-field">
 
                     <label for="login-password">
@@ -598,12 +776,16 @@
 
                 </div>
 
+
                 <button
                     type="submit"
                     class="login-button"
                     id="login-button">
+
                     Ingresar
+
                 </button>
+
 
                 <p id="login-message"></p>
 
@@ -640,10 +822,13 @@
             <button
                 class="btn-close"
                 onclick="toggleMenu()">
+
                 &times;
+
             </button>
 
         </div>
+
 
         <ul class="sidebar-nav">
 
@@ -653,11 +838,13 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="#" onclick="toggleMenu()">
                     Reportes
                 </a>
             </li>
+
 
             <li>
                 <a href="#" onclick="toggleMenu()">
@@ -665,11 +852,13 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="lote.html" onclick="toggleMenu()">
                     Lote
                 </a>
             </li>
+
 
             <li>
                 <a href="personal.html" onclick="toggleMenu()">
@@ -677,9 +866,21 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="proveedores.html" onclick="toggleMenu()">
                     Proveedores
+                </a>
+            </li>
+
+
+            <!-- =====================================================
+                 NUEVO BOTÓN: COSTOS
+                 ===================================================== -->
+
+            <li>
+                <a href="costos.html" onclick="toggleMenu()">
+                    Costos
                 </a>
             </li>
 
@@ -700,8 +901,11 @@
                 class="btn-menu"
                 onclick="toggleMenu()"
                 title="Abrir menú">
+
                 ☰
+
             </button>
+
 
             <div class="header-company">
 
@@ -710,6 +914,7 @@
                     alt="Logo Cacaotería S.R.L."
                     class="logo"
                 >
+
 
                 <div class="company-info">
 
@@ -736,6 +941,7 @@
                 Módulos del Sistema
             </h2>
 
+
             <div class="modulos-grid">
 
                 <div
@@ -748,6 +954,7 @@
 
                 </div>
 
+
                 <div
                     class="modulo-card"
                     onclick="abrirPagina('inventario.html')">
@@ -757,6 +964,7 @@
                     </h3>
 
                 </div>
+
 
                 <div
                     class="modulo-card"
@@ -768,6 +976,7 @@
 
                 </div>
 
+
                 <div
                     class="modulo-card"
                     onclick="abrirPagina('movimientos.html')">
@@ -778,6 +987,7 @@
 
                 </div>
 
+
                 <div
                     class="modulo-card"
                     onclick="abrirPagina('kardex-responsable.html')">
@@ -787,6 +997,7 @@
                     </h3>
 
                 </div>
+
 
                 <div
                     class="modulo-card"
@@ -914,7 +1125,7 @@
                     "Ingresando...";
 
                 loginMessage.style.color =
-                    "#5a3825";
+                    "#5B2326";
 
                 loginButton.disabled = true;
 
@@ -962,7 +1173,7 @@
                         "Inicio de sesión correcto.";
 
                     loginMessage.style.color =
-                        "#2e6b3e";
+                        "#007F49";
 
 
                     setTimeout(function() {
@@ -1031,6 +1242,7 @@
 
                 }
 
+
             } catch (error) {
 
                 console.error(
@@ -1050,3 +1262,4 @@
 </body>
 
 </html>
+
