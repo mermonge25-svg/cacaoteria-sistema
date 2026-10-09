@@ -11,10 +11,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
 * {
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", Arial, sans-serif;
     box-sizing: border-box;
 }
 
@@ -25,10 +29,11 @@ body {
 }
 
 header {
-    background-color: #5a3825;
+    background-color: #5B2326;
     color: white;
     padding: 18px 30px;
     text-align: left;
+    border-bottom: 4px solid #E14E39;
 }
 
 header h1 {
@@ -58,12 +63,12 @@ header p {
 
 .barra-superior h2 {
     margin: 0;
-    color: #5a3825;
+    color: #5B2326;
     font-size: 24px;
 }
 
 .btn-agregar {
-    background-color: #5a3825;
+    background-color: #E14E39;
     color: white;
     border: none;
     padding: 10px 18px;
@@ -74,7 +79,7 @@ header p {
 }
 
 .btn-agregar:hover {
-    background-color: #6b4530;
+    background-color: #5B2326;
 }
 
 
@@ -101,11 +106,11 @@ header p {
 }
 
 .btn-editar {
-    color: #6b4530;
+    color: #E14E39;
 }
 
 .btn-editar:hover {
-    color: #402719;
+    color: #5B2326;
 }
 
 .btn-eliminar {
@@ -141,11 +146,11 @@ table {
 }
 
 th {
-    background-color: #6b4530;
+    background-color: #5B2326;
     color: white;
     padding: 12px;
     border: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 3px solid #E14E39;
     text-align: left;
     font-size: 16px;
     font-weight: bold;
@@ -160,7 +165,7 @@ td {
 }
 
 tbody tr:hover {
-    background-color: #f1e9e4;
+    background-color: rgba(225, 78, 57, 0.08);
 }
 
 tbody tr:last-child td {
@@ -168,7 +173,7 @@ tbody tr:last-child td {
 }
 
 .estado-activo {
-    color: #2e7d32;
+    color: #007F49;
     font-weight: bold;
 }
 
@@ -216,7 +221,7 @@ tbody tr:last-child td {
 
 .modal-contenido h2 {
     margin-top: 0;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .formulario {
@@ -233,13 +238,13 @@ tbody tr:last-child td {
 .campo label {
     margin-bottom: 5px;
     font-weight: bold;
-    color: #5a3825;
+    color: #5B2326;
 }
 
 .campo input,
 .campo select {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #2DADD6;
     border-radius: 5px;
     font-size: 16px;
 }
@@ -247,7 +252,7 @@ tbody tr:last-child td {
 .campo input:focus,
 .campo select:focus {
     outline: none;
-    border-color: #5a3825;
+    border-color: #007F49;
 }
 
 .botones-modal {
@@ -258,8 +263,8 @@ tbody tr:last-child td {
 }
 
 .btn-cerrar {
-    background-color: #777;
-    color: white;
+    background-color: #ddd;
+    color: #333;
     border: none;
     padding: 10px 18px;
     border-radius: 6px;
@@ -268,11 +273,11 @@ tbody tr:last-child td {
 }
 
 .btn-cerrar:hover {
-    background-color: #5f5f5f;
+    background-color: #ccc;
 }
 
 .btn-guardar {
-    background-color: #5a3825;
+    background-color: #E14E39;
     color: white;
     border: none;
     padding: 10px 18px;
@@ -282,7 +287,7 @@ tbody tr:last-child td {
 }
 
 .btn-guardar:hover {
-    background-color: #6b4530;
+    background-color: #5B2326;
 }
 
 </style>
