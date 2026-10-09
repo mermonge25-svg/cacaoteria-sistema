@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="es">
@@ -12,6 +11,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
 /* =========================================================
@@ -19,7 +22,7 @@
    ========================================================= */
 
 * {
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", Arial, sans-serif;
     box-sizing: border-box;
 }
 
@@ -35,10 +38,11 @@ body {
    ========================================================= */
 
 header {
-    background-color: #5a3825;
+    background-color: #5B2326;
     color: white;
     padding: 18px 30px;
     text-align: left;
+    border-bottom: 4px solid #E14E39;
 }
 
 header h1 {
@@ -73,7 +77,7 @@ header h1 {
 
 .barra-superior h2 {
     margin: 0;
-    color: #5a3825;
+    color: #5B2326;
     font-size: 25px;
 }
 
@@ -103,7 +107,7 @@ header h1 {
 
 .total-general-numero {
     font-size: 25px;
-    color: #5a3825;
+    color: #007F49;
     font-weight: bold;
 }
 
@@ -130,14 +134,14 @@ header h1 {
 
     background-color: white;
 
-    border: 1px solid #ccc;
+    border: 1px solid #2DADD6;
     border-radius: 5px;
 
     padding: 10px;
 
     cursor: pointer;
 
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", Arial, sans-serif;
     font-size: 16px;
 
     display: flex;
@@ -146,11 +150,12 @@ header h1 {
 }
 
 .selector:hover {
-    border-color: #8b6650;
+    border-color: #007F49;
 }
 
 .flecha {
     font-size: 13px;
+    color: #5B2326;
 }
 
 
@@ -160,8 +165,12 @@ header h1 {
 
 .icono-busqueda {
     font-size: 25px;
-    color: #5a3825;
+    color: #E14E39;
     cursor: pointer;
+}
+
+.icono-busqueda:hover {
+    color: #5B2326;
 }
 
 
@@ -181,7 +190,7 @@ header h1 {
 
     background-color: white;
 
-    border: 1px solid #ccc;
+    border: 1px solid #2DADD6;
     border-radius: 5px;
 
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -199,8 +208,12 @@ header h1 {
 
     outline: none;
 
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Barlow", Arial, sans-serif;
     font-size: 15px;
+}
+
+.busqueda:focus {
+    border-bottom-color: #2DADD6;
 }
 
 .lista-opciones {
@@ -217,12 +230,13 @@ header h1 {
 }
 
 .opcion:hover {
-    background-color: #f3eee9;
+    background-color: rgba(225, 78, 57, 0.08);
 }
 
 .opcion-descripcion {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
+    color: #5B2326;
 }
 
 .opcion-detalle {
@@ -260,7 +274,7 @@ header h1 {
 }
 
 .informacion-producto strong {
-    color: #5a3825;
+    color: #5B2326;
 }
 
 
@@ -270,8 +284,9 @@ header h1 {
 
 .desglose-titulo {
     margin: 0 0 20px 0;
-    color: #5a3825;
+    color: #5B2326;
     font-size: 20px;
+    font-weight: 600;
 }
 
 
@@ -297,7 +312,7 @@ table {
 }
 
 thead {
-    background-color: #6b4530;
+    background-color: #5B2326;
     color: white;
 }
 
@@ -309,12 +324,17 @@ td {
     white-space: nowrap;
 }
 
+th {
+    border-bottom: 3px solid #E14E39;
+}
+
 tbody tr:hover {
-    background-color: #f3eee9;
+    background-color: rgba(225, 78, 57, 0.08);
 }
 
 .cantidad {
     font-weight: bold;
+    color: #5B2326;
 }
 
 
@@ -323,15 +343,15 @@ tbody tr:hover {
 ========================================================= */
 
 .estado {
-    font-weight: normal;
+    font-weight: 500;
 }
 
 .estado-activo {
-    color: #3f5d3a;
+    color: #007F49;
 }
 
 .estado-agotado {
-    color: #805f43;
+    color: #E14E39;
 }
 
 
@@ -344,6 +364,28 @@ tbody tr:hover {
     padding: 25px;
     text-align: center;
     color: #777;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.lista-opciones::-webkit-scrollbar,
+.tabla-contenedor::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.lista-opciones::-webkit-scrollbar-thumb,
+.tabla-contenedor::-webkit-scrollbar-thumb {
+    background-color: #2DADD6;
+    border-radius: 10px;
+}
+
+.lista-opciones::-webkit-scrollbar-thumb:hover,
+.tabla-contenedor::-webkit-scrollbar-thumb:hover {
+    background-color: #007F49;
 }
 
 
@@ -600,1664 +642,1660 @@ tbody tr:hover {
 ========================================================= */
 
 const SUPABASE_URL =
-    "https://shjfohkiyfnqedrzjqpy.supabase.co";
-
-const SUPABASE_ANON_KEY =
-    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
-
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
-
-let productos = [];
-
-let movimientosConsignacion = [];
-
-let kardexResponsable = [];
-
-let productoActual = null;
-
-
-/* =========================================================
-   NORMALIZAR
-========================================================= */
-
-function normalizar(valor) {
-
-    return String(valor ?? "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim()
-        .toLowerCase();
-
-}
-
-
-/* =========================================================
-   VERIFICAR CONSIGNACIÓN
-========================================================= */
-
-function esConsignacion(movimiento) {
-
-    return (
-        normalizar(
-            movimiento["Motivo"]
-        ) === "consignacion"
-    );
-
-}
-
-
-/* =========================================================
-   OBTENER IDENTIFICADOR DEL PRODUCTO
-========================================================= */
-
-function obtenerClaveProducto(objeto) {
-
-    const codigo =
-        normalizar(
-            objeto["Codigo"]
-        );
-
-    const lote =
-        normalizar(
-            objeto["Lote"]
-        );
-
-    const descripcion =
-        normalizar(
-            objeto["Descripcion"]
-        );
-
-
-    if (
-        codigo &&
-        lote
-    ) {
-
-        return (
-            "CODIGO_LOTE||" +
-            codigo +
-            "||" +
-            lote
-        );
-
-    }
-
-
-    if (codigo) {
-
-        return (
-            "CODIGO||" +
-            codigo
-        );
-
-    }
-
-
-    if (lote) {
-
-        return (
-            "LOTE||" +
-            lote
-        );
-
-    }
-
-
-    return (
-        "DESCRIPCION||" +
-        descripcion
-    );
-
-}
-
-
-/* =========================================================
-   CLAVE DEL PUNTO DE CONSIGNACIÓN
-========================================================= */
-
-function obtenerClavePuntoDesdeMovimiento(
-    movimiento
-) {
-
-    const ubicacion =
-        normalizar(
-            movimiento[
-                "Ubicacion destino"
-            ]
-        );
-
-    const responsable =
-        normalizar(
-            movimiento[
-                "Responsable destino"
-            ]
-        );
-
-    return (
-        ubicacion +
-        "||" +
-        responsable
-    );
-
-}
-
-
-function obtenerClavePuntoDesdeKardex(
-    kardex
-) {
-
-    const ubicacion =
-        normalizar(
-            kardex[
-                "Ubicacion"
-            ]
-        );
-
-    const responsable =
-        normalizar(
-            kardex[
-                "Responsable"
-            ]
-        );
-
-    return (
-        ubicacion +
-        "||" +
-        responsable
-    );
-
-}
-
-
-/* =========================================================
-   FORMATEAR NÚMERO
-========================================================= */
-
-function formatearNumero(numero) {
-
-    return (
-        Number(numero) || 0
-    ).toLocaleString(
-        "es-CR",
-        {
-            maximumFractionDigits: 2
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
-
-function escaparHTML(texto) {
-
-    return String(texto ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   CARGAR MOVIMIENTOS
-========================================================= */
-
-async function cargarMovimientosConsignacion() {
-
-    let todosLosDatos = [];
-
-    let desde = 0;
-
-    const cantidadPorConsulta = 1000;
-
-
-    while (true) {
-
-        const hasta =
-            desde +
-            cantidadPorConsulta -
-            1;
-
-
-        const { data, error } =
-            await supabaseClient
-                .from("Movimientos")
-                .select(`
-                    id,
-                    Codigo,
-                    Lote,
-                    Descripcion,
-                    Cantidad,
-                    Movimiento,
-                    Motivo,
-                    "Responsable destino",
-                    "Ubicacion destino",
-                    Tipo,
-                    Unidad_Medida
-                `)
-                .range(
-                    desde,
-                    hasta
-                );
-
-
-        if (error) {
-
-            console.error(
-                "Error cargando Movimientos:",
-                error
-            );
-
-            alert(
-                "No se pudieron cargar los movimientos."
-            );
-
-            return false;
-
-        }
-
-
-        todosLosDatos =
-            todosLosDatos.concat(
-                data || []
-            );
-
-
-        if (
-            !data ||
-            data.length <
-                cantidadPorConsulta
-        ) {
-
-            break;
-
-        }
-
-
-        desde +=
-            cantidadPorConsulta;
-
-    }
-
-
-    movimientosConsignacion =
-        todosLosDatos.filter(
-            movimiento =>
-                esConsignacion(
-                    movimiento
-                )
-        );
-
-
-    console.log(
-        "Total de Movimientos leídos:",
-        todosLosDatos.length
-    );
-
-    console.log(
-        "Movimientos de consignación:",
-        movimientosConsignacion
-    );
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   CARGAR KARDEX RESPONSABLE
-========================================================= */
-
-async function cargarKardexResponsable() {
-
-    let todosLosDatos = [];
-
-    let desde = 0;
-
-    const cantidadPorConsulta = 1000;
-
-
-    while (true) {
-
-        const hasta =
-            desde +
-            cantidadPorConsulta -
-            1;
-
-
-        const { data, error } =
-            await supabaseClient
-                .from("Kardex_Responsable")
-                .select(`
-                    id,
-                    Codigo,
-                    Lote,
-                    Ubicacion,
-                    Responsable,
-                    Descripcion,
-                    "Saldo Inicial",
-                    Entradas,
-                    Salidas,
-                    "Saldo Final",
-                    Unidad_Medida,
-                    Tipo
-                `)
-                .range(
-                    desde,
-                    hasta
-                );
-
-
-        if (error) {
-
-            console.error(
-                "Error cargando Kardex_Responsable:",
-                error
-            );
-
-            alert(
-                "No se pudo cargar el Kardex por Responsable."
-            );
-
-            return false;
-
-        }
-
-
-        todosLosDatos =
-            todosLosDatos.concat(
-                data || []
-            );
-
-
-        if (
-            !data ||
-            data.length <
-                cantidadPorConsulta
-        ) {
-
-            break;
-
-        }
-
-
-        desde +=
-            cantidadPorConsulta;
-
-    }
-
-
-    kardexResponsable =
-        todosLosDatos;
-
-
-    console.log(
-        "Total de registros de Kardex leídos:",
-        kardexResponsable.length
-    );
-
-    console.log(
-        "Kardex por Responsable:",
-        kardexResponsable
-    );
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   CARGAR PRODUCTOS
-========================================================= */
-
-function cargarProductos() {
-
-    const mapaProductos =
-        new Map();
-
-
-    movimientosConsignacion.forEach(
-        movimiento => {
-
-            const clave =
-                obtenerClaveProducto(
-                    movimiento
-                );
-
-
-            const codigo =
-                String(
-                    movimiento["Codigo"] ?? ""
-                ).trim();
-
-            const lote =
-                String(
-                    movimiento["Lote"] ?? ""
-                ).trim();
-
-            const descripcion =
-                String(
-                    movimiento["Descripcion"] ?? ""
-                ).trim();
-
-
-            if (
-                !codigo &&
-                !lote &&
-                !descripcion
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                !mapaProductos.has(
-                    clave
-                )
-            ) {
-
-                mapaProductos.set(
-                    clave,
-                    {
-                        Codigo:
-                            codigo,
-
-                        Lote:
-                            lote,
-
-                        Descripcion:
-                            descripcion,
-
-                        Unidad_Medida:
-                            movimiento[
-                                "Unidad_Medida"
-                            ] || "",
-
-                        Tipo:
-                            movimiento[
-                                "Tipo"
-                            ] || ""
-                    }
-                );
-
-            }
-
-        }
-    );
-
-
-    productos =
-        Array.from(
-            mapaProductos.values()
-        );
-
-
-    productos.sort(
-        (a, b) => {
-
-            const descripcionA =
-                normalizar(
-                    a["Descripcion"]
-                );
-
-            const descripcionB =
-                normalizar(
-                    b["Descripcion"]
-                );
-
-
-            if (
-                descripcionA <
-                descripcionB
-            ) {
-
-                return -1;
-
-            }
-
-
-            if (
-                descripcionA >
-                descripcionB
-            ) {
-
-                return 1;
-
-            }
-
-
-            const codigoA =
-                normalizar(
-                    a["Codigo"]
-                );
-
-            const codigoB =
-                normalizar(
-                    b["Codigo"]
-                );
-
-
-            if (
-                codigoA <
-                codigoB
-            ) {
-
-                return -1;
-
-            }
-
-
-            if (
-                codigoA >
-                codigoB
-            ) {
-
-                return 1;
-
-            }
-
-
-            return normalizar(
-                a["Lote"]
-            ).localeCompare(
-                normalizar(
-                    b["Lote"]
-                )
-            );
-
-        }
-    );
-
-
-    console.log(
-        "Productos de consignación:",
-        productos
-    );
-
-
-    mostrarOpciones(
-        productos
-    );
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   OBTENER PUNTOS DE CONSIGNACIÓN
-========================================================= */
-
-function obtenerPuntosConsignacion(
-    producto
-) {
-
-    const claveProducto =
-        obtenerClaveProducto(
-            producto
-        );
-
-
-    const puntos =
-        new Map();
-
-
-    /*
-       PRIMERO:
-       Obtener todos los puntos que realmente
-       aparecen como destinos de consignación.
-    */
-
-    movimientosConsignacion.forEach(
-        movimiento => {
-
-            const ubicacion =
-                String(
-                    movimiento[
-                        "Ubicacion destino"
-                    ] ?? ""
-                ).trim();
-
-            const responsable =
-                String(
-                    movimiento[
-                        "Responsable destino"
-                    ] ?? ""
-                ).trim();
-
-
-            if (
-                !ubicacion &&
-                !responsable
-            ) {
-
-                return;
-
-            }
-
-
-            const clave =
-                obtenerClavePuntoDesdeMovimiento(
-                    movimiento
-                );
-
-
-            if (
-                !puntos.has(
-                    clave
-                )
-            ) {
-
-                puntos.set(
-                    clave,
-                    {
-                        ubicacion:
-                            ubicacion,
-
-                        responsable:
-                            responsable
-                    }
-                );
-
-            }
-
-        }
-    );
-
-
-    /*
-       SEGUNDO:
-       Para el producto seleccionado, revisar el Kardex.
-       Si el producto existe en alguno de los puntos de
-       consignación, se conserva ese punto aunque el
-       producto haya llegado por inventario inicial.
-    */
-
-    kardexResponsable.forEach(
-        kardex => {
-
-            if (
-                obtenerClaveProducto(
-                    kardex
-                )
-                !==
-                claveProducto
-            ) {
-
-                return;
-
-            }
-
-
-            const clavePunto =
-                obtenerClavePuntoDesdeKardex(
-                    kardex
-                );
-
-
-            if (
-                !clavePunto ||
-                clavePunto === "||"
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                puntos.has(
-                    clavePunto
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            /*
-               Solo agregamos el punto si ese mismo
-               punto aparece en Movimientos como una
-               consignación.
-            */
-
-            const existeComoPuntoConsignacion =
-                movimientosConsignacion.some(
-                    movimiento =>
-                        obtenerClavePuntoDesdeMovimiento(
-                            movimiento
-                        ) ===
-                        clavePunto
-                );
-
-
-            if (
-                existeComoPuntoConsignacion
-            ) {
-
-                puntos.set(
-                    clavePunto,
-                    {
-                        ubicacion:
-                            String(
-                                kardex[
-                                    "Ubicacion"
-                                ] ?? ""
-                            ).trim(),
-
-                        responsable:
-                            String(
-                                kardex[
-                                    "Responsable"
-                                ] ?? ""
-                            ).trim()
-                    }
-                );
-
-            }
-
-        }
-    );
-
-
-    return puntos;
-
-}
-
-
-/* =========================================================
-   OBTENER SALDO DEL PRODUCTO EN UN PUNTO
-========================================================= */
-
-function obtenerSaldoProductoEnPunto(
-    producto,
-    punto
-) {
-
-    const claveProducto =
-        obtenerClaveProducto(
-            producto
-        );
-
-
-    const clavePunto =
-        normalizar(
-            punto.ubicacion
-        )
-        +
-        "||"
-        +
-        normalizar(
-            punto.responsable
-        );
-
-
-    let total =
-        0;
-
-
-    kardexResponsable.forEach(
-        kardex => {
-
-            if (
-                obtenerClaveProducto(
-                    kardex
-                )
-                !==
-                claveProducto
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                obtenerClavePuntoDesdeKardex(
-                    kardex
-                )
-                !==
-                clavePunto
-            ) {
-
-                return;
-
-            }
-
-
-            total +=
-                Number(
-                    kardex[
-                        "Saldo Final"
-                    ]
-                ) || 0;
-
-        }
-    );
-
-
-    return total;
-
-}
-
-
-/* =========================================================
-   CALCULAR TOTAL DEL PRODUCTO
-========================================================= */
-
-function calcularTotalConsignacionProducto(
-    producto
-) {
-
-    const puntos =
-        obtenerPuntosConsignacion(
-            producto
-        );
-
-
-    let total =
-        0;
-
-
-    puntos.forEach(
-        punto => {
-
-            total +=
-                obtenerSaldoProductoEnPunto(
-                    producto,
-                    punto
-                );
-
-        }
-    );
-
-
-    return total;
-
-}
-
-
-/* =========================================================
-   TOTAL GENERAL
-========================================================= */
-
-function calcularTotalGeneral() {
-
-    let total =
-        0;
-
-
-    productos.forEach(
-        producto => {
-
-            total +=
-                calcularTotalConsignacionProducto(
-                    producto
-                );
-
-        }
-    );
-
-
-    document.getElementById(
-        "totalGeneral"
-    ).textContent =
-        formatearNumero(
-            total
-        );
-
-}
-
-
-/* =========================================================
-   MOSTRAR OPCIONES
-========================================================= */
-
-function mostrarOpciones(
-    lista
-) {
-
-    const contenedor =
-        document.getElementById(
-            "listaOpciones"
-        );
-
-
-    contenedor.innerHTML =
-        "";
-
-
-    if (
-        !lista.length
-    ) {
-
-        contenedor.innerHTML = `
-
-            <div class="sin-opciones">
-
-                No hay productos con movimientos
-                de consignación.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    lista.forEach(
-        producto => {
-
-            const opcion =
-                document.createElement(
-                    "div"
-                );
-
-
-            opcion.className =
-                "opcion";
-
-
-            const total =
-                calcularTotalConsignacionProducto(
-                    producto
-                );
-
-
-            const codigo =
-                String(
-                    producto[
-                        "Codigo"
-                    ] ?? ""
-                ).trim();
-
-
-            const lote =
-                String(
-                    producto[
-                        "Lote"
-                    ] ?? ""
-                ).trim();
-
-
-            let detalle =
-                "";
-
-
-            if (codigo) {
-
-                detalle +=
-                    "Código: " +
-                    escaparHTML(
-                        codigo
-                    );
-
-            }
-
-
-            if (lote) {
-
-                if (detalle) {
-
-                    detalle +=
-                        " | ";
-
-                }
-
-
-                detalle +=
-                    "Lote: " +
-                    escaparHTML(
-                        lote
-                    );
-
-            }
-
-
-            if (!detalle) {
-
-                detalle =
-                    "Sin código ni lote";
-
-            }
-
-
-            if (
-                producto[
-                    "Unidad_Medida"
-                ]
-            ) {
-
-                detalle +=
-                    " | " +
-                    formatearNumero(
-                        total
-                    ) +
-                    " " +
-                    escaparHTML(
-                        producto[
-                            "Unidad_Medida"
-                        ]
-                    );
-
-            } else {
-
-                detalle +=
-                    " | " +
-                    formatearNumero(
-                        total
-                    );
-
-            }
-
-
-            opcion.innerHTML = `
-
-                <div class="opcion-descripcion">
-
-                    ${escaparHTML(
-                        producto[
-                            "Descripcion"
-                        ]
-                    )}
-
-                </div>
-
-
-                <div class="opcion-detalle">
-
-                    ${detalle}
-
-                </div>
-
-            `;
-
-
-            opcion.onclick =
-                function() {
-
-                    seleccionarProducto(
-                        producto
-                    );
-
-                };
-
-
-            contenedor.appendChild(
-                opcion
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   FILTRAR PRODUCTOS
-========================================================= */
-
-function filtrarOpciones() {
-
-    const texto =
-        normalizar(
-            document.getElementById(
-                "busqueda"
-            ).value
-        );
-
-
-    const filtrados =
-        productos.filter(
-            producto => {
-
-                const descripcion =
-                    normalizar(
-                        producto[
-                            "Descripcion"
-                        ]
-                    );
-
-                const codigo =
-                    normalizar(
-                        producto[
-                            "Codigo"
-                        ]
-                    );
-
-                const lote =
-                    normalizar(
-                        producto[
-                            "Lote"
-                        ]
-                    );
-
-
-                return (
-
-                    descripcion.includes(
-                        texto
-                    )
-
-                    ||
-
-                    codigo.includes(
-                        texto
-                    )
-
-                    ||
-
-                    lote.includes(
-                        texto
-                    )
-
-                );
-
-            }
-        );
-
-
-    mostrarOpciones(
-        filtrados
-    );
-
-}
-
-
-/* =========================================================
-   ABRIR SELECTOR
-========================================================= */
-
-function alternarOpciones() {
-
-    const opciones =
-        document.getElementById(
-            "opciones"
-        );
-
-
-    if (
-        opciones.style.display ===
-        "block"
-    ) {
-
-        opciones.style.display =
-            "none";
-
-    } else {
-
-        opciones.style.display =
-            "block";
-
-
-        setTimeout(
-            function() {
-
-                document.getElementById(
-                    "busqueda"
-                ).focus();
-
-            },
-            50
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   BOTÓN DE BÚSQUEDA
-========================================================= */
-
-function abrirBusqueda() {
-
-    const opciones =
-        document.getElementById(
-            "opciones"
-        );
-
-
-    opciones.style.display =
-        "block";
-
-
-    setTimeout(
-        function() {
-
-            document.getElementById(
-                "busqueda"
-            ).focus();
-
-        },
-        50
-    );
-
-}
-
-
-/* =========================================================
-   SELECCIONAR PRODUCTO
-========================================================= */
-
-function seleccionarProducto(
-    producto
-) {
-
-    productoActual =
-        producto;
-
-
-    const descripcion =
-        producto[
-            "Descripcion"
-        ] || "Producto";
-
-
-    const lote =
-        String(
-            producto[
-                "Lote"
-            ] ?? ""
-        ).trim();
-
-
-    document.getElementById(
-        "textoSelector"
-    ).textContent =
-
-        lote
-
-            ?
-
-        descripcion +
-        " — Lote: " +
-        lote
-
-            :
-
-        descripcion;
-
-
-    document.getElementById(
-        "opciones"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "busqueda"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "nombreProducto"
-    ).textContent =
-        producto[
-            "Descripcion"
-        ] || "-";
-
-
-    document.getElementById(
-        "codigoProducto"
-    ).textContent =
-        producto[
-            "Codigo"
-        ] || "-";
-
-
-    document.getElementById(
-        "loteProducto"
-    ).textContent =
-        producto[
-            "Lote"
-        ] || "-";
-
-
-    document.getElementById(
-        "productoSeleccionado"
-    ).style.display =
-        "block";
-
-
-    cargarDetalleProducto(
-        producto
-    );
-
-}
-
-
-/* =========================================================
-   CARGAR TABLA DE DETALLE
-========================================================= */
-
-function cargarDetalleProducto(
-    producto
-) {
-
-    const tbody =
-        document.getElementById(
-            "detalleConsignacion"
-        );
-
-
-    tbody.innerHTML =
-        "";
-
-
-    const puntos =
-        obtenerPuntosConsignacion(
-            producto
-        );
-
-
-    if (
-        !puntos.size
-    ) {
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="5"
-                    class="sin-datos"
-                >
-
-                    Este producto no tiene puntos
-                    de consignación registrados.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
-    const puntosOrdenados =
-        Array.from(
-            puntos.values()
-        ).sort(
-            (a, b) => {
-
-                const responsableA =
-                    normalizar(
-                        a.responsable
-                    );
-
-                const responsableB =
-                    normalizar(
-                        b.responsable
-                    );
-
-
-                if (
-                    responsableA <
-                    responsableB
-                ) {
-
-                    return -1;
-
-                }
-
-
-                if (
-                    responsableA >
-                    responsableB
-                ) {
-
-                    return 1;
-
-                }
-
-
-                return normalizar(
-                    a.ubicacion
-                ).localeCompare(
-                    normalizar(
-                        b.ubicacion
-                    )
-                );
-
-            }
-        );
-
-
-    puntosOrdenados.forEach(
-        punto => {
-
-            const cantidad =
-                obtenerSaldoProductoEnPunto(
-                    producto,
-                    punto
-                );
-
-
-            const estado =
-                cantidad > 0
-                    ? "Activo"
-                    : "Agotado";
-
-
-            const claseEstado =
-                cantidad > 0
-                    ? "estado-activo"
-                    : "estado-agotado";
-
-
-            const fila =
-                document.createElement(
-                    "tr"
-                );
-
-
-            fila.innerHTML = `
-
-                <td>
-
-                    ${escaparHTML(
-                        punto.responsable
-                    )}
-
-                </td>
-
-
-                <td>
-
-                    ${escaparHTML(
-                        punto.ubicacion
-                    )}
-
-                </td>
-
-
-                <td>
-
-                    ${escaparHTML(
-                        producto[
-                            "Descripcion"
-                        ]
-                    )}
-
-                </td>
-
-
-                <td class="cantidad">
-
-                    ${formatearNumero(
-                        cantidad
-                    )}
-
-                </td>
-
-
-                <td>
-
-                    <span
-                        class="estado ${claseEstado}"
-                    >
-
-                        ${estado}
-
-                    </span>
-
-                </td>
-
-            `;
-
-
-            tbody.appendChild(
-                fila
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   CERRAR SELECTOR AL HACER CLIC AFUERA
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function(event) {
-
-        const contenedor =
-            document.querySelector(
-                ".selector-contenedor"
-            );
-
-
-        if (
-            !contenedor.contains(
-                event.target
-            )
-        ) {
-
-            document.getElementById(
-                "opciones"
-            ).style.display =
-                "none";
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   INICIALIZAR
-========================================================= */
-
-async function inicializar() {
-
-    document.getElementById(
-        "listaOpciones"
-    ).innerHTML = `
-
-        <div class="cargando">
-
-            Cargando productos...
-
-        </div>
-
-    `;
-
-
-    /*
-       1. Cargar consignaciones desde Movimientos.
-    */
-
-    const movimientosOK =
-        await cargarMovimientosConsignacion();
-
-
-    if (!movimientosOK) {
-
-        return;
-
-    }
-
-
-    /*
-       2. Cargar saldos desde Kardex_Responsable.
-    */
-
-    const kardexOK =
-        await cargarKardexResponsable();
-
-
-    if (!kardexOK) {
-
-        return;
-
-    }
-
-
-    /*
-       3. Construir productos dinámicamente
-          desde las consignaciones.
-    */
-
-    const productosOK =
-        cargarProductos();
-
-
-    if (!productosOK) {
-
-        return;
-
-    }
-
-
-    /*
-       4. Calcular total general.
-    */
-
-    calcularTotalGeneral();
-
-}
-
-
-/* =========================================================
-   EJECUTAR
-========================================================= */
-
-inicializar();
-
-</script>
-
-</body>
-
+    "https://shjfohkiyfnqedrzjqpy.supabase.co"; 
+ 
+const SUPABASE_ANON_KEY = 
+    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs"; 
+ 
+const supabaseClient = 
+    supabase.createClient( 
+        SUPABASE_URL, 
+        SUPABASE_ANON_KEY 
+    ); 
+ 
+ 
+/* ========================================================= 
+   VARIABLES 
+========================================================= */ 
+ 
+let productos = []; 
+ 
+let movimientosConsignacion = []; 
+ 
+let kardexResponsable = []; 
+ 
+let productoActual = null; 
+ 
+ 
+/* ========================================================= 
+   NORMALIZAR 
+========================================================= */ 
+ 
+function normalizar(valor) { 
+ 
+    return String(valor ?? "") 
+        .normalize("NFD") 
+        .replace(/[\u0300-\u036f]/g, "") 
+        .trim() 
+        .toLowerCase(); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   VERIFICAR CONSIGNACIÓN 
+========================================================= */ 
+ 
+function esConsignacion(movimiento) { 
+ 
+    return ( 
+        normalizar( 
+            movimiento["Motivo"] 
+        ) === "consignacion" 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   OBTENER IDENTIFICADOR DEL PRODUCTO 
+========================================================= */ 
+ 
+function obtenerClaveProducto(objeto) { 
+ 
+    const codigo = 
+        normalizar( 
+            objeto["Codigo"] 
+        ); 
+ 
+    const lote = 
+        normalizar( 
+            objeto["Lote"] 
+        ); 
+ 
+    const descripcion = 
+        normalizar( 
+            objeto["Descripcion"] 
+        ); 
+ 
+ 
+    if ( 
+        codigo && 
+        lote 
+    ) { 
+ 
+        return ( 
+            "CODIGO_LOTE||" + 
+            codigo + 
+            "||" + 
+            lote 
+        ); 
+ 
+    } 
+ 
+ 
+    if (codigo) { 
+ 
+        return ( 
+            "CODIGO||" + 
+            codigo 
+        ); 
+ 
+    } 
+ 
+ 
+    if (lote) { 
+ 
+        return ( 
+            "LOTE||" + 
+            lote 
+        ); 
+ 
+    } 
+ 
+ 
+    return ( 
+        "DESCRIPCION||" + 
+        descripcion 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CLAVE DEL PUNTO DE CONSIGNACIÓN 
+========================================================= */ 
+ 
+function obtenerClavePuntoDesdeMovimiento( 
+    movimiento 
+) { 
+ 
+    const ubicacion = 
+        normalizar( 
+            movimiento[ 
+                "Ubicacion destino" 
+            ] 
+        ); 
+ 
+    const responsable = 
+        normalizar( 
+            movimiento[ 
+                "Responsable destino" 
+            ] 
+        ); 
+ 
+    return ( 
+        ubicacion + 
+        "||" + 
+        responsable 
+    ); 
+ 
+} 
+ 
+ 
+function obtenerClavePuntoDesdeKardex( 
+    kardex 
+) { 
+ 
+    const ubicacion = 
+        normalizar( 
+            kardex[ 
+                "Ubicacion" 
+            ] 
+        ); 
+ 
+    const responsable = 
+        normalizar( 
+            kardex[ 
+                "Responsable" 
+            ] 
+        ); 
+ 
+    return ( 
+        ubicacion + 
+        "||" + 
+        responsable 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   FORMATEAR NÚMERO 
+========================================================= */ 
+ 
+function formatearNumero(numero) { 
+ 
+    return ( 
+        Number(numero) || 0 
+    ).toLocaleString( 
+        "es-CR", 
+        { 
+            maximumFractionDigits: 2 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   ESCAPAR HTML 
+========================================================= */ 
+ 
+function escaparHTML(texto) { 
+ 
+    return String(texto ?? "") 
+        .replace(/&/g, "&amp;") 
+        .replace(/</g, "&lt;") 
+        .replace(/>/g, "&gt;") 
+        .replace(/"/g, "&quot;") 
+        .replace(/'/g, "&#039;"); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CARGAR MOVIMIENTOS 
+========================================================= */ 
+ 
+async function cargarMovimientosConsignacion() { 
+ 
+    let todosLosDatos = []; 
+ 
+    let desde = 0; 
+ 
+    const cantidadPorConsulta = 1000; 
+ 
+ 
+    while (true) { 
+ 
+        const hasta = 
+            desde + 
+            cantidadPorConsulta - 
+            1; 
+ 
+ 
+        const { data, error } = 
+            await supabaseClient 
+                .from("Movimientos") 
+                .select(` 
+                    id, 
+                    Codigo, 
+                    Lote, 
+                    Descripcion, 
+                    Cantidad, 
+                    Movimiento, 
+                    Motivo, 
+                    "Responsable destino", 
+                    "Ubicacion destino", 
+                    Tipo, 
+                    Unidad_Medida 
+                `) 
+                .range( 
+                    desde, 
+                    hasta 
+                ); 
+ 
+ 
+        if (error) { 
+ 
+            console.error( 
+                "Error cargando Movimientos:", 
+                error 
+            ); 
+ 
+            alert( 
+                "No se pudieron cargar los movimientos." 
+            ); 
+ 
+            return false; 
+ 
+        } 
+ 
+ 
+        todosLosDatos = 
+            todosLosDatos.concat( 
+                data || [] 
+            ); 
+ 
+ 
+        if ( 
+            !data || 
+            data.length < 
+                cantidadPorConsulta 
+        ) { 
+ 
+            break; 
+ 
+        } 
+ 
+ 
+        desde += 
+            cantidadPorConsulta; 
+ 
+    } 
+ 
+ 
+    movimientosConsignacion = 
+        todosLosDatos.filter( 
+            movimiento => 
+                esConsignacion( 
+                    movimiento 
+                ) 
+        ); 
+ 
+ 
+    console.log( 
+        "Total de Movimientos leídos:", 
+        todosLosDatos.length 
+    ); 
+ 
+    console.log( 
+        "Movimientos de consignación:", 
+        movimientosConsignacion 
+    ); 
+ 
+ 
+    return true; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CARGAR KARDEX RESPONSABLE 
+========================================================= */ 
+ 
+async function cargarKardexResponsable() { 
+ 
+    let todosLosDatos = []; 
+ 
+    let desde = 0; 
+ 
+    const cantidadPorConsulta = 1000; 
+ 
+ 
+    while (true) { 
+ 
+        const hasta = 
+            desde + 
+            cantidadPorConsulta - 
+            1; 
+ 
+ 
+        const { data, error } = 
+            await supabaseClient 
+                .from("Kardex_Responsable") 
+                .select(` 
+                    id, 
+                    Codigo, 
+                    Lote, 
+                    Ubicacion, 
+                    Responsable, 
+                    Descripcion, 
+                    "Saldo Inicial", 
+                    Entradas, 
+                    Salidas, 
+                    "Saldo Final", 
+                    Unidad_Medida, 
+                    Tipo 
+                `) 
+                .range( 
+                    desde, 
+                    hasta 
+                ); 
+ 
+ 
+        if (error) { 
+ 
+            console.error( 
+                "Error cargando Kardex_Responsable:", 
+                error 
+            ); 
+ 
+            alert( 
+                "No se pudo cargar el Kardex por Responsable." 
+            ); 
+ 
+            return false; 
+ 
+        } 
+ 
+ 
+        todosLosDatos = 
+            todosLosDatos.concat( 
+                data || [] 
+            ); 
+ 
+ 
+        if ( 
+            !data || 
+            data.length < 
+                cantidadPorConsulta 
+        ) { 
+ 
+            break; 
+ 
+        } 
+ 
+ 
+        desde += 
+            cantidadPorConsulta; 
+ 
+    } 
+ 
+ 
+    kardexResponsable = 
+        todosLosDatos; 
+ 
+ 
+    console.log( 
+        "Total de registros de Kardex leídos:", 
+        kardexResponsable.length 
+    ); 
+ 
+    console.log( 
+        "Kardex por Responsable:", 
+        kardexResponsable 
+    ); 
+ 
+ 
+    return true; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CARGAR PRODUCTOS 
+========================================================= */ 
+ 
+function cargarProductos() { 
+ 
+    const mapaProductos = 
+        new Map(); 
+ 
+ 
+    movimientosConsignacion.forEach( 
+        movimiento => { 
+ 
+            const clave = 
+                obtenerClaveProducto( 
+                    movimiento 
+                ); 
+ 
+ 
+            const codigo = 
+                String( 
+                    movimiento["Codigo"] ?? "" 
+                ).trim(); 
+ 
+            const lote = 
+                String( 
+                    movimiento["Lote"] ?? "" 
+                ).trim(); 
+ 
+            const descripcion = 
+                String( 
+                    movimiento["Descripcion"] ?? "" 
+                ).trim(); 
+ 
+ 
+            if ( 
+                !codigo && 
+                !lote && 
+                !descripcion 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            if ( 
+                !mapaProductos.has( 
+                    clave 
+                ) 
+            ) { 
+ 
+                mapaProductos.set( 
+                    clave, 
+                    { 
+                        Codigo: 
+                            codigo, 
+ 
+                        Lote: 
+                            lote, 
+ 
+                        Descripcion: 
+                            descripcion, 
+ 
+                        Unidad_Medida: 
+                            movimiento[ 
+                                "Unidad_Medida" 
+                            ] || "", 
+ 
+                        Tipo: 
+                            movimiento[ 
+                                "Tipo" 
+                            ] || "" 
+                    } 
+                ); 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    productos = 
+        Array.from( 
+            mapaProductos.values() 
+        ); 
+ 
+ 
+    productos.sort( 
+        (a, b) => { 
+ 
+            const descripcionA = 
+                normalizar( 
+                    a["Descripcion"] 
+                ); 
+ 
+            const descripcionB = 
+                normalizar( 
+                    b["Descripcion"] 
+                ); 
+ 
+ 
+            if ( 
+                descripcionA < 
+                descripcionB 
+            ) { 
+ 
+                return -1; 
+ 
+            } 
+ 
+ 
+            if ( 
+                descripcionA > 
+                descripcionB 
+            ) { 
+ 
+                return 1; 
+ 
+            } 
+ 
+ 
+            const codigoA = 
+                normalizar( 
+                    a["Codigo"] 
+                ); 
+ 
+            const codigoB = 
+                normalizar( 
+                    b["Codigo"] 
+                ); 
+ 
+ 
+            if ( 
+                codigoA < 
+                codigoB 
+            ) { 
+ 
+                return -1; 
+ 
+            } 
+ 
+ 
+            if ( 
+                codigoA > 
+                codigoB 
+            ) { 
+ 
+                return 1; 
+ 
+            } 
+ 
+ 
+            return normalizar( 
+                a["Lote"] 
+            ).localeCompare( 
+                normalizar( 
+                    b["Lote"] 
+                ) 
+            ); 
+ 
+        } 
+    ); 
+ 
+ 
+    console.log( 
+        "Productos de consignación:", 
+        productos 
+    ); 
+ 
+ 
+    mostrarOpciones( 
+        productos 
+    ); 
+ 
+ 
+    return true; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   OBTENER PUNTOS DE CONSIGNACIÓN 
+========================================================= */ 
+ 
+function obtenerPuntosConsignacion( 
+    producto 
+) { 
+ 
+    const claveProducto = 
+        obtenerClaveProducto( 
+            producto 
+        ); 
+ 
+ 
+    const puntos = 
+        new Map(); 
+ 
+ 
+    /* 
+       PRIMERO: 
+       Obtener todos los puntos que realmente 
+       aparecen como destinos de consignación. 
+    */ 
+ 
+    movimientosConsignacion.forEach( 
+        movimiento => { 
+ 
+            const ubicacion = 
+                String( 
+                    movimiento[ 
+                        "Ubicacion destino" 
+                    ] ?? "" 
+                ).trim(); 
+ 
+            const responsable = 
+                String( 
+                    movimiento[ 
+                        "Responsable destino" 
+                    ] ?? "" 
+                ).trim(); 
+ 
+ 
+            if ( 
+                !ubicacion && 
+                !responsable 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            const clave = 
+                obtenerClavePuntoDesdeMovimiento( 
+                    movimiento 
+                ); 
+ 
+ 
+            if ( 
+                !puntos.has( 
+                    clave 
+                ) 
+            ) { 
+ 
+                puntos.set( 
+                    clave, 
+                    { 
+                        ubicacion: 
+                            ubicacion, 
+ 
+                        responsable: 
+                            responsable 
+                    } 
+                ); 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    /* 
+       SEGUNDO: 
+       Para el producto seleccionado, revisar el Kardex. 
+       Si el producto existe en alguno de los puntos de 
+       consignación, se conserva ese punto aunque el 
+       producto haya llegado por inventario inicial. 
+    */ 
+ 
+    kardexResponsable.forEach( 
+        kardex => { 
+ 
+            if ( 
+                obtenerClaveProducto( 
+                    kardex 
+                ) 
+                !== 
+                claveProducto 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            const clavePunto = 
+                obtenerClavePuntoDesdeKardex( 
+                    kardex 
+                ); 
+ 
+ 
+            if ( 
+                !clavePunto || 
+                clavePunto === "||" 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            if ( 
+                puntos.has( 
+                    clavePunto 
+                ) 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            /* 
+               Solo agregamos el punto si ese mismo 
+               punto aparece en Movimientos como una 
+               consignación. 
+            */ 
+ 
+            const existeComoPuntoConsignacion = 
+                movimientosConsignacion.some( 
+                    movimiento => 
+                        obtenerClavePuntoDesdeMovimiento( 
+                            movimiento 
+                        ) === 
+                        clavePunto 
+                ); 
+ 
+ 
+            if ( 
+                existeComoPuntoConsignacion 
+            ) { 
+ 
+                puntos.set( 
+                    clavePunto, 
+                    { 
+                        ubicacion: 
+                            String( 
+                                kardex[ 
+                                    "Ubicacion" 
+                                ] ?? "" 
+                            ).trim(), 
+ 
+                        responsable: 
+                            String( 
+                                kardex[ 
+                                    "Responsable" 
+                                ] ?? "" 
+                            ).trim() 
+                    } 
+                ); 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    return puntos; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   OBTENER SALDO DEL PRODUCTO EN UN PUNTO 
+========================================================= */ 
+ 
+function obtenerSaldoProductoEnPunto( 
+    producto, 
+    punto 
+) { 
+ 
+    const claveProducto = 
+        obtenerClaveProducto( 
+            producto 
+        ); 
+ 
+ 
+    const clavePunto = 
+        normalizar( 
+            punto.ubicacion 
+        ) 
+        + 
+        "||" 
+        + 
+        normalizar( 
+            punto.responsable 
+        ); 
+ 
+ 
+    let total = 
+        0; 
+ 
+ 
+    kardexResponsable.forEach( 
+        kardex => { 
+ 
+            if ( 
+                obtenerClaveProducto( 
+                    kardex 
+                ) 
+                !== 
+                claveProducto 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            if ( 
+                obtenerClavePuntoDesdeKardex( 
+                    kardex 
+                ) 
+                !== 
+                clavePunto 
+            ) { 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            total += 
+                Number( 
+                    kardex[ 
+                        "Saldo Final" 
+                    ] 
+                ) || 0; 
+ 
+        } 
+    ); 
+ 
+ 
+    return total; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CALCULAR TOTAL DEL PRODUCTO 
+========================================================= */ 
+ 
+function calcularTotalConsignacionProducto( 
+    producto 
+) { 
+ 
+    const puntos = 
+        obtenerPuntosConsignacion( 
+            producto 
+        ); 
+ 
+ 
+    let total = 
+        0; 
+ 
+ 
+    puntos.forEach( 
+        punto => { 
+ 
+            total += 
+                obtenerSaldoProductoEnPunto( 
+                    producto, 
+                    punto 
+                ); 
+ 
+        } 
+    ); 
+ 
+ 
+    return total; 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   TOTAL GENERAL 
+========================================================= */ 
+ 
+function calcularTotalGeneral() { 
+ 
+    let total = 
+        0; 
+ 
+ 
+    productos.forEach( 
+        producto => { 
+ 
+            total += 
+                calcularTotalConsignacionProducto( 
+                    producto 
+                ); 
+ 
+        } 
+    ); 
+ 
+ 
+    document.getElementById( 
+        "totalGeneral" 
+    ).textContent = 
+        formatearNumero( 
+            total 
+        ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   MOSTRAR OPCIONES 
+========================================================= */ 
+ 
+function mostrarOpciones( 
+    lista 
+) { 
+ 
+    const contenedor = 
+        document.getElementById( 
+            "listaOpciones" 
+        ); 
+ 
+ 
+    contenedor.innerHTML = 
+        ""; 
+ 
+ 
+    if ( 
+        !lista.length 
+    ) { 
+ 
+        contenedor.innerHTML = ` 
+ 
+            <div class="sin-opciones"> 
+ 
+                No hay productos con movimientos 
+                de consignación. 
+ 
+            </div> 
+ 
+        `; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    lista.forEach( 
+        producto => { 
+ 
+            const opcion = 
+                document.createElement( 
+                    "div" 
+                ); 
+ 
+ 
+            opcion.className = 
+                "opcion"; 
+ 
+ 
+            const total = 
+                calcularTotalConsignacionProducto( 
+                    producto 
+                ); 
+ 
+ 
+            const codigo = 
+                String( 
+                    producto[ 
+                        "Codigo" 
+                    ] ?? "" 
+                ).trim(); 
+ 
+ 
+            const lote = 
+                String( 
+                    producto[ 
+                        "Lote" 
+                    ] ?? "" 
+                ).trim(); 
+ 
+ 
+            let detalle = 
+                ""; 
+ 
+ 
+            if (codigo) { 
+ 
+                detalle += 
+                    "Código: " + 
+                    escaparHTML( 
+                        codigo 
+                    ); 
+ 
+            } 
+ 
+ 
+            if (lote) { 
+ 
+                if (detalle) { 
+ 
+                    detalle += 
+                        " | "; 
+ 
+                } 
+ 
+ 
+                detalle += 
+                    "Lote: " + 
+                    escaparHTML( 
+                        lote 
+                    ); 
+ 
+            } 
+ 
+ 
+            if (!detalle) { 
+ 
+                detalle = 
+                    "Sin código ni lote"; 
+ 
+            } 
+ 
+ 
+            if ( 
+                producto[ 
+                    "Unidad_Medida" 
+                ] 
+            ) { 
+ 
+                detalle += 
+                    " | " + 
+                    formatearNumero( 
+                        total 
+                    ) + 
+                    " " + 
+                    escaparHTML( 
+                        producto[ 
+                            "Unidad_Medida" 
+                        ] 
+                    ); 
+ 
+            } else { 
+ 
+                detalle += 
+                    " | " + 
+                    formatearNumero( 
+                        total 
+                    ); 
+ 
+            } 
+ 
+ 
+            opcion.innerHTML = ` 
+ 
+                <div class="opcion-descripcion"> 
+ 
+                    ${escaparHTML( 
+                        producto[ 
+                            "Descripcion" 
+                        ] 
+                    )} 
+ 
+                </div> 
+ 
+ 
+                <div class="opcion-detalle"> 
+ 
+                    ${detalle} 
+ 
+                </div> 
+ 
+            `; 
+ 
+ 
+            opcion.onclick = 
+                function() { 
+ 
+                    seleccionarProducto( 
+                        producto 
+                    ); 
+ 
+                }; 
+ 
+ 
+            contenedor.appendChild( 
+                opcion 
+            ); 
+ 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   FILTRAR PRODUCTOS 
+========================================================= */ 
+ 
+function filtrarOpciones() { 
+ 
+    const texto = 
+        normalizar( 
+            document.getElementById( 
+                "busqueda" 
+            ).value 
+        ); 
+ 
+ 
+    const filtrados = 
+        productos.filter( 
+            producto => { 
+ 
+                const descripcion = 
+                    normalizar( 
+                        producto[ 
+                            "Descripcion" 
+                        ] 
+                    ); 
+ 
+                const codigo = 
+                    normalizar( 
+                        producto[ 
+                            "Codigo" 
+                        ] 
+                    ); 
+ 
+                const lote = 
+                    normalizar( 
+                        producto[ 
+                            "Lote" 
+                        ] 
+                    ); 
+ 
+ 
+                return ( 
+ 
+                    descripcion.includes( 
+                        texto 
+                    ) 
+ 
+                    || 
+ 
+                    codigo.includes( 
+                        texto 
+                    ) 
+ 
+                    || 
+ 
+                    lote.includes( 
+                        texto 
+                    ) 
+ 
+                ); 
+ 
+            } 
+        ); 
+ 
+ 
+    mostrarOpciones( 
+        filtrados 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   ABRIR SELECTOR 
+========================================================= */ 
+ 
+function alternarOpciones() { 
+ 
+    const opciones = 
+        document.getElementById( 
+            "opciones" 
+        ); 
+ 
+ 
+    if ( 
+        opciones.style.display === 
+        "block" 
+    ) { 
+ 
+        opciones.style.display = 
+            "none"; 
+ 
+    } else { 
+ 
+        opciones.style.display = 
+            "block"; 
+ 
+ 
+        setTimeout( 
+            function() { 
+ 
+                document.getElementById( 
+                    "busqueda" 
+                ).focus(); 
+ 
+            }, 
+            50 
+        ); 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   BOTÓN DE BÚSQUEDA 
+========================================================= */ 
+ 
+function abrirBusqueda() { 
+ 
+    const opciones = 
+        document.getElementById( 
+            "opciones" 
+        ); 
+ 
+ 
+    opciones.style.display = 
+        "block"; 
+ 
+ 
+    setTimeout( 
+        function() { 
+ 
+            document.getElementById( 
+                "busqueda" 
+            ).focus(); 
+ 
+        }, 
+        50 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   SELECCIONAR PRODUCTO 
+========================================================= */ 
+ 
+function seleccionarProducto( 
+    producto 
+) { 
+ 
+    productoActual = 
+        producto; 
+ 
+ 
+    const descripcion = 
+        producto[ 
+            "Descripcion" 
+        ] || "Producto"; 
+ 
+ 
+    const lote = 
+        String( 
+            producto[ 
+                "Lote" 
+            ] ?? "" 
+        ).trim(); 
+ 
+ 
+    document.getElementById( 
+        "textoSelector" 
+    ).textContent = 
+ 
+        lote 
+ 
+            ? 
+ 
+        descripcion + 
+        " — Lote: " + 
+        lote 
+ 
+            : 
+ 
+        descripcion; 
+ 
+ 
+    document.getElementById( 
+        "opciones" 
+    ).style.display = 
+        "none"; 
+ 
+ 
+    document.getElementById( 
+        "busqueda" 
+    ).value = 
+        ""; 
+ 
+ 
+    document.getElementById( 
+        "nombreProducto" 
+    ).textContent = 
+        producto[ 
+            "Descripcion" 
+        ] || "-"; 
+ 
+ 
+    document.getElementById( 
+        "codigoProducto" 
+    ).textContent = 
+        producto[ 
+            "Codigo" 
+        ] || "-"; 
+ 
+ 
+    document.getElementById( 
+        "loteProducto" 
+    ).textContent = 
+        producto[ 
+            "Lote" 
+        ] || "-"; 
+ 
+ 
+    document.getElementById( 
+        "productoSeleccionado" 
+    ).style.display = 
+        "block"; 
+ 
+ 
+    cargarDetalleProducto( 
+        producto 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CARGAR TABLA DE DETALLE 
+========================================================= */ 
+ 
+function cargarDetalleProducto( 
+    producto 
+) { 
+ 
+    const tbody = 
+        document.getElementById( 
+            "detalleConsignacion" 
+        ); 
+ 
+ 
+    tbody.innerHTML = 
+        ""; 
+ 
+ 
+    const puntos = 
+        obtenerPuntosConsignacion( 
+            producto 
+        ); 
+ 
+ 
+    if ( 
+        !puntos.size 
+    ) { 
+ 
+        tbody.innerHTML = ` 
+ 
+            <tr> 
+ 
+                <td 
+                    colspan="5" 
+                    class="sin-datos" 
+                > 
+ 
+                    Este producto no tiene puntos 
+                    de consignación registrados. 
+ 
+                </td> 
+ 
+            </tr> 
+ 
+        `; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    const puntosOrdenados = 
+        Array.from( 
+            puntos.values() 
+        ).sort( 
+            (a, b) => { 
+ 
+                const responsableA = 
+                    normalizar( 
+                        a.responsable 
+                    ); 
+ 
+                const responsableB = 
+                    normalizar( 
+                        b.responsable 
+                    ); 
+ 
+ 
+                if ( 
+                    responsableA < 
+                    responsableB 
+                ) { 
+ 
+                    return -1; 
+ 
+                } 
+ 
+ 
+                if ( 
+                    responsableA > 
+                    responsableB 
+                ) { 
+ 
+                    return 1; 
+ 
+                } 
+ 
+ 
+                return normalizar( 
+                    a.ubicacion 
+                ).localeCompare( 
+                    normalizar( 
+                        b.ubicacion 
+                    ) 
+                ); 
+ 
+            } 
+        ); 
+ 
+ 
+    puntosOrdenados.forEach( 
+        punto => { 
+ 
+            const cantidad = 
+                obtenerSaldoProductoEnPunto( 
+                    producto, 
+                    punto 
+                ); 
+ 
+ 
+            const estado = 
+                cantidad > 0 
+                    ? "Activo" 
+                    : "Agotado"; 
+ 
+ 
+            const claseEstado = 
+                cantidad > 0 
+                    ? "estado-activo" 
+                    : "estado-agotado"; 
+ 
+ 
+            const fila = 
+                document.createElement( 
+                    "tr" 
+                ); 
+ 
+ 
+            fila.innerHTML = ` 
+ 
+                <td> 
+ 
+                    ${escaparHTML( 
+                        punto.responsable 
+                    )} 
+ 
+                </td> 
+ 
+ 
+                <td> 
+ 
+                    ${escaparHTML( 
+                        punto.ubicacion 
+                    )} 
+ 
+                </td> 
+ 
+ 
+                <td> 
+ 
+                    ${escaparHTML( 
+                        producto[ 
+                            "Descripcion" 
+                        ] 
+                    )} 
+ 
+                </td> 
+ 
+ 
+                <td class="cantidad"> 
+ 
+                    ${formatearNumero( 
+                        cantidad 
+                    )} 
+ 
+                </td> 
+ 
+                <td> 
+ 
+                    <span 
+                        class="estado ${claseEstado}" 
+                    > 
+ 
+                        ${estado} 
+ 
+                    </span> 
+ 
+                </td> 
+ 
+            `; 
+ 
+ 
+            tbody.appendChild( 
+                fila 
+            ); 
+ 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   CERRAR SELECTOR AL HACER CLIC AFUERA 
+========================================================= */ 
+ 
+document.addEventListener( 
+    "click", 
+    function(event) { 
+ 
+        const contenedor = 
+            document.querySelector( 
+                ".selector-contenedor" 
+            ); 
+ 
+        if ( 
+            !contenedor.contains( 
+                event.target 
+            ) 
+        ) { 
+ 
+            document.getElementById( 
+                "opciones" 
+            ).style.display = 
+                "none"; 
+ 
+        } 
+ 
+    } 
+); 
+ 
+ 
+/* ========================================================= 
+   INICIALIZAR 
+========================================================= */ 
+ 
+async function inicializar() { 
+ 
+    document.getElementById( 
+        "listaOpciones" 
+    ).innerHTML = ` 
+ 
+        <div class="cargando"> 
+ 
+            Cargando productos... 
+ 
+        </div> 
+ 
+    `; 
+ 
+ 
+    /* 
+       1. Cargar consignaciones desde Movimientos. 
+    */ 
+ 
+    const movimientosOK = 
+        await cargarMovimientosConsignacion(); 
+ 
+ 
+    if (!movimientosOK) { 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    /* 
+       2. Cargar saldos desde Kardex_Responsable. 
+    */ 
+ 
+    const kardexOK = 
+        await cargarKardexResponsable(); 
+ 
+ 
+    if (!kardexOK) { 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    /* 
+       3. Construir productos dinámicamente 
+          desde las consignaciones. 
+    */ 
+ 
+    const productosOK = 
+        cargarProductos(); 
+ 
+ 
+    if (!productosOK) { 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    /* 
+       4. Calcular total general. 
+    */ 
+ 
+    calcularTotalGeneral(); 
+ 
+} 
+ 
+ 
+/* ========================================================= 
+   EJECUTAR 
+========================================================= */ 
+ 
+inicializar(); 
+ 
+</script> 
+ 
+</body> 
+ 
 </html>
-
-
