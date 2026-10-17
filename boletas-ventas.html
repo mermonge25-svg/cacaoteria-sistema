@@ -238,8 +238,8 @@ button {
 }
 
 /* =========================================
-   ESTILOS DE LA BOLETA PDF
-========================================= */
+   BOLETA PDF - A4 HORIZONTAL
+   ========================================= */
 
 .boleta-pdf {
     width: 281mm;
@@ -248,7 +248,7 @@ button {
     background: #ffffff;
     color: #222222;
     padding: 5mm;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.2;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -259,8 +259,6 @@ button {
     font-family: "Barlow", Arial, sans-serif;
     box-sizing: border-box;
 }
-
-/* ENCABEZADO SIN LOGO, ALINEADO A LA IZQUIERDA */
 
 .boleta-encabezado {
     display: block;
@@ -292,11 +290,9 @@ button {
     font-weight: 500;
 }
 
-/* DATOS DE LA BOLETA */
-
 .boleta-datos {
     margin-bottom: 9px;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .boleta-dato {
@@ -320,18 +316,19 @@ button {
 
 .boleta-subtitulo {
     color: #5B2326;
-    font-size: 17px;
+    font-size: 15px;
     margin: 10px 0 5px;
     font-weight: 800;
 }
 
-/* TABLAS */
+/* TABLAS: MISMO TAMAÑO DE LETRA EN TODAS LAS COLUMNAS */
 
 .boleta-tabla {
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .boleta-tabla thead {
@@ -341,13 +338,14 @@ button {
 .boleta-tabla th {
     background: #5B2326;
     color: #ffffff;
-    font-size: 13px;
-    line-height: 1.1;
+    font-size: 12px;
+    line-height: 1.15;
     font-weight: 800;
     text-align: left;
     padding: 5px 4px;
     border: 1px solid #5B2326;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
     vertical-align: middle;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -356,18 +354,33 @@ button {
 .boleta-tabla td {
     padding: 5px 4px;
     border: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.2;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
     vertical-align: middle;
     font-weight: 500;
+    min-width: 0;
 }
 
 .boleta-tabla .numero {
     text-align: right;
 }
 
-/* ANCHOS DE COLUMNAS DEL DETALLE */
+/* CÓDIGOS: MISMA LETRA Y DENTRO DE SU CELDA */
+
+.tabla-detalle th:nth-child(4),
+.tabla-detalle td:nth-child(4),
+.tabla-productos th:nth-child(1),
+.tabla-productos td:nth-child(1) {
+    overflow-wrap: anywhere;
+    word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    font-size: 12px;
+}
+
+/* DETALLE DE VENTAS: 8 COLUMNAS */
 
 .tabla-detalle th:nth-child(1),
 .tabla-detalle td:nth-child(1) {
@@ -376,49 +389,76 @@ button {
 
 .tabla-detalle th:nth-child(2),
 .tabla-detalle td:nth-child(2) {
-    width: 14%;
+    width: 13%;
 }
 
 .tabla-detalle th:nth-child(3),
 .tabla-detalle td:nth-child(3) {
-    width: 14%;
+    width: 13%;
 }
 
 .tabla-detalle th:nth-child(4),
 .tabla-detalle td:nth-child(4) {
-    width: 25%;
+    width: 11%;
 }
 
 .tabla-detalle th:nth-child(5),
 .tabla-detalle td:nth-child(5) {
-    width: 7%;
+    width: 20%;
 }
 
 .tabla-detalle th:nth-child(6),
 .tabla-detalle td:nth-child(6) {
-    width: 16%;
+    width: 7%;
 }
 
 .tabla-detalle th:nth-child(7),
 .tabla-detalle td:nth-child(7) {
-    width: 15%;
+    width: 13%;
 }
 
-/* ANCHOS DE LOS RESÚMENES */
+.tabla-detalle th:nth-child(8),
+.tabla-detalle td:nth-child(8) {
+    width: 14%;
+}
+
+/* RESUMEN POR PRODUCTO */
 
 .tabla-productos th:nth-child(1),
 .tabla-productos td:nth-child(1) {
-    width: 50%;
+    width: 20%;
 }
 
 .tabla-productos th:nth-child(2),
 .tabla-productos td:nth-child(2) {
-    width: 25%;
+    width: 40%;
 }
 
 .tabla-productos th:nth-child(3),
 .tabla-productos td:nth-child(3) {
+    width: 20%;
+}
+
+.tabla-productos th:nth-child(4),
+.tabla-productos td:nth-child(4) {
+    width: 20%;
+}
+
+/* RESUMEN POR CANAL */
+
+.tabla-canales th:nth-child(1),
+.tabla-canales td:nth-child(1) {
+    width: 45%;
+}
+
+.tabla-canales th:nth-child(2),
+.tabla-canales td:nth-child(2) {
     width: 25%;
+}
+
+.tabla-canales th:nth-child(3),
+.tabla-canales td:nth-child(3) {
+    width: 30%;
 }
 
 /* FILAS DE TOTALES */
@@ -428,7 +468,7 @@ button {
     color: #ffffff !important;
     border: 1px solid #5B2326;
     padding: 6px 4px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.15;
     font-weight: 800;
     -webkit-print-color-adjust: exact;
@@ -449,30 +489,26 @@ button {
     font-weight: 500;
 }
 
-/* EVITAR DIVIDIR FILAS DE TABLAS */
+/* EVITAR CORTAR FILAS */
 
 .boleta-tabla tr {
     page-break-inside: avoid;
     break-inside: avoid;
 }
 
-/* =========================================
-   CAMBIO: RESUMEN POR CANAL EN OTRA HOJA
-========================================= */
+/* RESUMEN POR CANAL: CONTINÚA DESPUÉS DEL RESUMEN POR PRODUCTO */
 
 .resumen-canales {
-    page-break-before: always;
-    break-before: page;
-    margin-top: 0;
+    margin-top: 14px;
     padding-top: 0;
+    page-break-before: auto;
+    break-before: auto;
 }
 
 .resumen-canales .boleta-subtitulo {
-    margin-top: 0;
+    margin-top: 10px;
     padding-top: 0;
 }
-
-/* CONTENEDOR DE GENERACIÓN DEL PDF */
 
 #contenedorBoleta {
     position: fixed;
@@ -567,9 +603,7 @@ button {
 <script>
 "use strict";
 
-/* =========================================
-   CONEXIÓN CON SUPABASE
-========================================= */
+/* CONEXIÓN CON SUPABASE */
 
 const SUPABASE_URL =
     "https://shjfohkiyfnqedrzjqpy.supabase.co";
@@ -586,9 +620,7 @@ let ventas = [];
 let boletasDisponibles = [];
 let boletaSeleccionada = null;
 
-/* =========================================
-   UTILIDADES
-========================================= */
+/* UTILIDADES */
 
 function limpiarTexto(valor) {
     if (valor === null || valor === undefined) return "";
@@ -718,9 +750,11 @@ function obtenerResponsable(venta) {
     return limpiarTexto(venta.Responsable) || "No registrado";
 }
 
-/* =========================================
-   AGRUPAR VENTAS POR SEMANA
-========================================= */
+function obtenerCodigo(venta) {
+    return limpiarTexto(venta.Codigo) || "Sin código";
+}
+
+/* AGRUPAR VENTAS POR SEMANA */
 
 function construirBoletasSemanales() {
     const grupos = new Map();
@@ -750,9 +784,7 @@ function construirBoletasSemanales() {
     );
 }
 
-/* =========================================
-   CARGAR VENTAS DESDE SUPABASE
-========================================= */
+/* CARGAR VENTAS DESDE SUPABASE */
 
 async function cargarVentas() {
     const estadoCarga = document.getElementById("estadoCarga");
@@ -798,9 +830,7 @@ async function cargarVentas() {
     }
 }
 
-/* =========================================
-   MOSTRAR SEMANAS DISPONIBLES
-========================================= */
+/* MOSTRAR SEMANAS DISPONIBLES */
 
 function mostrarBoletasDisponibles() {
     const lista = document.getElementById("listaFechas");
@@ -846,9 +876,7 @@ function mostrarBoletasDisponibles() {
     });
 }
 
-/* =========================================
-   SELECCIONAR BOLETA
-========================================= */
+/* SELECCIONAR BOLETA */
 
 function seleccionarBoleta(indice) {
     const boleta = boletasDisponibles[indice];
@@ -893,22 +921,25 @@ function seleccionarBoleta(indice) {
     ocultarMensaje();
 }
 
-/* =========================================
-   RESUMEN POR PRODUCTO
-========================================= */
+/* RESUMEN POR PRODUCTO */
 
 function agruparVentas(ventasSemana) {
     const grupos = new Map();
 
     ventasSemana.forEach(venta => {
+        const codigo = obtenerCodigo(venta);
+
         const producto =
             limpiarTexto(venta.Descripcion) ||
             "Producto sin descripción";
 
-        const clave = producto.toLocaleLowerCase("es");
+        const clave =
+            `${codigo.toLocaleLowerCase("es")}||` +
+            `${producto.toLocaleLowerCase("es")}`;
 
         if (!grupos.has(clave)) {
             grupos.set(clave, {
+                codigo,
                 producto,
                 cantidad: 0,
                 total: 0
@@ -921,14 +952,18 @@ function agruparVentas(ventasSemana) {
         grupo.total += Number(venta.Total) || 0;
     });
 
-    return Array.from(grupos.values()).sort(
-        (a, b) => a.producto.localeCompare(b.producto, "es")
-    );
+    return Array.from(grupos.values()).sort((a, b) => {
+        const comparacionCodigo = a.codigo.localeCompare(b.codigo, "es");
+
+        if (comparacionCodigo !== 0) {
+            return comparacionCodigo;
+        }
+
+        return a.producto.localeCompare(b.producto, "es");
+    });
 }
 
-/* =========================================
-   RESUMEN POR CANAL
-========================================= */
+/* RESUMEN POR CANAL */
 
 function agruparVentasPorCanal(ventasSemana) {
     const grupos = new Map();
@@ -956,9 +991,7 @@ function agruparVentasPorCanal(ventasSemana) {
     );
 }
 
-/* =========================================
-   CREAR CONTENIDO DE LA BOLETA
-========================================= */
+/* CREAR CONTENIDO DE LA BOLETA */
 
 function crearContenidoBoleta(boleta) {
     const ventasSemana = [...boleta.ventas].sort((a, b) => {
@@ -974,7 +1007,9 @@ function crearContenidoBoleta(boleta) {
 
         if (porResponsable !== 0) return porResponsable;
 
-        return obtenerDestino(a).localeCompare(obtenerDestino(b), "es");
+        return obtenerDestino(a).localeCompare(
+            obtenerDestino(b), "es"
+        );
     });
 
     const agrupadas = agruparVentas(ventasSemana);
@@ -1000,6 +1035,7 @@ function crearContenidoBoleta(boleta) {
                 <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
                 <td>${escaparHTML(obtenerResponsable(venta))}</td>
                 <td>${escaparHTML(obtenerDestino(venta))}</td>
+                <td class="celda-codigo">${escaparHTML(obtenerCodigo(venta))}</td>
                 <td>${escaparHTML(producto)}</td>
                 <td class="numero">${formatearNumero(venta.Cantidad)}</td>
                 <td class="numero">${formatearColones(venta.Precio_Unitario)}</td>
@@ -1010,6 +1046,7 @@ function crearContenidoBoleta(boleta) {
 
     const filasProductos = agrupadas.map(grupo => `
         <tr>
+            <td class="celda-codigo">${escaparHTML(grupo.codigo)}</td>
             <td>${escaparHTML(grupo.producto)}</td>
             <td class="numero">${formatearNumero(grupo.cantidad)}</td>
             <td class="numero">${formatearColones(grupo.total)}</td>
@@ -1069,6 +1106,7 @@ function crearContenidoBoleta(boleta) {
                         <th>Fecha</th>
                         <th>Responsable</th>
                         <th>Canal</th>
+                        <th>Código</th>
                         <th>Producto</th>
                         <th class="numero">Cant.</th>
                         <th class="numero">Precio unitario</th>
@@ -1080,7 +1118,7 @@ function crearContenidoBoleta(boleta) {
                 </tbody>
                 <tfoot>
                     <tr class="fila-total">
-                        <td colspan="6">TOTAL DE VENTAS DE LA SEMANA</td>
+                        <td colspan="7">TOTAL DE VENTAS DE LA SEMANA</td>
                         <td class="numero">${formatearColones(totalVendido)}</td>
                     </tr>
                 </tfoot>
@@ -1091,6 +1129,7 @@ function crearContenidoBoleta(boleta) {
             <table class="boleta-tabla tabla-productos">
                 <thead>
                     <tr>
+                        <th>Código</th>
                         <th>Producto</th>
                         <th class="numero">Cantidad total</th>
                         <th class="numero">Importe total</th>
@@ -1101,25 +1140,17 @@ function crearContenidoBoleta(boleta) {
                 </tbody>
                 <tfoot>
                     <tr class="fila-total">
-                        <td>TOTAL</td>
+                        <td colspan="2">TOTAL</td>
                         <td class="numero">${formatearNumero(totalUnidades)}</td>
                         <td class="numero">${formatearColones(totalVendido)}</td>
                     </tr>
                 </tfoot>
             </table>
 
-            <!--
-                SALTO DE PÁGINA:
-                El resumen por canal comienza en una hoja nueva.
-            -->
-
             <div class="resumen-canales">
+                <h2 class="boleta-subtitulo">Resumen de ventas por canal</h2>
 
-                <h2 class="boleta-subtitulo">
-                    Resumen de ventas por canal
-                </h2>
-
-                <table class="boleta-tabla tabla-productos">
+                <table class="boleta-tabla tabla-canales">
                     <thead>
                         <tr>
                             <th>Canal</th>
@@ -1142,16 +1173,13 @@ function crearContenidoBoleta(boleta) {
                 <div class="boleta-pie">
                     Cacaotería S.R.L. · Registro semanal de ventas
                 </div>
-
             </div>
 
         </div>
     `;
 }
 
-/* =========================================
-   GENERAR PDF
-========================================= */
+/* GENERAR PDF */
 
 async function generarBoleta() {
     if (!boletaSeleccionada) {
@@ -1213,7 +1241,8 @@ async function generarBoleta() {
                 boletaSeleccionada.inicioSemana + ".pdf",
 
             image: {
-                type: "png"
+                type: "png",
+                quality: 1
             },
 
             html2canvas: {
@@ -1237,12 +1266,10 @@ async function generarBoleta() {
 
             pagebreak: {
                 mode: ["css", "legacy"],
-                before: [".resumen-canales"],
                 avoid: [
                     "tr",
                     ".boleta-encabezado",
-                    ".boleta-dato",
-                    ".resumen-canales"
+                    ".boleta-dato"
                 ]
             }
         };
@@ -1274,9 +1301,7 @@ async function generarBoleta() {
     }
 }
 
-/* =========================================
-   INICIAR
-========================================= */
+/* INICIAR */
 
 cargarVentas();
 </script>
