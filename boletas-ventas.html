@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boletas de ventas - Cacaotería S.R.L.</title>
+<title>Boletas semanales de ventas - Cacaotería S.R.L.</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -107,7 +107,7 @@ h2 {
 }
 
 .fecha-texto {
-    font-weight: 600;
+    font-weight: 700;
     color: #5B2326;
 }
 
@@ -244,8 +244,7 @@ button {
     background: #ffffff;
     color: #222222;
     padding: 10mm;
-    font-family: "Barlow", Arial, sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.4;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -263,12 +262,12 @@ button {
     gap: 18px;
     padding-bottom: 15px;
     border-bottom: 3px solid #5B2326;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .boleta-logo {
-    width: 82px;
-    height: 82px;
+    width: 75px;
+    height: 75px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -287,7 +286,7 @@ button {
 .logo-texto {
     color: #5B2326;
     font-weight: 800;
-    font-size: 28px;
+    font-size: 27px;
     letter-spacing: -1px;
 }
 
@@ -297,7 +296,7 @@ button {
 }
 
 .boleta-empresa h1 {
-    font-size: 27px;
+    font-size: 25px;
     line-height: 1.15;
     color: #5B2326;
     margin: 0 0 5px;
@@ -305,27 +304,27 @@ button {
 }
 
 .boleta-empresa p {
-    font-size: 13px;
-    color: #444444;
+    font-size: 12px;
+    color: #444;
     margin: 3px 0 0;
     font-weight: 500;
 }
 
 .boleta-datos {
-    margin-bottom: 24px;
-    font-size: 13px;
+    margin-bottom: 22px;
+    font-size: 12px;
 }
 
 .boleta-dato {
     display: flex;
     gap: 5px;
-    margin: 0 0 13px;
+    margin: 0 0 10px;
     align-items: flex-start;
 }
 
 .boleta-dato strong {
     color: #5B2326;
-    min-width: 155px;
+    min-width: 140px;
     font-weight: 700;
 }
 
@@ -335,11 +334,18 @@ button {
     font-weight: 500;
 }
 
+.boleta-subtitulo {
+    color: #5B2326;
+    font-size: 14px;
+    margin: 22px 0 9px;
+    font-weight: 800;
+}
+
 .boleta-tabla {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .boleta-tabla thead {
@@ -348,16 +354,16 @@ button {
 
 .boleta-tabla th {
     background: #5B2326;
-    color: #ffffff;
+    color: #fff;
     font-weight: 700;
     text-align: left;
-    padding: 10px 7px;
+    padding: 8px 5px;
     border: 1px solid #5B2326;
 }
 
 .boleta-tabla td {
-    padding: 10px 7px;
-    border: 1px solid #dddddd;
+    padding: 7px 5px;
+    border: 1px solid #ddd;
     overflow-wrap: anywhere;
     vertical-align: middle;
     font-weight: 500;
@@ -371,46 +377,41 @@ button {
     text-align: right;
 }
 
-.boleta-tabla th:nth-child(1) {
-    width: 42%;
-}
+/* Detalle: fecha, responsable, lugar, cantidad,
+   precio unitario y total */
 
-.boleta-tabla th:nth-child(2) {
-    width: 14%;
-}
+.tabla-detalle th:nth-child(1) { width: 11%; }
+.tabla-detalle th:nth-child(2) { width: 20%; }
+.tabla-detalle th:nth-child(3) { width: 21%; }
+.tabla-detalle th:nth-child(4) { width: 10%; }
+.tabla-detalle th:nth-child(5) { width: 18%; }
+.tabla-detalle th:nth-child(6) { width: 20%; }
 
-.boleta-tabla th:nth-child(3) {
-    width: 22%;
-}
+/* Resumen: producto, cantidad y total */
 
-.boleta-tabla th:nth-child(4) {
-    width: 22%;
-}
-
-.boleta-tabla tfoot {
-    display: table-row-group;
-}
+.tabla-productos th:nth-child(1) { width: 55%; }
+.tabla-productos th:nth-child(2) { width: 20%; }
+.tabla-productos th:nth-child(3) { width: 25%; }
 
 .boleta-tabla tfoot .fila-total td {
     background: #5B2326 !important;
-    color: #ffffff !important;
+    color: #fff !important;
     border: 1px solid #5B2326;
-    padding: 12px 7px;
-    font-size: 13px;
+    padding: 10px 6px;
+    font-size: 11px;
     font-weight: 800;
 }
 
 .boleta-tabla tfoot .fila-total td:last-child {
     text-align: right;
-    white-space: nowrap;
 }
 
 .boleta-pie {
-    margin-top: 30px;
+    margin-top: 25px;
     padding-top: 10px;
-    border-top: 1px solid #dddddd;
-    font-size: 10px;
-    color: #666666;
+    border-top: 1px solid #ddd;
+    font-size: 9px;
+    color: #666;
     text-align: center;
     font-weight: 500;
 }
@@ -438,21 +439,21 @@ button {
 <main class="contenedor">
 
     <section class="panel">
-        <h2>Boletas de ventas por día</h2>
+        <h2>Boletas semanales de ventas</h2>
 
         <p class="descripcion">
-            Seleccioná una fecha registrada en el módulo de Ventas
-            para generar la boleta diaria en PDF.
+            Seleccioná una semana para consultar y generar una boleta
+            con todas las ventas registradas durante ese periodo.
         </p>
 
         <div id="estadoCarga" class="mensaje info visible">
-            Cargando fechas registradas...
+            Cargando ventas registradas...
         </div>
 
         <div id="listaFechas" class="lista-fechas"></div>
 
         <div id="fechasVacias" class="vacio" hidden>
-            No hay fechas con ventas registradas.
+            No hay ventas registradas para generar boletas semanales.
         </div>
 
         <div class="acciones">
@@ -463,7 +464,7 @@ button {
                 onclick="generarBoleta()"
                 disabled
             >
-                Generar boleta
+                Generar boleta semanal PDF
             </button>
         </div>
 
@@ -471,11 +472,11 @@ button {
     </section>
 
     <section class="panel" id="panelResumen" hidden>
-        <h3>Resumen de la fecha seleccionada</h3>
+        <h3>Resumen de la boleta seleccionada</h3>
 
         <div class="resumen">
             <div class="tarjeta">
-                <small>Fecha</small>
+                <small>Periodo semanal</small>
                 <strong id="resumenFecha">—</strong>
             </div>
 
@@ -489,6 +490,11 @@ button {
                 <strong id="resumenTotal">₡0,00</strong>
             </div>
         </div>
+
+        <p class="descripcion">
+            La boleta reúne las ventas de todos los responsables y lugares
+            registrados durante la semana seleccionada.
+        </p>
     </section>
 
 </main>
@@ -515,24 +521,18 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 
-/*
-  Ruta del logo de la página principal.
-  Se convierte a una URL de datos para que
-  html2canvas no tenga que exportar una imagen
-  procedente de otro origen.
-*/
 const LOGO_URL = "imagenes/logo_pgn.png";
 
 let logoDataURL = null;
 let logoIntentado = false;
 
 let ventas = [];
-let fechaSeleccionada = null;
-let fechasDisponibles = [];
+let boletasDisponibles = [];
+let boletaSeleccionada = null;
 
 
 /* =========================================
-   CARGAR LOGO DE FORMA SEGURA
+   LOGO
 ========================================= */
 
 async function cargarLogoSeguro() {
@@ -545,46 +545,32 @@ async function cargarLogoSeguro() {
     try {
         const respuesta = await fetch(
             new URL(LOGO_URL, window.location.href).href,
-            {
-                mode: "cors",
-                cache: "force-cache"
-            }
+            { mode: "cors", cache: "force-cache" }
         );
 
         if (!respuesta.ok) {
-            throw new Error(
-                "No se pudo cargar el logo. Código HTTP: " +
-                respuesta.status
-            );
+            throw new Error("No se pudo cargar el logo.");
         }
 
         const blob = await respuesta.blob();
 
         if (!blob.type.startsWith("image/")) {
-            throw new Error(
-                "El archivo del logo no es una imagen válida."
-            );
+            throw new Error("El archivo del logo no es una imagen.");
         }
 
         logoDataURL = await new Promise((resolve, reject) => {
             const lector = new FileReader();
-
             lector.onload = () => resolve(lector.result);
             lector.onerror = () => reject(
-                new Error("No se pudo leer el archivo del logo.")
+                new Error("No se pudo leer el logo.")
             );
-
             lector.readAsDataURL(blob);
         });
 
         return logoDataURL;
 
     } catch (error) {
-        console.warn(
-            "El logo no pudo cargarse como imagen segura. Se usará el texto KAÜ.",
-            error
-        );
-
+        console.warn("Se utilizará el texto alternativo como logo.", error);
         logoDataURL = null;
         return null;
     }
@@ -592,7 +578,7 @@ async function cargarLogoSeguro() {
 
 
 /* =========================================
-   FORMATO DE DATOS
+   FORMATO Y UTILIDADES
 ========================================= */
 
 function limpiarTexto(valor) {
@@ -616,50 +602,160 @@ function formatearColones(valor) {
 function formatearNumero(valor) {
     return (Number(valor) || 0).toLocaleString(
         "es-CR",
-        {
-            maximumFractionDigits: 2
-        }
+        { maximumFractionDigits: 2 }
     );
 }
 
-function formatearFecha(fecha) {
-    if (!fecha) return "";
+function obtenerFechaISO(valor) {
+    if (!valor) return "";
 
-    const partes = String(fecha).split("-");
+    const texto = String(valor).trim();
+    const coincidencia = texto.match(/^(\d{4}-\d{2}-\d{2})/);
 
-    if (partes.length !== 3) {
-        return fecha;
+    if (coincidencia) {
+        const fecha = coincidencia[1];
+        const prueba = new Date(fecha + "T12:00:00");
+
+        if (
+            !Number.isNaN(prueba.getTime()) &&
+            prueba.getFullYear() === Number(fecha.slice(0, 4)) &&
+            prueba.getMonth() + 1 === Number(fecha.slice(5, 7)) &&
+            prueba.getDate() === Number(fecha.slice(8, 10))
+        ) {
+            return fecha;
+        }
     }
 
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    const fechaAlternativa = new Date(texto);
+
+    if (Number.isNaN(fechaAlternativa.getTime())) {
+        return "";
+    }
+
+    return [
+        fechaAlternativa.getFullYear(),
+        String(fechaAlternativa.getMonth() + 1).padStart(2, "0"),
+        String(fechaAlternativa.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function fechaISOaObjeto(fechaISO) {
+    const [anio, mes, dia] = fechaISO.split("-").map(Number);
+    return new Date(anio, mes - 1, dia, 12, 0, 0);
+}
+
+function objetoAFechaISO(fecha) {
+    return [
+        fecha.getFullYear(),
+        String(fecha.getMonth() + 1).padStart(2, "0"),
+        String(fecha.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function formatearFecha(fechaISO) {
+    if (!fechaISO) return "No registrado";
+
+    const [anio, mes, dia] = fechaISO.split("-");
+    return `${dia}/${mes}/${anio}`;
+}
+
+function obtenerInicioSemana(fechaISO) {
+    const fecha = fechaISOaObjeto(fechaISO);
+    const diferencia = (fecha.getDay() + 6) % 7;
+    fecha.setDate(fecha.getDate() - diferencia);
+
+    return objetoAFechaISO(fecha);
+}
+
+function obtenerFinSemana(inicioISO) {
+    const fecha = fechaISOaObjeto(inicioISO);
+    fecha.setDate(fecha.getDate() + 6);
+
+    return objetoAFechaISO(fecha);
+}
+
+function obtenerFechaHoy() {
+    return objetoAFechaISO(new Date());
+}
+
+function escaparHTML(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function mostrarMensaje(texto, tipo) {
     const elemento = document.getElementById("mensaje");
-
     elemento.textContent = texto;
     elemento.className = "mensaje visible " + tipo;
 }
 
 function ocultarMensaje() {
     const elemento = document.getElementById("mensaje");
-
     elemento.textContent = "";
     elemento.className = "mensaje";
 }
 
+function obtenerDestino(venta) {
+    return (
+        limpiarTexto(venta.Destino) ||
+        limpiarTexto(venta.Ubicacion) ||
+        "No registrado"
+    );
+}
+
+function obtenerResponsable(venta) {
+    return limpiarTexto(venta.Responsable) || "No registrado";
+}
+
 
 /* =========================================
-   CARGAR FECHAS Y VENTAS
+   AGRUPAR TODAS LAS VENTAS POR SEMANA
 ========================================= */
 
-async function cargarFechas() {
+function construirBoletasSemanales() {
+    const grupos = new Map();
+
+    ventas.forEach(venta => {
+        const fechaVenta = obtenerFechaISO(venta.Fecha);
+
+        if (!fechaVenta) return;
+
+        const inicioSemana = obtenerInicioSemana(fechaVenta);
+        const finSemana = obtenerFinSemana(inicioSemana);
+
+        if (!grupos.has(inicioSemana)) {
+            grupos.set(inicioSemana, {
+                clave: inicioSemana,
+                inicioSemana,
+                finSemana,
+                ventas: []
+            });
+        }
+
+        grupos.get(inicioSemana).ventas.push(venta);
+    });
+
+    boletasDisponibles = Array.from(grupos.values()).sort(
+        (a, b) => b.inicioSemana.localeCompare(a.inicioSemana)
+    );
+}
+
+
+/* =========================================
+   CARGAR VENTAS
+========================================= */
+
+async function cargarVentas() {
     const estadoCarga = document.getElementById("estadoCarga");
     const lista = document.getElementById("listaFechas");
     const fechasVacias = document.getElementById("fechasVacias");
     const boton = document.getElementById("botonGenerar");
 
-    estadoCarga.textContent = "Cargando fechas registradas...";
+    estadoCarga.textContent = "Cargando ventas registradas...";
     estadoCarga.className = "mensaje info visible";
 
     lista.replaceChildren();
@@ -674,66 +770,24 @@ async function cargarFechas() {
             )
             .order("Fecha", { ascending: false });
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         ventas = data || [];
 
-        const fechas = [
-            ...new Set(
-                ventas
-                    .map(venta => limpiarTexto(venta.Fecha))
-                    .filter(Boolean)
-            )
-        ];
-
-        fechas.sort((a, b) => b.localeCompare(a));
-        fechasDisponibles = fechas;
+        construirBoletasSemanales();
+        mostrarBoletasDisponibles();
 
         estadoCarga.className = "mensaje";
-        lista.replaceChildren();
 
-        if (fechas.length === 0) {
+        if (boletasDisponibles.length === 0) {
             fechasVacias.hidden = false;
-            return;
         }
 
-        fechas.forEach(fecha => {
-            const cantidadVentas = ventas.filter(
-                venta => limpiarTexto(venta.Fecha) === fecha
-            ).length;
-
-            const etiqueta = document.createElement("label");
-            etiqueta.className = "fecha-opcion";
-
-            const radio = document.createElement("input");
-            radio.type = "radio";
-            radio.name = "fechaVenta";
-            radio.value = fecha;
-
-            radio.addEventListener("change", () => {
-                seleccionarFecha(fecha);
-            });
-
-            const textoFecha = document.createElement("span");
-            textoFecha.className = "fecha-texto";
-            textoFecha.textContent = formatearFecha(fecha);
-
-            const detalle = document.createElement("span");
-            detalle.className = "fecha-detalle";
-            detalle.textContent =
-                `${cantidadVentas} registro${cantidadVentas === 1 ? "" : "s"}`;
-
-            etiqueta.append(radio, textoFecha, detalle);
-            lista.appendChild(etiqueta);
-        });
-
     } catch (error) {
-        console.error("Error cargando fechas:", error);
+        console.error("Error cargando ventas:", error);
 
         estadoCarga.textContent =
-            "No se pudieron cargar las fechas. Verificá la conexión y los permisos de la tabla Ventas.";
+            "No se pudieron cargar las ventas. Verificá la conexión y los permisos de la tabla Ventas.";
 
         estadoCarga.className = "mensaje error visible";
     }
@@ -741,74 +795,120 @@ async function cargarFechas() {
 
 
 /* =========================================
-   SELECCIONAR FECHA
+   MOSTRAR BOLETAS DISPONIBLES
 ========================================= */
 
-function seleccionarFecha(fecha) {
-    if (!fechasDisponibles.includes(fecha)) {
+function mostrarBoletasDisponibles() {
+    const lista = document.getElementById("listaFechas");
+    const fechasVacias = document.getElementById("fechasVacias");
+
+    lista.replaceChildren();
+    fechasVacias.hidden = boletasDisponibles.length !== 0;
+
+    boletasDisponibles.forEach((boleta, indice) => {
+        const etiqueta = document.createElement("label");
+        etiqueta.className = "fecha-opcion";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "boletaSemanal";
+        radio.value = String(indice);
+
+        radio.addEventListener("change", () => {
+            seleccionarBoleta(indice);
+        });
+
+        const texto = document.createElement("span");
+        texto.className = "fecha-texto";
+        texto.textContent =
+            `${formatearFecha(boleta.inicioSemana)} al ` +
+            `${formatearFecha(boleta.finSemana)}`;
+
+        const detalle = document.createElement("span");
+        detalle.className = "fecha-detalle";
+
+        detalle.textContent =
+            `${boleta.ventas.length} registro` +
+            `${boleta.ventas.length === 1 ? "" : "s"} · ` +
+            formatearColones(
+                boleta.ventas.reduce(
+                    (suma, venta) => suma + (Number(venta.Total) || 0),
+                    0
+                )
+            );
+
+        etiqueta.append(radio, texto, detalle);
+        lista.appendChild(etiqueta);
+    });
+}
+
+
+/* =========================================
+   SELECCIONAR BOLETA SEMANAL
+========================================= */
+
+function seleccionarBoleta(indice) {
+    const boleta = boletasDisponibles[indice];
+
+    if (!boleta) {
         mostrarMensaje(
-            "La fecha seleccionada no está disponible.",
+            "La boleta seleccionada no está disponible.",
             "error"
         );
         return;
     }
 
-    fechaSeleccionada = fecha;
+    boletaSeleccionada = boleta;
 
     document.querySelectorAll(".fecha-opcion").forEach(etiqueta => {
-        const radio = etiqueta.querySelector("input");
-
         etiqueta.classList.toggle(
             "seleccionada",
-            radio.checked
+            etiqueta.querySelector("input").checked
         );
     });
 
-    const ventasFecha = ventas.filter(
-        venta => limpiarTexto(venta.Fecha) === fecha
-    );
-
-    const total = ventasFecha.reduce(
+    const total = boleta.ventas.reduce(
         (suma, venta) => suma + (Number(venta.Total) || 0),
         0
     );
 
     document.getElementById("resumenFecha").textContent =
-        formatearFecha(fecha);
+        `${formatearFecha(boleta.inicioSemana)} al ` +
+        `${formatearFecha(boleta.finSemana)}`;
 
     document.getElementById("resumenCantidad").textContent =
-        formatearNumero(ventasFecha.length);
+        formatearNumero(boleta.ventas.length);
 
     document.getElementById("resumenTotal").textContent =
         formatearColones(total);
 
     document.getElementById("panelResumen").hidden = false;
     document.getElementById("botonGenerar").disabled =
-        ventasFecha.length === 0;
+        boleta.ventas.length === 0;
 
     ocultarMensaje();
 }
 
 
 /* =========================================
-   AGRUPAR VENTAS POR PRODUCTO Y PRECIO
+   AGRUPAR PRODUCTOS PARA EL RESUMEN
+   Se agrupa por producto, sin separar por precio.
 ========================================= */
 
-function agruparVentas(ventasFecha) {
+function agruparVentas(ventasSemana) {
     const grupos = new Map();
 
-    ventasFecha.forEach(venta => {
+    ventasSemana.forEach(venta => {
         const producto =
-            limpiarTexto(venta.Descripcion) || "Producto sin descripción";
+            limpiarTexto(venta.Descripcion) ||
+            "Producto sin descripción";
 
-        const precio = Number(venta.Precio_Unitario) || 0;
-        const clave = producto + "||" + precio;
+        const clave = producto.toLocaleLowerCase("es");
 
         if (!grupos.has(clave)) {
             grupos.set(clave, {
                 producto,
                 cantidad: 0,
-                precio,
                 total: 0
             });
         }
@@ -826,76 +926,67 @@ function agruparVentas(ventasFecha) {
 
 
 /* =========================================
-   DATOS GENERALES
+   CREAR CONTENIDO DE LA BOLETA PDF
 ========================================= */
 
-function obtenerValoresUnicos(ventasFecha, campo) {
-    return [
-        ...new Set(
-            ventasFecha
-                .map(venta => limpiarTexto(venta[campo]))
-                .filter(Boolean)
-        )
-    ];
-}
+function crearContenidoBoleta(boleta) {
+    const ventasSemana = [...boleta.ventas].sort((a, b) => {
+        const porFecha = obtenerFechaISO(a.Fecha).localeCompare(
+            obtenerFechaISO(b.Fecha)
+        );
 
-function unirValores(valores) {
-    return valores.length > 0
-        ? valores.join(", ")
-        : "No registrado";
-}
+        if (porFecha !== 0) return porFecha;
 
+        const porResponsable = obtenerResponsable(a).localeCompare(
+            obtenerResponsable(b),
+            "es"
+        );
 
-/* =========================================
-   ESCAPAR TEXTO HTML
-========================================= */
+        if (porResponsable !== 0) return porResponsable;
 
-function escaparHTML(valor) {
-    return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+        return obtenerDestino(a).localeCompare(obtenerDestino(b), "es");
+    });
 
+    const agrupadas = agruparVentas(ventasSemana);
 
-/* =========================================
-   CREAR CONTENIDO DE LA BOLETA
-========================================= */
-
-function crearContenidoBoleta(ventasFecha) {
-    const agrupadas = agruparVentas(ventasFecha);
-
-    const totalUnidades = ventasFecha.reduce(
+    const totalUnidades = ventasSemana.reduce(
         (suma, venta) => suma + (Number(venta.Cantidad) || 0),
         0
     );
 
-    const totalVendido = ventasFecha.reduce(
+    const totalVendido = ventasSemana.reduce(
         (suma, venta) => suma + (Number(venta.Total) || 0),
         0
     );
 
-    const lugares = obtenerValoresUnicos(ventasFecha, "Destino");
-    const responsables = obtenerValoresUnicos(ventasFecha, "Responsable");
+    /* Primera tabla: detalle de cada registro de venta */
 
-    const filas = agrupadas.map(grupo => `
+    const filasDetalle = ventasSemana.map(venta => `
+        <tr>
+            <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
+            <td>${escaparHTML(obtenerResponsable(venta))}</td>
+            <td>${escaparHTML(obtenerDestino(venta))}</td>
+            <td class="numero">${formatearNumero(venta.Cantidad)}</td>
+            <td class="numero">${formatearColones(venta.Precio_Unitario)}</td>
+            <td class="numero">${formatearColones(venta.Total)}</td>
+        </tr>
+    `).join("");
+
+    /* Segunda tabla: resumen de cantidades e importes por producto */
+
+    const filasProductos = agrupadas.map(grupo => `
         <tr>
             <td>${escaparHTML(grupo.producto)}</td>
             <td class="numero">${formatearNumero(grupo.cantidad)}</td>
-            <td class="numero">${formatearColones(grupo.precio)}</td>
             <td class="numero">${formatearColones(grupo.total)}</td>
         </tr>
     `).join("");
 
-    /*
-      Se utiliza la imagen convertida a datos locales.
-      Si no se pudo cargar, se muestra KAÜ en texto.
-    */
     const logo = logoDataURL
         ? `<img src="${logoDataURL}" alt="Logo Cacaotería S.R.L.">`
-        : `<div class="logo-texto">KAÜ</div>`;
+        : `<div class="logo-texto">Cacaotería</div>`;
+
+    const fechaEmision = formatearFecha(obtenerFechaHoy());
 
     return `
         <div class="boleta-pdf">
@@ -907,26 +998,30 @@ function crearContenidoBoleta(ventasFecha) {
 
                 <div class="boleta-empresa">
                     <h1>CACAOTERÍA S.R.L.</h1>
-                    <p><strong>BOLETA DIARIA DE VENTAS</strong></p>
-                    <p>KAÜ · Registro de ventas</p>
+                    <p><strong>BOLETA SEMANAL DE VENTAS</strong></p>
+                    <p>Registro de ventas</p>
                 </div>
             </div>
 
             <div class="boleta-datos">
 
                 <div class="boleta-dato">
-                    <strong>Fecha de venta:</strong>
-                    <span>${escaparHTML(formatearFecha(fechaSeleccionada))}</span>
+                    <strong>Periodo semanal:</strong>
+                    <span>
+                        ${escaparHTML(formatearFecha(boleta.inicioSemana))}
+                        al
+                        ${escaparHTML(formatearFecha(boleta.finSemana))}
+                    </span>
                 </div>
 
                 <div class="boleta-dato">
-                    <strong>Lugar de venta:</strong>
-                    <span>${escaparHTML(unirValores(lugares))}</span>
+                    <strong>Fecha de emisión:</strong>
+                    <span>${escaparHTML(fechaEmision)}</span>
                 </div>
 
                 <div class="boleta-dato">
-                    <strong>Responsable de la venta:</strong>
-                    <span>${escaparHTML(unirValores(responsables))}</span>
+                    <strong>Registros de venta:</strong>
+                    <span>${formatearNumero(ventasSemana.length)}</span>
                 </div>
 
                 <div class="boleta-dato">
@@ -936,30 +1031,58 @@ function crearContenidoBoleta(ventasFecha) {
 
             </div>
 
-            <table class="boleta-tabla">
+            <h2 class="boleta-subtitulo">Detalle de las ventas de la semana</h2>
+
+            <table class="boleta-tabla tabla-detalle">
                 <thead>
                     <tr>
-                        <th>Producto</th>
-                        <th class="numero">Cantidad</th>
+                        <th>Fecha</th>
+                        <th>Responsable</th>
+                        <th>Lugar de venta</th>
+                        <th class="numero">Cant.</th>
                         <th class="numero">Precio unitario</th>
                         <th class="numero">Total</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    ${filas}
+                    ${filasDetalle}
                 </tbody>
 
                 <tfoot>
                     <tr class="fila-total">
-                        <td colspan="3">TOTAL DE VENTAS DEL DÍA</td>
+                        <td colspan="5">TOTAL DE VENTAS DE LA SEMANA</td>
+                        <td class="numero">${formatearColones(totalVendido)}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <h2 class="boleta-subtitulo">Resumen por producto</h2>
+
+            <table class="boleta-tabla tabla-productos">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="numero">Cantidad total</th>
+                        <th class="numero">Importe total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${filasProductos}
+                </tbody>
+
+                <tfoot>
+                    <tr class="fila-total">
+                        <td>TOTAL</td>
+                        <td class="numero">${formatearNumero(totalUnidades)}</td>
                         <td class="numero">${formatearColones(totalVendido)}</td>
                     </tr>
                 </tfoot>
             </table>
 
             <div class="boleta-pie">
-                Cacaotería S.R.L. · KAÜ · Registro diario de ventas
+                Cacaotería S.R.L. · Registro semanal de ventas
             </div>
 
         </div>
@@ -968,28 +1091,26 @@ function crearContenidoBoleta(ventasFecha) {
 
 
 /* =========================================
-   GENERAR BOLETA EN PDF
+   GENERAR Y DESCARGAR PDF
 ========================================= */
 
 async function generarBoleta() {
     if (
-        !fechaSeleccionada ||
-        !fechasDisponibles.includes(fechaSeleccionada)
+        !boletaSeleccionada ||
+        !boletasDisponibles.some(
+            boleta => boleta.clave === boletaSeleccionada.clave
+        )
     ) {
         mostrarMensaje(
-            "Seleccioná una fecha antes de generar la boleta.",
+            "Seleccioná una boleta semanal antes de continuar.",
             "error"
         );
         return;
     }
 
-    const ventasFecha = ventas.filter(
-        venta => limpiarTexto(venta.Fecha) === fechaSeleccionada
-    );
-
-    if (ventasFecha.length === 0) {
+    if (boletaSeleccionada.ventas.length === 0) {
         mostrarMensaje(
-            "No hay ventas registradas para esa fecha.",
+            "No hay ventas registradas para esta boleta.",
             "error"
         );
         return;
@@ -997,7 +1118,7 @@ async function generarBoleta() {
 
     if (typeof html2pdf !== "function") {
         mostrarMensaje(
-            "No se cargó la librería html2pdf.js. Revisá la conexión o la carga del archivo externo.",
+            "No se cargó la librería para generar PDF. Revisá tu conexión a internet.",
             "error"
         );
         return;
@@ -1008,65 +1129,32 @@ async function generarBoleta() {
 
     try {
         boton.disabled = true;
-        boton.textContent = "Generando boleta...";
+        boton.textContent = "Generando PDF...";
 
-        mostrarMensaje(
-            "Preparando la boleta PDF...",
-            "info"
-        );
+        mostrarMensaje("Preparando la boleta semanal...", "info");
 
-        /*
-          Cargar el logo como datos locales.
-          Si falla la carga, la boleta se genera con KAÜ en texto.
-        */
         await cargarLogoSeguro();
 
-        contenedor.innerHTML = crearContenidoBoleta(ventasFecha);
+        contenedor.innerHTML = crearContenidoBoleta(boletaSeleccionada);
 
-        const elementoBoleta =
-            contenedor.querySelector(".boleta-pdf");
+        const elementoBoleta = contenedor.querySelector(".boleta-pdf");
 
         if (!elementoBoleta) {
-            throw new Error(
-                "No se pudo crear el contenido de la boleta."
-            );
+            throw new Error("No se pudo crear el contenido de la boleta.");
         }
 
         if (document.fonts && document.fonts.ready) {
             await document.fonts.ready;
         }
 
-        /*
-          Esperar a que la imagen local termine de cargarse.
-        */
-        const imagenLogo =
-            elementoBoleta.querySelector(".boleta-logo img");
+        const imagenLogo = elementoBoleta.querySelector(".boleta-logo img");
 
-        if (imagenLogo) {
-            if (!imagenLogo.complete) {
-                await new Promise((resolve, reject) => {
-                    imagenLogo.onload = resolve;
-                    imagenLogo.onerror = () => reject(
-                        new Error("No se pudo cargar el logo preparado.")
-                    );
-
-                    setTimeout(() => {
-                        if (imagenLogo.complete) {
-                            resolve();
-                        } else {
-                            reject(
-                                new Error("Se agotó el tiempo de carga del logo.")
-                            );
-                        }
-                    }, 5000);
-                });
-            }
-
-            if (imagenLogo.naturalWidth === 0) {
-                throw new Error(
-                    "La imagen del logo no contiene datos válidos."
-                );
-            }
+        if (imagenLogo && !imagenLogo.complete) {
+            await new Promise(resolve => {
+                imagenLogo.onload = resolve;
+                imagenLogo.onerror = resolve;
+                setTimeout(resolve, 5000);
+            });
         }
 
         await new Promise(resolve => {
@@ -1077,10 +1165,12 @@ async function generarBoleta() {
             margin: [8, 8, 8, 8],
 
             filename:
-                "boleta_ventas_" + fechaSeleccionada + ".pdf",
+                "boleta_semanal_" +
+                boletaSeleccionada.inicioSemana + ".pdf",
 
             image: {
-                type: "png"
+                type: "jpeg",
+                quality: 0.98
             },
 
             html2canvas: {
@@ -1089,14 +1179,14 @@ async function generarBoleta() {
                 allowTaint: false,
                 backgroundColor: "#ffffff",
                 scrollY: 0,
-                logging: true,
+                logging: false,
                 imageTimeout: 15000
             },
 
             jsPDF: {
                 unit: "mm",
                 format: "a4",
-                orientation: "portrait",
+                orientation: "landscape",
                 compress: true
             },
 
@@ -1116,28 +1206,24 @@ async function generarBoleta() {
             .save();
 
         mostrarMensaje(
-            "La boleta se generó correctamente.",
+            "La boleta semanal se generó correctamente.",
             "exito"
         );
 
     } catch (error) {
-        console.error(
-            "Error real al generar la boleta:",
-            error
-        );
-
-        const detalle = error && error.message
-            ? error.message
-            : String(error || "Error desconocido");
+        console.error("Error generando la boleta:", error);
 
         mostrarMensaje(
-            "Error al generar el PDF: " + detalle,
+            "Error al generar el PDF: " +
+            (error.message || String(error)),
             "error"
         );
 
     } finally {
-        boton.disabled = false;
-        boton.textContent = "Generar boleta";
+        boton.disabled = !boletaSeleccionada ||
+            boletaSeleccionada.ventas.length === 0;
+
+        boton.textContent = "Generar boleta semanal PDF";
     }
 }
 
@@ -1146,9 +1232,10 @@ async function generarBoleta() {
    INICIAR MÓDULO
 ========================================= */
 
-cargarFechas();
+cargarVentas();
 </script>
 
 </body>
 </html>
+
 
