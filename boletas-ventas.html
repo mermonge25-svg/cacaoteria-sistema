@@ -238,13 +238,8 @@ button {
 }
 
 /* =========================================
-   DISEÑO DE LA BOLETA PDF
+   BOLETA PDF
 ========================================= */
-
-/*
-   La boleta se genera con un ancho fijo para A4
-   horizontal. No depende del ancho del celular.
-*/
 
 .boleta-pdf {
     width: 281mm;
@@ -252,9 +247,9 @@ button {
     min-width: 281mm;
     background: #ffffff;
     color: #222222;
-    padding: 10mm;
-    font-size: 11px;
-    line-height: 1.4;
+    padding: 5mm;
+    font-size: 16px;
+    line-height: 1.2;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
@@ -268,15 +263,15 @@ button {
 .boleta-encabezado {
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding-bottom: 15px;
+    gap: 10px;
+    padding-bottom: 8px;
     border-bottom: 3px solid #5B2326;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .boleta-logo {
-    width: 75px;
-    height: 75px;
+    width: 70px;
+    height: 70px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -295,7 +290,7 @@ button {
 .logo-texto {
     color: #5B2326;
     font-weight: 800;
-    font-size: 27px;
+    font-size: 25px;
     letter-spacing: -1px;
 }
 
@@ -305,29 +300,29 @@ button {
 }
 
 .boleta-empresa h1 {
-    font-size: 25px;
-    line-height: 1.15;
+    font-size: 28px;
+    line-height: 1.1;
     color: #5B2326;
-    margin: 0 0 5px;
+    margin: 0 0 3px;
     font-weight: 800;
 }
 
 .boleta-empresa p {
-    font-size: 12px;
+    font-size: 15px;
     color: #444;
     margin: 3px 0 0;
     font-weight: 500;
 }
 
 .boleta-datos {
-    margin-bottom: 22px;
-    font-size: 12px;
+    margin-bottom: 9px;
+    font-size: 16px;
 }
 
 .boleta-dato {
     display: flex;
-    gap: 5px;
-    margin: 0 0 10px;
+    gap: 3px;
+    margin: 0 0 4px;
     align-items: flex-start;
 }
 
@@ -345,16 +340,20 @@ button {
 
 .boleta-subtitulo {
     color: #5B2326;
-    font-size: 14px;
-    margin: 22px 0 9px;
+    font-size: 18px;
+    margin: 10px 0 5px;
     font-weight: 800;
 }
+
+/* =========================================
+   TABLAS
+========================================= */
 
 .boleta-tabla {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 10px;
+    font-size: 16px;
 }
 
 .boleta-tabla thead {
@@ -364,47 +363,103 @@ button {
 .boleta-tabla th {
     background: #5B2326;
     color: #fff;
-    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.05;
+    font-weight: 800;
     text-align: left;
-    padding: 8px 5px;
+    padding: 4px 2px;
     border: 1px solid #5B2326;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    vertical-align: middle;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
 }
 
 .boleta-tabla td {
-    padding: 7px 5px;
+    padding: 4px 2px;
     border: 1px solid #ddd;
+    font-size: 16px;
+    line-height: 1.15;
     overflow-wrap: anywhere;
+    word-break: normal;
     vertical-align: middle;
     font-weight: 500;
 }
 
-.boleta-tabla tbody tr:nth-child(even) {
-    background: #faf6f5;
-}
-
 .boleta-tabla .numero {
     text-align: right;
+    white-space: normal;
 }
 
-.tabla-detalle th:nth-child(1) { width: 11%; }
-.tabla-detalle th:nth-child(2) { width: 20%; }
-.tabla-detalle th:nth-child(3) { width: 21%; }
-.tabla-detalle th:nth-child(4) { width: 10%; }
-.tabla-detalle th:nth-child(5) { width: 18%; }
-.tabla-detalle th:nth-child(6) { width: 20%; }
+/* =========================================
+   ANCHOS: DETALLE DE VENTAS
+   Se agrega la columna Producto.
+========================================= */
 
-.tabla-productos th:nth-child(1) { width: 55%; }
-.tabla-productos th:nth-child(2) { width: 20%; }
-.tabla-productos th:nth-child(3) { width: 25%; }
+.tabla-detalle th:nth-child(1),
+.tabla-detalle td:nth-child(1) {
+    width: 9%;
+}
+
+.tabla-detalle th:nth-child(2),
+.tabla-detalle td:nth-child(2) {
+    width: 14%;
+}
+
+.tabla-detalle th:nth-child(3),
+.tabla-detalle td:nth-child(3) {
+    width: 14%;
+}
+
+.tabla-detalle th:nth-child(4),
+.tabla-detalle td:nth-child(4) {
+    width: 25%;
+}
+
+.tabla-detalle th:nth-child(5),
+.tabla-detalle td:nth-child(5) {
+    width: 7%;
+}
+
+.tabla-detalle th:nth-child(6),
+.tabla-detalle td:nth-child(6) {
+    width: 16%;
+}
+
+.tabla-detalle th:nth-child(7),
+.tabla-detalle td:nth-child(7) {
+    width: 15%;
+}
+
+/* =========================================
+   ANCHOS: RESUMEN DE PRODUCTOS
+========================================= */
+
+.tabla-productos th:nth-child(1),
+.tabla-productos td:nth-child(1) {
+    width: 50%;
+}
+
+.tabla-productos th:nth-child(2),
+.tabla-productos td:nth-child(2) {
+    width: 25%;
+}
+
+.tabla-productos th:nth-child(3),
+.tabla-productos td:nth-child(3) {
+    width: 25%;
+}
+
+/* FILAS DE TOTALES */
 
 .boleta-tabla tfoot .fila-total td {
     background: #5B2326 !important;
     color: #fff !important;
     border: 1px solid #5B2326;
-    padding: 10px 6px;
-    font-size: 11px;
+    padding: 5px 2px;
+    font-size: 16px;
+    line-height: 1.1;
     font-weight: 800;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -415,10 +470,10 @@ button {
 }
 
 .boleta-pie {
-    margin-top: 25px;
-    padding-top: 10px;
+    margin-top: 10px;
+    padding-top: 5px;
     border-top: 1px solid #ddd;
-    font-size: 9px;
+    font-size: 12px;
     color: #666;
     text-align: center;
     font-weight: 500;
@@ -429,11 +484,7 @@ button {
     break-inside: avoid;
 }
 
-/*
-   El contenedor queda fuera de la pantalla,
-   pero conserva sus dimensiones reales para
-   que la captura no se reduzca al ancho móvil.
-*/
+/* CONTENEDOR DE GENERACIÓN */
 
 #contenedorBoleta {
     position: fixed;
@@ -552,9 +603,8 @@ let ventas = [];
 let boletasDisponibles = [];
 let boletaSeleccionada = null;
 
-
 /* =========================================
-   LOGO
+   CARGAR LOGO
 ========================================= */
 
 async function cargarLogoSeguro() {
@@ -582,32 +632,34 @@ async function cargarLogoSeguro() {
 
         logoDataURL = await new Promise((resolve, reject) => {
             const lector = new FileReader();
+
             lector.onload = () => resolve(lector.result);
             lector.onerror = () => reject(
                 new Error("No se pudo leer el logo.")
             );
+
             lector.readAsDataURL(blob);
         });
 
         return logoDataURL;
 
     } catch (error) {
-        console.warn("Se utilizará el texto alternativo como logo.", error);
+        console.warn(
+            "Se utilizará el texto alternativo como logo.",
+            error
+        );
+
         logoDataURL = null;
         return null;
     }
 }
-
 
 /* =========================================
    FORMATO Y UTILIDADES
 ========================================= */
 
 function limpiarTexto(valor) {
-    if (valor === null || valor === undefined) {
-        return "";
-    }
-
+    if (valor === null || valor === undefined) return "";
     return String(valor).trim();
 }
 
@@ -650,9 +702,7 @@ function obtenerFechaISO(valor) {
 
     const fechaAlternativa = new Date(texto);
 
-    if (Number.isNaN(fechaAlternativa.getTime())) {
-        return "";
-    }
+    if (Number.isNaN(fechaAlternativa.getTime())) return "";
 
     return [
         fechaAlternativa.getFullYear(),
@@ -684,6 +734,7 @@ function formatearFecha(fechaISO) {
 function obtenerInicioSemana(fechaISO) {
     const fecha = fechaISOaObjeto(fechaISO);
     const diferencia = (fecha.getDay() + 6) % 7;
+
     fecha.setDate(fecha.getDate() - diferencia);
 
     return objetoAFechaISO(fecha);
@@ -711,12 +762,14 @@ function escaparHTML(valor) {
 
 function mostrarMensaje(texto, tipo) {
     const elemento = document.getElementById("mensaje");
+
     elemento.textContent = texto;
     elemento.className = "mensaje visible " + tipo;
 }
 
 function ocultarMensaje() {
     const elemento = document.getElementById("mensaje");
+
     elemento.textContent = "";
     elemento.className = "mensaje";
 }
@@ -733,9 +786,8 @@ function obtenerResponsable(venta) {
     return limpiarTexto(venta.Responsable) || "No registrado";
 }
 
-
 /* =========================================
-   AGRUPAR TODAS LAS VENTAS POR SEMANA
+   AGRUPAR VENTAS POR SEMANA
 ========================================= */
 
 function construirBoletasSemanales() {
@@ -765,7 +817,6 @@ function construirBoletasSemanales() {
         (a, b) => b.inicioSemana.localeCompare(a.inicioSemana)
     );
 }
-
 
 /* =========================================
    CARGAR VENTAS
@@ -815,9 +866,8 @@ async function cargarVentas() {
     }
 }
 
-
 /* =========================================
-   MOSTRAR BOLETAS DISPONIBLES
+   MOSTRAR SEMANAS DISPONIBLES
 ========================================= */
 
 function mostrarBoletasDisponibles() {
@@ -864,9 +914,8 @@ function mostrarBoletasDisponibles() {
     });
 }
 
-
 /* =========================================
-   SELECCIONAR BOLETA SEMANAL
+   SELECCIONAR BOLETA
 ========================================= */
 
 function seleccionarBoleta(indice) {
@@ -905,15 +954,15 @@ function seleccionarBoleta(indice) {
         formatearColones(total);
 
     document.getElementById("panelResumen").hidden = false;
+
     document.getElementById("botonGenerar").disabled =
         boleta.ventas.length === 0;
 
     ocultarMensaje();
 }
 
-
 /* =========================================
-   AGRUPAR PRODUCTOS PARA EL RESUMEN
+   RESUMEN POR PRODUCTO
 ========================================= */
 
 function agruparVentas(ventasSemana) {
@@ -945,9 +994,8 @@ function agruparVentas(ventasSemana) {
     );
 }
 
-
 /* =========================================
-   CREAR CONTENIDO DE LA BOLETA PDF
+   CONTENIDO DE LA BOLETA
 ========================================= */
 
 function crearContenidoBoleta(boleta) {
@@ -980,16 +1028,24 @@ function crearContenidoBoleta(boleta) {
         0
     );
 
-    const filasDetalle = ventasSemana.map(venta => `
-        <tr>
-            <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
-            <td>${escaparHTML(obtenerResponsable(venta))}</td>
-            <td>${escaparHTML(obtenerDestino(venta))}</td>
-            <td class="numero">${formatearNumero(venta.Cantidad)}</td>
-            <td class="numero">${formatearColones(venta.Precio_Unitario)}</td>
-            <td class="numero">${formatearColones(venta.Total)}</td>
-        </tr>
-    `).join("");
+    /* La primera tabla ahora incluye el nombre del producto. */
+    const filasDetalle = ventasSemana.map(venta => {
+        const producto =
+            limpiarTexto(venta.Descripcion) ||
+            "Producto sin descripción";
+
+        return `
+            <tr>
+                <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
+                <td>${escaparHTML(obtenerResponsable(venta))}</td>
+                <td>${escaparHTML(obtenerDestino(venta))}</td>
+                <td>${escaparHTML(producto)}</td>
+                <td class="numero">${formatearNumero(venta.Cantidad)}</td>
+                <td class="numero">${formatearColones(venta.Precio_Unitario)}</td>
+                <td class="numero">${formatearColones(venta.Total)}</td>
+            </tr>
+        `;
+    }).join("");
 
     const filasProductos = agrupadas.map(grupo => `
         <tr>
@@ -1002,8 +1058,6 @@ function crearContenidoBoleta(boleta) {
     const logo = logoDataURL
         ? `<img src="${logoDataURL}" alt="Logo Cacaotería S.R.L.">`
         : `<div class="logo-texto">Cacaotería</div>`;
-
-    const fechaEmision = formatearFecha(obtenerFechaHoy());
 
     return `
         <div class="boleta-pdf">
@@ -1032,7 +1086,7 @@ function crearContenidoBoleta(boleta) {
 
                 <div class="boleta-dato">
                     <strong>Fecha de emisión:</strong>
-                    <span>${escaparHTML(fechaEmision)}</span>
+                    <span>${escaparHTML(formatearFecha(obtenerFechaHoy()))}</span>
                 </div>
 
                 <div class="boleta-dato">
@@ -1046,7 +1100,9 @@ function crearContenidoBoleta(boleta) {
                 </div>
             </div>
 
-            <h2 class="boleta-subtitulo">Detalle de las ventas de la semana</h2>
+            <h2 class="boleta-subtitulo">
+                Detalle de las ventas de la semana
+            </h2>
 
             <table class="boleta-tabla tabla-detalle">
                 <thead>
@@ -1054,6 +1110,7 @@ function crearContenidoBoleta(boleta) {
                         <th>Fecha</th>
                         <th>Responsable</th>
                         <th>Lugar de venta</th>
+                        <th>Producto</th>
                         <th class="numero">Cant.</th>
                         <th class="numero">Precio unitario</th>
                         <th class="numero">Total</th>
@@ -1066,7 +1123,7 @@ function crearContenidoBoleta(boleta) {
 
                 <tfoot>
                     <tr class="fila-total">
-                        <td colspan="5">TOTAL DE VENTAS DE LA SEMANA</td>
+                        <td colspan="6">TOTAL DE VENTAS DE LA SEMANA</td>
                         <td class="numero">${formatearColones(totalVendido)}</td>
                     </tr>
                 </tfoot>
@@ -1104,19 +1161,12 @@ function crearContenidoBoleta(boleta) {
     `;
 }
 
-
 /* =========================================
-   GENERAR Y DESCARGAR PDF
-   Mejoras de resolución y calidad
+   GENERAR PDF
 ========================================= */
 
 async function generarBoleta() {
-    if (
-        !boletaSeleccionada ||
-        !boletasDisponibles.some(
-            boleta => boleta.clave === boletaSeleccionada.clave
-        )
-    ) {
+    if (!boletaSeleccionada) {
         mostrarMensaje(
             "Seleccioná una boleta semanal antes de continuar.",
             "error"
@@ -1147,7 +1197,10 @@ async function generarBoleta() {
         boton.disabled = true;
         boton.textContent = "Generando PDF...";
 
-        mostrarMensaje("Preparando la boleta en alta resolución...", "info");
+        mostrarMensaje(
+            "Preparando la boleta en alta resolución...",
+            "info"
+        );
 
         await cargarLogoSeguro();
 
@@ -1159,35 +1212,27 @@ async function generarBoleta() {
             throw new Error("No se pudo crear el contenido de la boleta.");
         }
 
-        /* Esperar a que las fuentes estén disponibles */
-
         if (document.fonts && document.fonts.ready) {
             await document.fonts.ready;
         }
 
-        /* Esperar a que el logo se cargue */
-
         const imagenLogo = elementoBoleta.querySelector(".boleta-logo img");
 
-        if (imagenLogo) {
-            if (!imagenLogo.complete) {
-                await new Promise(resolve => {
-                    imagenLogo.onload = resolve;
-                    imagenLogo.onerror = resolve;
-                    setTimeout(resolve, 5000);
-                });
-            }
-
-            if (imagenLogo.decode) {
-                try {
-                    await imagenLogo.decode();
-                } catch (error) {
-                    console.warn("No se pudo decodificar el logo.", error);
-                }
-            }
+        if (imagenLogo && !imagenLogo.complete) {
+            await new Promise(resolve => {
+                imagenLogo.onload = resolve;
+                imagenLogo.onerror = resolve;
+                setTimeout(resolve, 5000);
+            });
         }
 
-        /* Esperar a que el navegador termine de dibujar */
+        if (imagenLogo && imagenLogo.decode) {
+            try {
+                await imagenLogo.decode();
+            } catch (error) {
+                console.warn("No se pudo decodificar el logo.", error);
+            }
+        }
 
         await new Promise(resolve => {
             requestAnimationFrame(() => {
@@ -1195,14 +1240,8 @@ async function generarBoleta() {
             });
         });
 
-        /*
-          PNG conserva mejor los bordes de letras y tablas
-          que JPEG. La escala 3 aumenta la resolución de
-          la captura respecto a la configuración anterior.
-        */
-
         const opciones = {
-            margin: [8, 8, 8, 8],
+            margin: [3, 3, 3, 3],
 
             filename:
                 "boleta_semanal_" +
@@ -1248,7 +1287,7 @@ async function generarBoleta() {
             .save();
 
         mostrarMensaje(
-            "La boleta semanal se generó correctamente en alta resolución.",
+            "La boleta semanal se generó correctamente.",
             "exito"
         );
 
@@ -1268,7 +1307,6 @@ async function generarBoleta() {
         boton.textContent = "Generar boleta semanal PDF";
     }
 }
-
 
 /* =========================================
    INICIAR MÓDULO
