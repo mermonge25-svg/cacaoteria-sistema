@@ -237,10 +237,19 @@ button {
     }
 }
 
-/* DISEÑO DE LA BOLETA PDF */
+/* =========================================
+   DISEÑO DE LA BOLETA PDF
+========================================= */
+
+/*
+   La boleta se genera con un ancho fijo para A4
+   horizontal. No depende del ancho del celular.
+*/
 
 .boleta-pdf {
-    width: 100%;
+    width: 281mm;
+    max-width: none;
+    min-width: 281mm;
     background: #ffffff;
     color: #222222;
     padding: 10mm;
@@ -359,6 +368,8 @@ button {
     text-align: left;
     padding: 8px 5px;
     border: 1px solid #5B2326;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 .boleta-tabla td {
@@ -377,17 +388,12 @@ button {
     text-align: right;
 }
 
-/* Detalle: fecha, responsable, lugar, cantidad,
-   precio unitario y total */
-
 .tabla-detalle th:nth-child(1) { width: 11%; }
 .tabla-detalle th:nth-child(2) { width: 20%; }
 .tabla-detalle th:nth-child(3) { width: 21%; }
 .tabla-detalle th:nth-child(4) { width: 10%; }
 .tabla-detalle th:nth-child(5) { width: 18%; }
 .tabla-detalle th:nth-child(6) { width: 20%; }
-
-/* Resumen: producto, cantidad y total */
 
 .tabla-productos th:nth-child(1) { width: 55%; }
 .tabla-productos th:nth-child(2) { width: 20%; }
@@ -400,6 +406,8 @@ button {
     padding: 10px 6px;
     font-size: 11px;
     font-weight: 800;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 .boleta-tabla tfoot .fila-total td:last-child {
@@ -419,6 +427,22 @@ button {
 .boleta-tabla tr {
     page-break-inside: avoid;
     break-inside: avoid;
+}
+
+/*
+   El contenedor queda fuera de la pantalla,
+   pero conserva sus dimensiones reales para
+   que la captura no se reduzca al ancho móvil.
+*/
+
+#contenedorBoleta {
+    position: fixed;
+    left: -300mm;
+    top: 0;
+    width: 281mm;
+    min-width: 281mm;
+    background: #ffffff;
+    pointer-events: none;
 }
 
 @media print {
@@ -499,9 +523,7 @@ button {
 
 </main>
 
-<div id="contenedorBoleta"
-     style="position:absolute; left:-10000px; top:0; width:190mm;">
-</div>
+<div id="contenedorBoleta"></div>
 
 <script>
 "use strict";
@@ -892,7 +914,6 @@ function seleccionarBoleta(indice) {
 
 /* =========================================
    AGRUPAR PRODUCTOS PARA EL RESUMEN
-   Se agrupa por producto, sin separar por precio.
 ========================================= */
 
 function agruparVentas(ventasSemana) {
@@ -959,8 +980,6 @@ function crearContenidoBoleta(boleta) {
         0
     );
 
-    /* Primera tabla: detalle de cada registro de venta */
-
     const filasDetalle = ventasSemana.map(venta => `
         <tr>
             <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
@@ -971,8 +990,6 @@ function crearContenidoBoleta(boleta) {
             <td class="numero">${formatearColones(venta.Total)}</td>
         </tr>
     `).join("");
-
-    /* Segunda tabla: resumen de cantidades e importes por producto */
 
     const filasProductos = agrupadas.map(grupo => `
         <tr>
@@ -1004,7 +1021,6 @@ function crearContenidoBoleta(boleta) {
             </div>
 
             <div class="boleta-datos">
-
                 <div class="boleta-dato">
                     <strong>Periodo semanal:</strong>
                     <span>
@@ -1028,7 +1044,6 @@ function crearContenidoBoleta(boleta) {
                     <strong>Unidades vendidas:</strong>
                     <span>${escaparHTML(formatearNumero(totalUnidades))}</span>
                 </div>
-
             </div>
 
             <h2 class="boleta-subtitulo">Detalle de las ventas de la semana</h2>
@@ -1092,6 +1107,7 @@ function crearContenidoBoleta(boleta) {
 
 /* =========================================
    GENERAR Y DESCARGAR PDF
+   Mejoras de resolución y calidad
 ========================================= */
 
 async function generarBoleta() {
@@ -1131,7 +1147,7 @@ async function generarBoleta() {
         boton.disabled = true;
         boton.textContent = "Generando PDF...";
 
-        mostrarMensaje("Preparando la boleta semanal...", "info");
+        mostrarMensaje("Preparando la boleta en alta resolución...", "info");
 
         await cargarLogoSeguro();
 
@@ -1143,23 +1159,47 @@ async function generarBoleta() {
             throw new Error("No se pudo crear el contenido de la boleta.");
         }
 
+        /* Esperar a que las fuentes estén disponibles */
+
         if (document.fonts && document.fonts.ready) {
             await document.fonts.ready;
         }
 
+        /* Esperar a que el logo se cargue */
+
         const imagenLogo = elementoBoleta.querySelector(".boleta-logo img");
 
-        if (imagenLogo && !imagenLogo.complete) {
-            await new Promise(resolve => {
-                imagenLogo.onload = resolve;
-                imagenLogo.onerror = resolve;
-                setTimeout(resolve, 5000);
-            });
+        if (imagenLogo) {
+            if (!imagenLogo.complete) {
+                await new Promise(resolve => {
+                    imagenLogo.onload = resolve;
+                    imagenLogo.onerror = resolve;
+                    setTimeout(resolve, 5000);
+                });
+            }
+
+            if (imagenLogo.decode) {
+                try {
+                    await imagenLogo.decode();
+                } catch (error) {
+                    console.warn("No se pudo decodificar el logo.", error);
+                }
+            }
         }
 
+        /* Esperar a que el navegador termine de dibujar */
+
         await new Promise(resolve => {
-            requestAnimationFrame(() => resolve());
+            requestAnimationFrame(() => {
+                requestAnimationFrame(resolve);
+            });
         });
+
+        /*
+          PNG conserva mejor los bordes de letras y tablas
+          que JPEG. La escala 3 aumenta la resolución de
+          la captura respecto a la configuración anterior.
+        */
 
         const opciones = {
             margin: [8, 8, 8, 8],
@@ -1169,25 +1209,27 @@ async function generarBoleta() {
                 boletaSeleccionada.inicioSemana + ".pdf",
 
             image: {
-                type: "jpeg",
-                quality: 0.98
+                type: "png"
             },
 
             html2canvas: {
-                scale: 2,
+                scale: 3,
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: "#ffffff",
+                scrollX: 0,
                 scrollY: 0,
                 logging: false,
-                imageTimeout: 15000
+                imageTimeout: 15000,
+                removeContainer: true
             },
 
             jsPDF: {
                 unit: "mm",
                 format: "a4",
                 orientation: "landscape",
-                compress: true
+                compress: true,
+                putOnlyUsedFonts: true
             },
 
             pagebreak: {
@@ -1206,7 +1248,7 @@ async function generarBoleta() {
             .save();
 
         mostrarMensaje(
-            "La boleta semanal se generó correctamente.",
+            "La boleta semanal se generó correctamente en alta resolución.",
             "exito"
         );
 
@@ -1237,5 +1279,4 @@ cargarVentas();
 
 </body>
 </html>
-
 
