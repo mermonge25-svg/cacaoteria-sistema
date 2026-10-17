@@ -2,1153 +2,1107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boletas de ventas - Cacaotería S.R.L.</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boletas de ventas por día | Cacaotería S.R.L.</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<style>
-* {
-    box-sizing: border-box;
-    font-family: "Barlow", Arial, sans-serif;
-}
+  <style>
+    :root {
+      --vino: #5B2326;
+      --rojo: #E14E39;
+      --azul: #2DADD6;
+      --verde: #007F49;
+      --fondo: #f5f5f5;
+      --texto: #292929;
+      --borde: #e3e3e3;
+    }
 
-body {
-    margin: 0;
-    background: #f5f5f5;
-    color: #333;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-header {
-    background: #5B2326;
-    color: white;
-    padding: 20px 30px;
-    border-bottom: 4px solid #E14E39;
-}
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: 'Barlow', sans-serif;
+    }
 
-header h1 {
-    margin: 0;
-    font-size: 31px;
-    font-weight: 700;
-}
-
-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
-}
-
-.contenedor {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.panel {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-    margin-bottom: 22px;
-}
-
-h2, h3 {
-    color: #5B2326;
-}
-
-h2 {
-    margin-top: 0;
-}
-
-.descripcion {
-    color: #666;
-    line-height: 1.5;
-}
-
-.lista-fechas {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.fecha-opcion {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: .15s;
-}
-
-.fecha-opcion:hover {
-    border-color: #2DADD6;
-    background: #f7fcfe;
-}
-
-.fecha-opcion.seleccionada {
-    border: 2px solid #5B2326;
-    background: #fff8f7;
-}
-
-.fecha-opcion input[type="radio"] {
-    accent-color: #5B2326;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.fecha-texto {
-    font-weight: 600;
-    color: #5B2326;
-}
-
-.fecha-detalle {
-    margin-left: auto;
-    color: #777;
-    font-size: 13px;
-    text-align: right;
-}
-
-.acciones {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-button {
-    border: none;
-    padding: 12px 22px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.boton-principal {
-    background: #E14E39;
-    color: white;
-}
-
-.boton-principal:hover {
-    background: #5B2326;
-}
-
-.boton-principal:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-}
-
-.mensaje {
-    display: none;
-    padding: 12px 15px;
-    border-radius: 6px;
-    margin-top: 18px;
-    overflow-wrap: anywhere;
-}
-
-.mensaje.visible {
-    display: block;
-}
-
-.mensaje.error {
-    background: #fdecea;
-    color: #a00000;
-}
-
-.mensaje.exito {
-    background: #e8f5e9;
-    color: #007F49;
-}
-
-.mensaje.info {
-    background: #eaf7fc;
-    color: #245a70;
-}
-
-.vacio {
-    text-align: center;
-    padding: 30px 15px;
-    color: #777;
-    line-height: 1.5;
-}
-
-.resumen {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.tarjeta {
-    background: #fafafa;
-    border-left: 4px solid #E14E39;
-    padding: 16px;
-    border-radius: 6px;
-}
-
-.tarjeta small {
-    display: block;
-    color: #666;
-    margin-bottom: 7px;
-}
-
-.tarjeta strong {
-    color: #5B2326;
-    font-size: 19px;
-    overflow-wrap: anywhere;
-}
-
-@media(max-width: 600px) {
     .contenedor {
-        padding: 0 12px;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .encabezado {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .logo-principal {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    h1 {
+      color: var(--vino);
+      font-size: 27px;
+      margin: 0 0 5px;
+    }
+
+    .subtitulo {
+      color: #666;
+      margin: 0;
+      font-size: 15px;
     }
 
     .panel {
-        padding: 18px;
+      background: white;
+      padding: 22px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #0000000a;
     }
 
-    .resumen {
-        grid-template-columns: 1fr;
+    .panel h2 {
+      color: var(--vino);
+      font-size: 20px;
+      margin: 0 0 16px;
+    }
+
+    .controles {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 14px;
+    }
+
+    .campo {
+      flex: 1;
+      min-width: 210px;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 15px;
+      background: white;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 7px;
+      color: white;
+      background: var(--vino);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .boton-secundario {
+      background: var(--azul);
+    }
+
+    .boton-pdf {
+      background: var(--verde);
+    }
+
+    .mensaje {
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 7px;
+      background: #f0f0f0;
+      color: #444;
+      overflow-wrap: anywhere;
+    }
+
+    .mensaje.error {
+      background: #fff0ed;
+      color: #a52a1a;
+    }
+
+    .mensaje.exito {
+      background: #e8f6ee;
+      color: #176b3a;
+    }
+
+    .fechas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
     }
 
     .fecha-opcion {
-        flex-wrap: wrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--borde);
+      border-radius: 7px;
+      padding: 10px 12px;
+      cursor: pointer;
+      background: #fff;
     }
 
-    .fecha-detalle {
-        width: 100%;
-        margin-left: 30px;
-        text-align: left;
+    .fecha-opcion input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--vino);
     }
 
-    .acciones button {
-        width: 100%;
+    .resumen {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
     }
-}
 
-/* DISEÑO DE LA BOLETA PDF */
+    .tarjeta {
+      padding: 18px;
+      border-radius: 9px;
+      background: #faf7f7;
+      border: 1px solid #eee4e4;
+    }
 
-.boleta-pdf {
-    width: 100%;
-    background: #ffffff;
-    color: #222222;
-    padding: 10mm;
-    font-family: "Barlow", Arial, sans-serif;
-    font-size: 12px;
-    line-height: 1.4;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-}
+    .tarjeta .etiqueta {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
 
-.boleta-pdf,
-.boleta-pdf * {
-    font-family: "Barlow", Arial, sans-serif;
-    box-sizing: border-box;
-}
+    .tarjeta .valor {
+      color: var(--vino);
+      font-size: 23px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
 
-.boleta-encabezado {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding-bottom: 15px;
-    border-bottom: 3px solid #5B2326;
-    margin-bottom: 22px;
-}
+    .tabla-contenedor {
+      overflow-x: auto;
+    }
 
-.boleta-logo {
-    width: 82px;
-    height: 82px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
 
-.boleta-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-}
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--borde);
+      text-align: left;
+    }
 
-.logo-texto {
-    color: #5B2326;
-    font-weight: 800;
-    font-size: 28px;
-    letter-spacing: -1px;
-}
+    th {
+      background: var(--vino);
+      color: white;
+      font-weight: 700;
+      white-space: nowrap;
+    }
 
-.boleta-empresa {
-    flex: 1;
-    min-width: 0;
-}
+    td.numero, th.numero {
+      text-align: right;
+      white-space: nowrap;
+    }
 
-.boleta-empresa h1 {
-    font-size: 27px;
-    line-height: 1.15;
-    color: #5B2326;
-    margin: 0 0 5px;
-    font-weight: 800;
-}
+    .vacio {
+      padding: 22px;
+      color: #777;
+      text-align: center;
+    }
 
-.boleta-empresa p {
-    font-size: 13px;
-    color: #444444;
-    margin: 3px 0 0;
-    font-weight: 500;
-}
+    .acciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
 
-.boleta-datos {
-    margin-bottom: 24px;
-    font-size: 13px;
-}
+    /* Contenido interno del PDF */
+    #contenedorPdf {
+      position: fixed;
+      left: -10000px;
+      top: 0;
+      width: 760px;
+      background: white;
+      pointer-events: none;
+    }
 
-.boleta-dato {
-    display: flex;
-    gap: 5px;
-    margin: 0 0 13px;
-    align-items: flex-start;
-}
-
-.boleta-dato strong {
-    color: #5B2326;
-    min-width: 155px;
-    font-weight: 700;
-}
-
-.boleta-dato span {
-    flex: 1;
-    overflow-wrap: anywhere;
-    font-weight: 500;
-}
-
-.boleta-tabla {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 12px;
-}
-
-.boleta-tabla thead {
-    display: table-header-group;
-}
-
-.boleta-tabla th {
-    background: #5B2326;
-    color: #ffffff;
-    font-weight: 700;
-    text-align: left;
-    padding: 10px 7px;
-    border: 1px solid #5B2326;
-}
-
-.boleta-tabla td {
-    padding: 10px 7px;
-    border: 1px solid #dddddd;
-    overflow-wrap: anywhere;
-    vertical-align: middle;
-    font-weight: 500;
-}
-
-.boleta-tabla tbody tr:nth-child(even) {
-    background: #faf6f5;
-}
-
-.boleta-tabla .numero {
-    text-align: right;
-}
-
-.boleta-tabla th:nth-child(1) {
-    width: 42%;
-}
-
-.boleta-tabla th:nth-child(2) {
-    width: 14%;
-}
-
-.boleta-tabla th:nth-child(3) {
-    width: 22%;
-}
-
-.boleta-tabla th:nth-child(4) {
-    width: 22%;
-}
-
-.boleta-tabla tfoot {
-    display: table-row-group;
-}
-
-.boleta-tabla tfoot .fila-total td {
-    background: #5B2326 !important;
-    color: #ffffff !important;
-    border: 1px solid #5B2326;
-    padding: 12px 7px;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.boleta-tabla tfoot .fila-total td:last-child {
-    text-align: right;
-    white-space: nowrap;
-}
-
-.boleta-pie {
-    margin-top: 30px;
-    padding-top: 10px;
-    border-top: 1px solid #dddddd;
-    font-size: 10px;
-    color: #666666;
-    text-align: center;
-    font-weight: 500;
-}
-
-.boleta-tabla tr {
-    page-break-inside: avoid;
-    break-inside: avoid;
-}
-
-@media print {
     .boleta-pdf {
-        padding: 0;
+      width: 760px;
+      padding: 34px;
+      background: white;
+      color: #222;
+      font-family: 'Barlow', sans-serif;
     }
-}
-</style>
+
+    .pdf-encabezado {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--vino);
+      margin-bottom: 22px;
+    }
+
+    .pdf-logo {
+      width: 105px;
+      height: 95px;
+      object-fit: contain;
+    }
+
+    .pdf-logo-texto {
+      width: 105px;
+      height: 95px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--vino);
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .pdf-titulo {
+      text-align: center;
+    }
+
+    .pdf-titulo h2 {
+      margin: 0 0 6px;
+      color: var(--vino);
+      font-size: 23px;
+    }
+
+    .pdf-titulo p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .pdf-nombre {
+      margin: 0 0 20px;
+      color: var(--vino);
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .pdf-datos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+      margin-bottom: 22px;
+      font-size: 14px;
+    }
+
+    .pdf-datos div {
+      overflow-wrap: anywhere;
+    }
+
+    .pdf-datos strong {
+      color: var(--vino);
+    }
+
+    .tabla-pdf {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .tabla-pdf th {
+      background: var(--vino) !important;
+      color: #fff !important;
+      padding: 10px 8px;
+      border: 1px solid var(--vino);
+      text-align: left;
+    }
+
+    .tabla-pdf td {
+      padding: 9px 8px;
+      border: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    .tabla-pdf .alinear-derecha {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tabla-pdf tfoot td {
+      background: var(--vino) !important;
+      color: #fff !important;
+      font-weight: 800 !important;
+      border: 1px solid var(--vino);
+      padding: 12px 8px;
+    }
+
+    .pdf-pie {
+      margin-top: 25px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 11px;
+      color: #777;
+    }
+
+    @media (max-width: 650px) {
+      body {
+        padding: 12px;
+      }
+
+      .encabezado {
+        align-items: flex-start;
+      }
+
+      .logo-principal {
+        width: 65px;
+        height: 65px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .resumen {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
-    <h1>Cacaotería S.R.L.</h1>
-    <p>Sistema de Gestión Operativa</p>
-</header>
-
-<main class="contenedor">
+  <main class="contenedor">
+    <header class="encabezado">
+      <img
+        id="logoPrincipal"
+        class="logo-principal"
+        src="/imagenes/logo_pgn.png"
+        alt="Logo de KAÜ"
+      >
+      <div>
+        <h1>Boletas de ventas por día</h1>
+        <p class="subtitulo">Cacaotería S.R.L. | Sistema de inventario</p>
+      </div>
+    </header>
 
     <section class="panel">
-        <h2>Boletas de ventas por día</h2>
+      <h2>Consultar ventas</h2>
 
-        <p class="descripcion">
-            Seleccioná una fecha registrada en el módulo de Ventas
-            para generar la boleta diaria en PDF.
-        </p>
-
-        <div id="estadoCarga" class="mensaje info visible">
-            Cargando fechas registradas...
+      <div class="controles">
+        <div class="campo">
+          <label for="fecha">Seleccionar fecha</label>
+          <input type="date" id="fecha">
         </div>
 
-        <div id="listaFechas" class="lista-fechas"></div>
+        <button id="btnConsultar" type="button" onclick="consultarVentas()">
+          Consultar ventas
+        </button>
 
-        <div id="fechasVacias" class="vacio" hidden>
-            No hay fechas con ventas registradas.
-        </div>
+        <button class="boton-secundario" type="button" onclick="cargarFechas()">
+          Ver fechas disponibles
+        </button>
+      </div>
 
-        <div class="acciones">
-            <button
-                type="button"
-                class="boton-principal"
-                id="botonGenerar"
-                onclick="generarBoleta()"
-                disabled
-            >
-                Generar boleta
-            </button>
-        </div>
-
-        <div id="mensaje" class="mensaje"></div>
+      <div id="fechasDisponibles" class="fechas"></div>
+      <div id="mensaje" class="mensaje" role="status">
+        Seleccioná una fecha para consultar las ventas.
+      </div>
     </section>
 
-    <section class="panel" id="panelResumen" hidden>
-        <h3>Resumen de la fecha seleccionada</h3>
+    <section class="panel">
+      <h2>Resumen del día</h2>
 
-        <div class="resumen">
-            <div class="tarjeta">
-                <small>Fecha</small>
-                <strong id="resumenFecha">—</strong>
-            </div>
-
-            <div class="tarjeta">
-                <small>Registros de venta</small>
-                <strong id="resumenCantidad">0</strong>
-            </div>
-
-            <div class="tarjeta">
-                <small>Total vendido</small>
-                <strong id="resumenTotal">₡0,00</strong>
-            </div>
+      <div class="resumen">
+        <div class="tarjeta">
+          <div class="etiqueta">Cantidad de registros</div>
+          <div class="valor" id="cantidadRegistros">0</div>
         </div>
+
+        <div class="tarjeta">
+          <div class="etiqueta">Unidades vendidas</div>
+          <div class="valor" id="unidadesVendidas">0</div>
+        </div>
+
+        <div class="tarjeta">
+          <div class="etiqueta">Total de ventas</div>
+          <div class="valor" id="totalVentas">₡0,00</div>
+        </div>
+      </div>
     </section>
 
-</main>
+    <section class="panel">
+      <h2>Detalle de ventas</h2>
 
-<div id="contenedorBoleta"
-     style="position:absolute; left:-10000px; top:0; width:190mm;">
-</div>
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="numero">Precio unitario</th>
+              <th class="numero">Cantidad</th>
+              <th class="numero">Total</th>
+            </tr>
+          </thead>
+          <tbody id="tablaVentas">
+            <tr>
+              <td colspan="4" class="vacio">
+                No hay ventas consultadas.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-<script>
-"use strict";
+      <div class="acciones">
+        <button
+          id="btnPdf"
+          class="boton-pdf"
+          type="button"
+          onclick="generarBoleta()"
+          disabled
+        >
+          Generar boleta PDF
+        </button>
+      </div>
+    </section>
+  </main>
 
-/* =========================================
-   CONEXIÓN CON SUPABASE
-========================================= */
+  <div id="contenedorPdf" aria-hidden="true"></div>
 
-const SUPABASE_URL =
-    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+  <script>
+    // --------------------------------------------------
+    // CONFIGURACIÓN DE SUPABASE
+    // --------------------------------------------------
 
-const SUPABASE_KEY =
-    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+    const SUPABASE_URL = "https://shjfohkiyfnqedrzjqpy.supabase.co";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+    const SUPABASE_KEY =
+      "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
 
-/*
-  Ruta del logo de la página principal.
-  Se convierte a una URL de datos para que
-  html2canvas no tenga que exportar una imagen
-  procedente de otro origen.
-*/
-const LOGO_URL = "imagenes/logo_pgn.png";
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-let logoDataURL = null;
-let logoIntentado = false;
+    // La barra inicial permite cargar el logo desde la raíz
+    // del sitio publicado en Vercel, aunque este HTML esté
+    // dentro de otra carpeta.
+    const LOGO_URL = new URL(
+      "/imagenes/logo_pgn.png",
+      window.location.origin
+    ).href;
 
-let ventas = [];
-let fechaSeleccionada = null;
-let fechasDisponibles = [];
+    let todasLasVentas = [];
+    let ventasDelDia = [];
+    let fechaSeleccionada = "";
+    let logoDataURL = null;
+    let logoIntentado = false;
 
+    // --------------------------------------------------
+    // FUNCIONES GENERALES
+    // --------------------------------------------------
 
-/* =========================================
-   CARGAR LOGO DE FORMA SEGURA
-========================================= */
-
-async function cargarLogoSeguro() {
-    if (logoIntentado) {
-        return logoDataURL;
+    function mostrarMensaje(texto, tipo = "") {
+      const elemento = document.getElementById("mensaje");
+      elemento.textContent = texto;
+      elemento.className = "mensaje" + (tipo ? " " + tipo : "");
     }
 
-    logoIntentado = true;
+    function escaparHTML(valor) {
+      return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[caracter]);
+    }
 
-    try {
-        const respuesta = await fetch(
-            new URL(LOGO_URL, window.location.href).href,
-            {
-                mode: "cors",
-                cache: "force-cache"
-            }
-        );
+    function numero(valor) {
+      const n = Number(valor);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function formatoMoneda(valor) {
+      return new Intl.NumberFormat("es-CR", {
+        style: "currency",
+        currency: "CRC",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(numero(valor));
+    }
+
+    function formatoCantidad(valor) {
+      return new Intl.NumberFormat("es-CR", {
+        maximumFractionDigits: 3
+      }).format(numero(valor));
+    }
+
+    function obtenerFecha(valor) {
+      if (!valor) return "";
+      return String(valor).slice(0, 10);
+    }
+
+    function formatoFecha(fecha) {
+      if (!fecha) return "";
+      const partes = fecha.split("-");
+      if (partes.length !== 3) return fecha;
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function obtenerTotalVenta(venta) {
+      const total = Number(venta.Total);
+      if (Number.isFinite(total)) return total;
+
+      return numero(venta.Cantidad) * numero(venta.Precio_Unitario);
+    }
+
+    function obtenerUnidades(ventas) {
+      return ventas.reduce(
+        (acumulado, venta) => acumulado + numero(venta.Cantidad),
+        0
+      );
+    }
+
+    function obtenerTotal(ventas) {
+      return ventas.reduce(
+        (acumulado, venta) => acumulado + obtenerTotalVenta(venta),
+        0
+      );
+    }
+
+    // --------------------------------------------------
+    // CARGA DEL LOGO PARA EL PDF
+    // --------------------------------------------------
+
+    async function cargarLogoSeguro() {
+      if (logoIntentado) return logoDataURL;
+      logoIntentado = true;
+
+      try {
+        const respuesta = await fetch(LOGO_URL, {
+          mode: "cors",
+          cache: "no-cache"
+        });
 
         if (!respuesta.ok) {
-            throw new Error(
-                "No se pudo cargar el logo. Código HTTP: " +
-                respuesta.status
-            );
+          throw new Error(
+            `No se pudo descargar el logo. Código HTTP: ${respuesta.status}`
+          );
         }
 
         const blob = await respuesta.blob();
 
         if (!blob.type.startsWith("image/")) {
-            throw new Error(
-                "El archivo del logo no es una imagen válida."
-            );
+          throw new Error("El archivo del logo no es una imagen válida.");
         }
 
         logoDataURL = await new Promise((resolve, reject) => {
-            const lector = new FileReader();
+          const lector = new FileReader();
 
-            lector.onload = () => resolve(lector.result);
-            lector.onerror = () => reject(
-                new Error("No se pudo leer el archivo del logo.")
-            );
+          lector.onload = () => resolve(lector.result);
+          lector.onerror = () => reject(
+            new Error("No se pudo convertir el logo para el PDF.")
+          );
 
-            lector.readAsDataURL(blob);
+          lector.readAsDataURL(blob);
         });
 
         return logoDataURL;
-
-    } catch (error) {
-        console.warn(
-            "El logo no pudo cargarse como imagen segura. Se usará el texto KAÜ.",
-            error
-        );
-
+      } catch (error) {
+        console.error("No se pudo cargar el logo para el PDF:", error);
         logoDataURL = null;
         return null;
-    }
-}
-
-
-/* =========================================
-   FORMATO DE DATOS
-========================================= */
-
-function limpiarTexto(valor) {
-    if (valor === null || valor === undefined) {
-        return "";
+      }
     }
 
-    return String(valor).trim();
-}
+    // --------------------------------------------------
+    // CONSULTAR VENTAS EN SUPABASE
+    // --------------------------------------------------
 
-function formatearColones(valor) {
-    return "₡" + (Number(valor) || 0).toLocaleString(
-        "es-CR",
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
-}
+    async function consultarVentas() {
+      const fecha = document.getElementById("fecha").value;
 
-function formatearNumero(valor) {
-    return (Number(valor) || 0).toLocaleString(
-        "es-CR",
-        {
-            maximumFractionDigits: 2
-        }
-    );
-}
+      if (!fecha) {
+        mostrarMensaje("Seleccioná una fecha antes de consultar.", "error");
+        return;
+      }
 
-function formatearFecha(fecha) {
-    if (!fecha) return "";
+      fechaSeleccionada = fecha;
+      const boton = document.getElementById("btnConsultar");
 
-    const partes = String(fecha).split("-");
+      boton.disabled = true;
+      mostrarMensaje("Consultando ventas...");
 
-    if (partes.length !== 3) {
-        return fecha;
-    }
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-}
-
-function mostrarMensaje(texto, tipo) {
-    const elemento = document.getElementById("mensaje");
-
-    elemento.textContent = texto;
-    elemento.className = "mensaje visible " + tipo;
-}
-
-function ocultarMensaje() {
-    const elemento = document.getElementById("mensaje");
-
-    elemento.textContent = "";
-    elemento.className = "mensaje";
-}
-
-
-/* =========================================
-   CARGAR FECHAS Y VENTAS
-========================================= */
-
-async function cargarFechas() {
-    const estadoCarga = document.getElementById("estadoCarga");
-    const lista = document.getElementById("listaFechas");
-    const fechasVacias = document.getElementById("fechasVacias");
-    const boton = document.getElementById("botonGenerar");
-
-    estadoCarga.textContent = "Cargando fechas registradas...";
-    estadoCarga.className = "mensaje info visible";
-
-    lista.replaceChildren();
-    fechasVacias.hidden = true;
-    boton.disabled = true;
-
-    try {
+      try {
         const { data, error } = await supabaseClient
-            .from("Ventas")
-            .select(
-                "id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino"
-            )
-            .order("Fecha", { ascending: false });
+          .from("Ventas")
+          .select(
+            "id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino"
+          )
+          .order("Fecha", { ascending: true });
 
-        if (error) {
-            throw error;
+        if (error) throw error;
+
+        todasLasVentas = data || [];
+
+        ventasDelDia = todasLasVentas.filter(venta =>
+          obtenerFecha(venta.Fecha) === fecha
+        );
+
+        mostrarResumen();
+        mostrarTabla();
+
+        if (ventasDelDia.length === 0) {
+          mostrarMensaje(
+            "No se encontraron ventas para el " + formatoFecha(fecha) + ".",
+            "error"
+          );
+        } else {
+          mostrarMensaje(
+            `Se encontraron ${ventasDelDia.length} registros para el ${formatoFecha(fecha)}.`,
+            "exito"
+          );
         }
+      } catch (error) {
+        console.error("Error consultando las ventas:", error);
 
-        ventas = data || [];
+        mostrarMensaje(
+          "No se pudieron consultar las ventas. " +
+          (error.message || "Revisá la conexión con Supabase."),
+          "error"
+        );
+      } finally {
+        boton.disabled = false;
+      }
+    }
 
-        const fechas = [
-            ...new Set(
-                ventas
-                    .map(venta => limpiarTexto(venta.Fecha))
-                    .filter(Boolean)
-            )
-        ];
+    // --------------------------------------------------
+    // FECHAS DISPONIBLES
+    // --------------------------------------------------
 
-        fechas.sort((a, b) => b.localeCompare(a));
-        fechasDisponibles = fechas;
+    async function cargarFechas() {
+      const contenedor = document.getElementById("fechasDisponibles");
+      contenedor.innerHTML = "";
 
-        estadoCarga.className = "mensaje";
-        lista.replaceChildren();
+      mostrarMensaje("Buscando fechas con ventas...");
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("Ventas")
+          .select("Fecha")
+          .order("Fecha", { ascending: false });
+
+        if (error) throw error;
+
+        const fechas = [...new Set(
+          (data || [])
+            .map(venta => obtenerFecha(venta.Fecha))
+            .filter(Boolean)
+        )].sort((a, b) => b.localeCompare(a));
 
         if (fechas.length === 0) {
-            fechasVacias.hidden = false;
-            return;
+          mostrarMensaje("No hay fechas registradas en la tabla Ventas.");
+          return;
         }
 
-        fechas.forEach(fecha => {
-            const cantidadVentas = ventas.filter(
-                venta => limpiarTexto(venta.Fecha) === fecha
-            ).length;
+        contenedor.innerHTML = fechas.map((fecha, indice) => `
+          <label class="fecha-opcion">
+            <input
+              type="radio"
+              name="fechaDisponible"
+              value="${escaparHTML(fecha)}"
+              ${indice === 0 ? "checked" : ""}
+            >
+            <span>${escaparHTML(formatoFecha(fecha))}</span>
+          </label>
+        `).join("");
 
-            const etiqueta = document.createElement("label");
-            etiqueta.className = "fecha-opcion";
-
-            const radio = document.createElement("input");
-            radio.type = "radio";
-            radio.name = "fechaVenta";
-            radio.value = fecha;
-
+        contenedor.querySelectorAll('input[name="fechaDisponible"]')
+          .forEach(radio => {
             radio.addEventListener("change", () => {
-                seleccionarFecha(fecha);
+              document.getElementById("fecha").value = radio.value;
+              consultarVentas();
             });
+          });
 
-            const textoFecha = document.createElement("span");
-            textoFecha.className = "fecha-texto";
-            textoFecha.textContent = formatearFecha(fecha);
+        if (!document.getElementById("fecha").value) {
+          document.getElementById("fecha").value = fechas[0];
+        }
 
-            const detalle = document.createElement("span");
-            detalle.className = "fecha-detalle";
-            detalle.textContent =
-                `${cantidadVentas} registro${cantidadVentas === 1 ? "" : "s"}`;
-
-            etiqueta.append(radio, textoFecha, detalle);
-            lista.appendChild(etiqueta);
-        });
-
-    } catch (error) {
-        console.error("Error cargando fechas:", error);
-
-        estadoCarga.textContent =
-            "No se pudieron cargar las fechas. Verificá la conexión y los permisos de la tabla Ventas.";
-
-        estadoCarga.className = "mensaje error visible";
-    }
-}
-
-
-/* =========================================
-   SELECCIONAR FECHA
-========================================= */
-
-function seleccionarFecha(fecha) {
-    if (!fechasDisponibles.includes(fecha)) {
         mostrarMensaje(
-            "La fecha seleccionada no está disponible.",
-            "error"
+          `Se encontraron ${fechas.length} fechas con registros.`,
+          "exito"
         );
-        return;
+      } catch (error) {
+        console.error("Error cargando las fechas:", error);
+
+        mostrarMensaje(
+          "No se pudieron cargar las fechas. " +
+          (error.message || "Revisá la conexión con Supabase."),
+          "error"
+        );
+      }
     }
 
-    fechaSeleccionada = fecha;
+    // --------------------------------------------------
+    // AGRUPAR VENTAS POR PRODUCTO Y PRECIO
+    // --------------------------------------------------
 
-    document.querySelectorAll(".fecha-opcion").forEach(etiqueta => {
-        const radio = etiqueta.querySelector("input");
+    function agruparVentas(ventas) {
+      const grupos = new Map();
 
-        etiqueta.classList.toggle(
-            "seleccionada",
-            radio.checked
-        );
-    });
-
-    const ventasFecha = ventas.filter(
-        venta => limpiarTexto(venta.Fecha) === fecha
-    );
-
-    const total = ventasFecha.reduce(
-        (suma, venta) => suma + (Number(venta.Total) || 0),
-        0
-    );
-
-    document.getElementById("resumenFecha").textContent =
-        formatearFecha(fecha);
-
-    document.getElementById("resumenCantidad").textContent =
-        formatearNumero(ventasFecha.length);
-
-    document.getElementById("resumenTotal").textContent =
-        formatearColones(total);
-
-    document.getElementById("panelResumen").hidden = false;
-    document.getElementById("botonGenerar").disabled =
-        ventasFecha.length === 0;
-
-    ocultarMensaje();
-}
-
-
-/* =========================================
-   AGRUPAR VENTAS POR PRODUCTO Y PRECIO
-========================================= */
-
-function agruparVentas(ventasFecha) {
-    const grupos = new Map();
-
-    ventasFecha.forEach(venta => {
-        const producto =
-            limpiarTexto(venta.Descripcion) || "Producto sin descripción";
-
-        const precio = Number(venta.Precio_Unitario) || 0;
-        const clave = producto + "||" + precio;
+      ventas.forEach(venta => {
+        const descripcion = venta.Descripcion || "Producto sin descripción";
+        const precio = numero(venta.Precio_Unitario);
+        const unidad = venta.Unidad_Medida || "";
+        const clave = JSON.stringify([descripcion, precio, unidad]);
 
         if (!grupos.has(clave)) {
-            grupos.set(clave, {
-                producto,
-                cantidad: 0,
-                precio,
-                total: 0
-            });
+          grupos.set(clave, {
+            descripcion,
+            precio,
+            unidad,
+            cantidad: 0,
+            total: 0
+          });
         }
 
         const grupo = grupos.get(clave);
+        grupo.cantidad += numero(venta.Cantidad);
+        grupo.total += obtenerTotalVenta(venta);
+      });
 
-        grupo.cantidad += Number(venta.Cantidad) || 0;
-        grupo.total += Number(venta.Total) || 0;
-    });
+      return [...grupos.values()].sort((a, b) =>
+        a.descripcion.localeCompare(b.descripcion, "es")
+      );
+    }
 
-    return Array.from(grupos.values()).sort(
-        (a, b) => a.producto.localeCompare(b.producto, "es")
-    );
-}
+    // --------------------------------------------------
+    // MOSTRAR RESUMEN Y TABLA
+    // --------------------------------------------------
 
+    function mostrarResumen() {
+      document.getElementById("cantidadRegistros").textContent =
+        formatoCantidad(ventasDelDia.length);
 
-/* =========================================
-   DATOS GENERALES
-========================================= */
+      document.getElementById("unidadesVendidas").textContent =
+        formatoCantidad(obtenerUnidades(ventasDelDia));
 
-function obtenerValoresUnicos(ventasFecha, campo) {
-    return [
-        ...new Set(
-            ventasFecha
-                .map(venta => limpiarTexto(venta[campo]))
-                .filter(Boolean)
-        )
-    ];
-}
+      document.getElementById("totalVentas").textContent =
+        formatoMoneda(obtenerTotal(ventasDelDia));
 
-function unirValores(valores) {
-    return valores.length > 0
-        ? valores.join(", ")
-        : "No registrado";
-}
+      document.getElementById("btnPdf").disabled =
+        ventasDelDia.length === 0;
+    }
 
+    function mostrarTabla() {
+      const cuerpo = document.getElementById("tablaVentas");
+      const grupos = agruparVentas(ventasDelDia);
 
-/* =========================================
-   ESCAPAR TEXTO HTML
-========================================= */
+      if (grupos.length === 0) {
+        cuerpo.innerHTML = `
+          <tr>
+            <td colspan="4" class="vacio">
+              No hay ventas para mostrar en esta fecha.
+            </td>
+          </tr>
+        `;
+        return;
+      }
 
-function escaparHTML(valor) {
-    return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-/* =========================================
-   CREAR CONTENIDO DE LA BOLETA
-========================================= */
-
-function crearContenidoBoleta(ventasFecha) {
-    const agrupadas = agruparVentas(ventasFecha);
-
-    const totalUnidades = ventasFecha.reduce(
-        (suma, venta) => suma + (Number(venta.Cantidad) || 0),
-        0
-    );
-
-    const totalVendido = ventasFecha.reduce(
-        (suma, venta) => suma + (Number(venta.Total) || 0),
-        0
-    );
-
-    const lugares = obtenerValoresUnicos(ventasFecha, "Destino");
-    const responsables = obtenerValoresUnicos(ventasFecha, "Responsable");
-
-    const filas = agrupadas.map(grupo => `
+      cuerpo.innerHTML = grupos.map(grupo => `
         <tr>
-            <td>${escaparHTML(grupo.producto)}</td>
-            <td class="numero">${formatearNumero(grupo.cantidad)}</td>
-            <td class="numero">${formatearColones(grupo.precio)}</td>
-            <td class="numero">${formatearColones(grupo.total)}</td>
+          <td>
+            ${escaparHTML(grupo.descripcion)}
+            ${grupo.unidad ? `<small> (${escaparHTML(grupo.unidad)})</small>` : ""}
+          </td>
+          <td class="numero">${formatoMoneda(grupo.precio)}</td>
+          <td class="numero">${formatoCantidad(grupo.cantidad)}</td>
+          <td class="numero">${formatoMoneda(grupo.total)}</td>
         </tr>
-    `).join("");
-
-    /*
-      Se utiliza la imagen convertida a datos locales.
-      Si no se pudo cargar, se muestra KAÜ en texto.
-    */
-    const logo = logoDataURL
-        ? `<img src="${logoDataURL}" alt="Logo Cacaotería S.R.L.">`
-        : `<div class="logo-texto">KAÜ</div>`;
-
-    return `
-        <div class="boleta-pdf">
-
-            <div class="boleta-encabezado">
-                <div class="boleta-logo">
-                    ${logo}
-                </div>
-
-                <div class="boleta-empresa">
-                    <h1>CACAOTERÍA S.R.L.</h1>
-                    <p><strong>BOLETA DIARIA DE VENTAS</strong></p>
-                    <p>KAÜ · Registro de ventas</p>
-                </div>
-            </div>
-
-            <div class="boleta-datos">
-
-                <div class="boleta-dato">
-                    <strong>Fecha de venta:</strong>
-                    <span>${escaparHTML(formatearFecha(fechaSeleccionada))}</span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Lugar de venta:</strong>
-                    <span>${escaparHTML(unirValores(lugares))}</span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Responsable de la venta:</strong>
-                    <span>${escaparHTML(unirValores(responsables))}</span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Unidades vendidas:</strong>
-                    <span>${escaparHTML(formatearNumero(totalUnidades))}</span>
-                </div>
-
-            </div>
-
-            <table class="boleta-tabla">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th class="numero">Cantidad</th>
-                        <th class="numero">Precio unitario</th>
-                        <th class="numero">Total</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    ${filas}
-                </tbody>
-
-                <tfoot>
-                    <tr class="fila-total">
-                        <td colspan="3">TOTAL DE VENTAS DEL DÍA</td>
-                        <td class="numero">${formatearColones(totalVendido)}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <div class="boleta-pie">
-                Cacaotería S.R.L. · KAÜ · Registro diario de ventas
-            </div>
-
-        </div>
-    `;
-}
-
-
-/* =========================================
-   GENERAR BOLETA EN PDF
-========================================= */
-
-async function generarBoleta() {
-    if (
-        !fechaSeleccionada ||
-        !fechasDisponibles.includes(fechaSeleccionada)
-    ) {
-        mostrarMensaje(
-            "Seleccioná una fecha antes de generar la boleta.",
-            "error"
-        );
-        return;
+      `).join("");
     }
 
-    const ventasFecha = ventas.filter(
-        venta => limpiarTexto(venta.Fecha) === fechaSeleccionada
-    );
+    // --------------------------------------------------
+    // CREAR EL DOCUMENTO QUE SE CONVERTIRÁ A PDF
+    // --------------------------------------------------
 
-    if (ventasFecha.length === 0) {
-        mostrarMensaje(
-            "No hay ventas registradas para esa fecha.",
-            "error"
-        );
-        return;
+    async function crearContenidoBoleta() {
+      const logo = await cargarLogoSeguro();
+      const grupos = agruparVentas(ventasDelDia);
+
+      const destinos = [...new Set(
+        ventasDelDia.map(v => String(v.Destino || "").trim()).filter(Boolean)
+      )];
+
+      const responsables = [...new Set(
+        ventasDelDia.map(v => String(v.Responsable || "").trim()).filter(Boolean)
+      )];
+
+      const ubicaciones = [...new Set(
+        ventasDelDia.map(v => String(v.Ubicacion || "").trim()).filter(Boolean)
+      )];
+
+      const unidades = obtenerUnidades(ventasDelDia);
+      const total = obtenerTotal(ventasDelDia);
+
+      const logoHTML = logo
+        ? `<img class="pdf-logo" src="${logo}" alt="Logo KAÜ">`
+        : `<div class="pdf-logo-texto">KAÜ</div>`;
+
+      const filas = grupos.map(grupo => `
+        <tr>
+          <td>
+            ${escaparHTML(grupo.descripcion)}
+            ${grupo.unidad ? ` (${escaparHTML(grupo.unidad)})` : ""}
+          </td>
+          <td class="alinear-derecha">${formatoMoneda(grupo.precio)}</td>
+          <td class="alinear-derecha">${formatoCantidad(grupo.cantidad)}</td>
+          <td class="alinear-derecha">${formatoMoneda(grupo.total)}</td>
+        </tr>
+      `).join("");
+
+      const contenedor = document.getElementById("contenedorPdf");
+
+      contenedor.innerHTML = `
+        <article class="boleta-pdf" id="boletaGenerada">
+          <header class="pdf-encabezado">
+            ${logoHTML}
+            <div class="pdf-titulo">
+              <h2>CACAOTERÍA S.R.L.</h2>
+              <p>KAÜ | Productos de cacao</p>
+              <p>Boleta de ventas por día</p>
+            </div>
+          </header>
+
+          <h3 class="pdf-nombre">BOLETA DE VENTAS</h3>
+
+          <section class="pdf-datos">
+            <div>
+              <strong>Fecha:</strong>
+              ${escaparHTML(formatoFecha(fechaSeleccionada))}
+            </div>
+
+            <div>
+              <strong>Destino:</strong>
+              ${escaparHTML(destinos.join(", ") || "No especificado")}
+            </div>
+
+            <div>
+              <strong>Responsable:</strong>
+              ${escaparHTML(responsables.join(", ") || "No especificado")}
+            </div>
+
+            <div>
+              <strong>Ubicación:</strong>
+              ${escaparHTML(ubicaciones.join(", ") || "No especificada")}
+            </div>
+
+            <div>
+              <strong>Registros:</strong>
+              ${formatoCantidad(ventasDelDia.length)}
+            </div>
+
+            <div>
+              <strong>Unidades vendidas:</strong>
+              ${formatoCantidad(unidades)}
+            </div>
+          </section>
+
+          <table class="tabla-pdf">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th class="alinear-derecha">Precio unitario</th>
+                <th class="alinear-derecha">Cantidad</th>
+                <th class="alinear-derecha">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${filas}
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <td colspan="3">TOTAL DE VENTAS DEL DÍA</td>
+                <td class="alinear-derecha">${formatoMoneda(total)}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <footer class="pdf-pie">
+            Documento generado desde el sistema de inventario de Cacaotería S.R.L.
+          </footer>
+        </article>
+      `;
+
+      return contenedor.querySelector("#boletaGenerada");
     }
 
-    if (typeof html2pdf !== "function") {
+    // --------------------------------------------------
+    // GENERAR PDF
+    // --------------------------------------------------
+
+    async function generarBoleta() {
+      if (!ventasDelDia.length) {
         mostrarMensaje(
-            "No se cargó la librería html2pdf.js. Revisá la conexión o la carga del archivo externo.",
-            "error"
+          "Primero consultá una fecha que tenga ventas registradas.",
+          "error"
         );
         return;
-    }
+      }
 
-    const boton = document.getElementById("botonGenerar");
-    const contenedor = document.getElementById("contenedorBoleta");
-
-    try {
-        boton.disabled = true;
-        boton.textContent = "Generando boleta...";
-
+      if (typeof window.html2pdf !== "function") {
         mostrarMensaje(
-            "Preparando la boleta PDF...",
-            "info"
+          "No se pudo cargar la librería para crear PDF. Recargá la página e intentá nuevamente.",
+          "error"
         );
+        return;
+      }
 
-        /*
-          Cargar el logo como datos locales.
-          Si falla la carga, la boleta se genera con KAÜ en texto.
-        */
-        await cargarLogoSeguro();
+      const boton = document.getElementById("btnPdf");
+      boton.disabled = true;
+      boton.textContent = "Generando PDF...";
 
-        contenedor.innerHTML = crearContenidoBoleta(ventasFecha);
+      try {
+        const contenido = await crearContenidoBoleta();
 
-        const elementoBoleta =
-            contenedor.querySelector(".boleta-pdf");
-
-        if (!elementoBoleta) {
-            throw new Error(
-                "No se pudo crear el contenido de la boleta."
-            );
+        if (!contenido) {
+          throw new Error("No se pudo preparar el contenido de la boleta.");
         }
 
-        if (document.fonts && document.fonts.ready) {
-            await document.fonts.ready;
-        }
+        // Espera a que las imágenes del documento estén cargadas.
+        const imagenes = [...contenido.querySelectorAll("img")];
 
-        /*
-          Esperar a que la imagen local termine de cargarse.
-        */
-        const imagenLogo =
-            elementoBoleta.querySelector(".boleta-logo img");
+        await Promise.all(imagenes.map(img => {
+          if (img.complete && img.naturalWidth > 0) {
+            return Promise.resolve();
+          }
 
-        if (imagenLogo) {
-            if (!imagenLogo.complete) {
-                await new Promise((resolve, reject) => {
-                    imagenLogo.onload = resolve;
-                    imagenLogo.onerror = () => reject(
-                        new Error("No se pudo cargar el logo preparado.")
-                    );
+          return new Promise(resolve => {
+            const finalizar = () => resolve();
 
-                    setTimeout(() => {
-                        if (imagenLogo.complete) {
-                            resolve();
-                        } else {
-                            reject(
-                                new Error("Se agotó el tiempo de carga del logo.")
-                            );
-                        }
-                    }, 5000);
-                });
-            }
+            img.addEventListener("load", finalizar, { once: true });
+            img.addEventListener("error", finalizar, { once: true });
 
-            if (imagenLogo.naturalWidth === 0) {
-                throw new Error(
-                    "La imagen del logo no contiene datos válidos."
-                );
-            }
-        }
+            setTimeout(finalizar, 5000);
+          });
+        }));
 
-        await new Promise(resolve => {
-            requestAnimationFrame(() => resolve());
-        });
+        const nombreFecha = fechaSeleccionada || "ventas";
 
         const opciones = {
-            margin: [8, 8, 8, 8],
-
-            filename:
-                "boleta_ventas_" + fechaSeleccionada + ".pdf",
-
-            image: {
-                type: "png"
-            },
-
-            html2canvas: {
-                scale: 2,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: "#ffffff",
-                scrollY: 0,
-                logging: true,
-                imageTimeout: 15000
-            },
-
-            jsPDF: {
-                unit: "mm",
-                format: "a4",
-                orientation: "portrait",
-                compress: true
-            },
-
-            pagebreak: {
-                mode: ["css", "legacy"],
-                avoid: [
-                    "tr",
-                    ".boleta-encabezado",
-                    ".boleta-dato"
-                ]
-            }
+          margin: [8, 8, 8, 8],
+          filename: `Boleta_ventas_${nombreFecha}.pdf`,
+          image: {
+            type: "jpeg",
+            quality: 0.98
+          },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: "#ffffff",
+            logging: false,
+            imageTimeout: 15000,
+            scrollX: 0,
+            scrollY: 0
+          },
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait"
+          },
+          pagebreak: {
+            mode: ["css", "legacy"]
+          }
         };
 
-        await html2pdf()
-            .set(opciones)
-            .from(elementoBoleta)
-            .save();
+        await window.html2pdf()
+          .set(opciones)
+          .from(contenido)
+          .save();
+
+        mostrarMensaje("La boleta PDF se generó correctamente.", "exito");
+
+      } catch (error) {
+        console.error("Error al generar el PDF:", error);
 
         mostrarMensaje(
-            "La boleta se generó correctamente.",
-            "exito"
-        );
-
-    } catch (error) {
-        console.error(
-            "Error real al generar la boleta:",
-            error
-        );
-
-        const detalle = error && error.message
+          "No se pudo generar el PDF: " +
+          (error && error.message
             ? error.message
-            : String(error || "Error desconocido");
-
-        mostrarMensaje(
-            "Error al generar el PDF: " + detalle,
-            "error"
+            : String(error)),
+          "error"
         );
-
-    } finally {
-        boton.disabled = false;
-        boton.textContent = "Generar boleta";
+      } finally {
+        boton.disabled = ventasDelDia.length === 0;
+        boton.textContent = "Generar boleta PDF";
+      }
     }
-}
 
+    // --------------------------------------------------
+    // INICIALIZACIÓN
+    // --------------------------------------------------
 
-/* =========================================
-   INICIAR MÓDULO
-========================================= */
+    document.addEventListener("DOMContentLoaded", () => {
+      const fechaInput = document.getElementById("fecha");
 
-cargarFechas();
-</script>
+      const hoy = new Date();
+      const anio = hoy.getFullYear();
+      const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoy.getDate()).padStart(2, "0");
 
+      fechaInput.value = `${anio}-${mes}-${dia}`;
+
+      const logoPrincipal = document.getElementById("logoPrincipal");
+
+      logoPrincipal.addEventListener("error", () => {
+        console.error("No se encontró el logo principal:", LOGO_URL);
+      });
+
+      // Cargar las fechas disponibles al abrir el módulo.
+      cargarFechas();
+    });
+  </script>
 </body>
 </html>
 
