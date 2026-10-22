@@ -237,9 +237,7 @@ button {
     }
 }
 
-/* =========================================
-   BOLETA PDF - A4 HORIZONTAL
-   ========================================= */
+/* BOLETA PDF - A4 HORIZONTAL */
 
 .boleta-pdf {
     width: 281mm;
@@ -321,8 +319,6 @@ button {
     font-weight: 800;
 }
 
-/* TABLAS: MISMO TAMAÑO DE LETRA EN TODAS LAS COLUMNAS */
-
 .boleta-tabla {
     width: 100%;
     max-width: 100%;
@@ -367,7 +363,7 @@ button {
     text-align: right;
 }
 
-/* CÓDIGOS: MISMA LETRA Y DENTRO DE SU CELDA */
+/* CÓDIGOS */
 
 .tabla-detalle th:nth-child(4),
 .tabla-detalle td:nth-child(4),
@@ -380,86 +376,73 @@ button {
     font-size: 12px;
 }
 
-/* DETALLE DE VENTAS: 8 COLUMNAS */
+/* DETALLE DE VENTAS */
 
 .tabla-detalle th:nth-child(1),
-.tabla-detalle td:nth-child(1) {
-    width: 9%;
-}
+.tabla-detalle td:nth-child(1) { width: 9%; }
 
 .tabla-detalle th:nth-child(2),
-.tabla-detalle td:nth-child(2) {
-    width: 13%;
-}
+.tabla-detalle td:nth-child(2) { width: 13%; }
 
 .tabla-detalle th:nth-child(3),
-.tabla-detalle td:nth-child(3) {
-    width: 13%;
-}
+.tabla-detalle td:nth-child(3) { width: 13%; }
 
 .tabla-detalle th:nth-child(4),
-.tabla-detalle td:nth-child(4) {
-    width: 11%;
-}
+.tabla-detalle td:nth-child(4) { width: 11%; }
 
 .tabla-detalle th:nth-child(5),
-.tabla-detalle td:nth-child(5) {
-    width: 20%;
-}
+.tabla-detalle td:nth-child(5) { width: 20%; }
 
 .tabla-detalle th:nth-child(6),
-.tabla-detalle td:nth-child(6) {
-    width: 7%;
-}
+.tabla-detalle td:nth-child(6) { width: 7%; }
 
 .tabla-detalle th:nth-child(7),
-.tabla-detalle td:nth-child(7) {
-    width: 13%;
-}
+.tabla-detalle td:nth-child(7) { width: 13%; }
 
 .tabla-detalle th:nth-child(8),
-.tabla-detalle td:nth-child(8) {
-    width: 14%;
-}
+.tabla-detalle td:nth-child(8) { width: 14%; }
 
 /* RESUMEN POR PRODUCTO */
 
 .tabla-productos th:nth-child(1),
-.tabla-productos td:nth-child(1) {
-    width: 20%;
-}
+.tabla-productos td:nth-child(1) { width: 20%; }
 
 .tabla-productos th:nth-child(2),
-.tabla-productos td:nth-child(2) {
-    width: 40%;
-}
+.tabla-productos td:nth-child(2) { width: 40%; }
 
 .tabla-productos th:nth-child(3),
-.tabla-productos td:nth-child(3) {
-    width: 20%;
-}
+.tabla-productos td:nth-child(3) { width: 20%; }
 
 .tabla-productos th:nth-child(4),
-.tabla-productos td:nth-child(4) {
-    width: 20%;
-}
+.tabla-productos td:nth-child(4) { width: 20%; }
 
 /* RESUMEN POR CANAL */
 
 .tabla-canales th:nth-child(1),
-.tabla-canales td:nth-child(1) {
-    width: 45%;
-}
+.tabla-canales td:nth-child(1) { width: 45%; }
 
 .tabla-canales th:nth-child(2),
-.tabla-canales td:nth-child(2) {
-    width: 25%;
-}
+.tabla-canales td:nth-child(2) { width: 25%; }
 
 .tabla-canales th:nth-child(3),
-.tabla-canales td:nth-child(3) {
-    width: 30%;
-}
+.tabla-canales td:nth-child(3) { width: 30%; }
+
+/* RESUMEN DE PAGOS */
+
+.tabla-pagos th:nth-child(1),
+.tabla-pagos td:nth-child(1) { width: 28%; }
+
+.tabla-pagos th:nth-child(2),
+.tabla-pagos td:nth-child(2) { width: 18%; }
+
+.tabla-pagos th:nth-child(3),
+.tabla-pagos td:nth-child(3) { width: 18%; }
+
+.tabla-pagos th:nth-child(4),
+.tabla-pagos td:nth-child(4) { width: 20%; }
+
+.tabla-pagos th:nth-child(5),
+.tabla-pagos td:nth-child(5) { width: 16%; }
 
 /* FILAS DE TOTALES */
 
@@ -489,14 +472,10 @@ button {
     font-weight: 500;
 }
 
-/* EVITAR CORTAR FILAS */
-
 .boleta-tabla tr {
     page-break-inside: avoid;
     break-inside: avoid;
 }
-
-/* RESUMEN POR CANAL: CONTINÚA DESPUÉS DEL RESUMEN POR PRODUCTO */
 
 .resumen-canales {
     margin-top: 14px;
@@ -803,7 +782,7 @@ async function cargarVentas() {
         const { data, error } = await supabaseClient
             .from("Ventas")
             .select(
-                "id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino"
+                'id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino, "Pago SINPE", "Pago Efectivo", "Pago Transferencia"'
             )
             .order("Fecha", { ascending: false });
 
@@ -991,6 +970,46 @@ function agruparVentasPorCanal(ventasSemana) {
     );
 }
 
+/* RESUMEN DE PAGOS POR CANAL Y TIPO DE PAGO */
+
+function agruparPagosPorCanal(ventasSemana) {
+    const grupos = new Map();
+
+    ventasSemana.forEach(venta => {
+        const canal = obtenerDestino(venta);
+        const clave = canal.toLocaleLowerCase("es");
+
+        if (!grupos.has(clave)) {
+            grupos.set(clave, {
+                canal,
+                sinpe: 0,
+                efectivo: 0,
+                transferencia: 0,
+                total: 0
+            });
+        }
+
+        const grupo = grupos.get(clave);
+
+        grupo.sinpe += Number(venta["Pago SINPE"]) || 0;
+        grupo.efectivo += Number(venta["Pago Efectivo"]) || 0;
+        grupo.transferencia += Number(venta["Pago Transferencia"]) || 0;
+    });
+
+    const resultado = Array.from(grupos.values());
+
+    resultado.forEach(grupo => {
+        grupo.total =
+            grupo.sinpe +
+            grupo.efectivo +
+            grupo.transferencia;
+    });
+
+    return resultado.sort(
+        (a, b) => a.canal.localeCompare(b.canal, "es")
+    );
+}
+
 /* CREAR CONTENIDO DE LA BOLETA */
 
 function crearContenidoBoleta(boleta) {
@@ -1014,6 +1033,7 @@ function crearContenidoBoleta(boleta) {
 
     const agrupadas = agruparVentas(ventasSemana);
     const agrupadasPorCanal = agruparVentasPorCanal(ventasSemana);
+    const pagosPorCanal = agruparPagosPorCanal(ventasSemana);
 
     const totalUnidades = ventasSemana.reduce(
         (suma, venta) => suma + (Number(venta.Cantidad) || 0),
@@ -1060,6 +1080,31 @@ function crearContenidoBoleta(boleta) {
             <td class="numero">${formatearColones(grupo.total)}</td>
         </tr>
     `).join("");
+
+    const filasPagos = pagosPorCanal.map(grupo => `
+        <tr>
+            <td>${escaparHTML(grupo.canal)}</td>
+            <td class="numero">${formatearColones(grupo.sinpe)}</td>
+            <td class="numero">${formatearColones(grupo.efectivo)}</td>
+            <td class="numero">${formatearColones(grupo.transferencia)}</td>
+            <td class="numero">${formatearColones(grupo.total)}</td>
+        </tr>
+    `).join("");
+
+    const totalSinpe = pagosPorCanal.reduce(
+        (suma, grupo) => suma + grupo.sinpe, 0
+    );
+
+    const totalEfectivo = pagosPorCanal.reduce(
+        (suma, grupo) => suma + grupo.efectivo, 0
+    );
+
+    const totalTransferencia = pagosPorCanal.reduce(
+        (suma, grupo) => suma + grupo.transferencia, 0
+    );
+
+    const totalPagos =
+        totalSinpe + totalEfectivo + totalTransferencia;
 
     return `
         <div class="boleta-pdf">
@@ -1166,6 +1211,34 @@ function crearContenidoBoleta(boleta) {
                             <td>TOTAL GENERAL</td>
                             <td class="numero">${formatearNumero(totalUnidades)}</td>
                             <td class="numero">${formatearColones(totalVendido)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <h2 class="boleta-subtitulo">
+                    Resumen de pagos por canal y tipo de pago
+                </h2>
+
+                <table class="boleta-tabla tabla-pagos">
+                    <thead>
+                        <tr>
+                            <th>Canal de venta</th>
+                            <th class="numero">SINPE</th>
+                            <th class="numero">Efectivo</th>
+                            <th class="numero">Transferencia</th>
+                            <th class="numero">Total pagado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filasPagos}
+                    </tbody>
+                    <tfoot>
+                        <tr class="fila-total">
+                            <td>TOTAL GENERAL</td>
+                            <td class="numero">${formatearColones(totalSinpe)}</td>
+                            <td class="numero">${formatearColones(totalEfectivo)}</td>
+                            <td class="numero">${formatearColones(totalTransferencia)}</td>
+                            <td class="numero">${formatearColones(totalPagos)}</td>
                         </tr>
                     </tfoot>
                 </table>
