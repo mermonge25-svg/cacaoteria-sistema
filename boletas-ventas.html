@@ -14,567 +14,135 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-* {
-    box-sizing: border-box;
-    font-family: "Barlow", Arial, sans-serif;
+*{box-sizing:border-box;font-family:Barlow,Arial,sans-serif}
+body{margin:0;background:#f5f5f5;color:#333}
+header{background:#5B2326;color:#fff;padding:20px 30px;border-bottom:4px solid #E14E39}
+header h1{margin:0;font-size:31px}
+header p{margin:5px 0 0;font-size:14px}
+.contenedor{max-width:1000px;margin:30px auto;padding:0 20px}
+.panel{background:#fff;padding:25px;border-radius:10px;box-shadow:0 2px 6px #0001;margin-bottom:22px}
+h2,h3{color:#5B2326}
+h2{margin-top:0}
+.descripcion{color:#666;line-height:1.5}
+.lista-fechas{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.fecha-opcion{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #ddd;border-radius:7px;cursor:pointer}
+.fecha-opcion:hover{border-color:#2DADD6;background:#f7fcfe}
+.fecha-opcion.seleccionada{border:2px solid #5B2326;background:#fff8f7}
+.fecha-opcion input{accent-color:#5B2326;width:18px;height:18px}
+.fecha-texto{font-weight:700;color:#5B2326}
+.fecha-detalle{margin-left:auto;color:#777;font-size:13px;text-align:right}
+.acciones{display:flex;justify-content:flex-end;margin-top:24px;gap:10px;flex-wrap:wrap}
+button{border:0;padding:12px 22px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:700}
+.boton-principal{background:#E14E39;color:#fff}
+.boton-principal:hover{background:#5B2326}
+.boton-principal:disabled{background:#aaa;cursor:not-allowed}
+.mensaje{display:none;padding:12px 15px;border-radius:6px;margin-top:18px;overflow-wrap:anywhere}
+.mensaje.visible{display:block}
+.mensaje.error{background:#fdecea;color:#a00000}
+.mensaje.exito{background:#e8f5e9;color:#007F49}
+.mensaje.info{background:#eaf7fc;color:#245a70}
+.vacio{text-align:center;padding:30px 15px;color:#777;line-height:1.5}
+.resumen{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:20px}
+.tarjeta{background:#fafafa;border-left:4px solid #E14E39;padding:16px;border-radius:6px}
+.tarjeta small{display:block;color:#666;margin-bottom:7px}
+.tarjeta strong{color:#5B2326;font-size:19px;overflow-wrap:anywhere}
+
+@media(max-width:600px){
+ .contenedor{padding:0 12px}
+ .panel{padding:18px}
+ .resumen{grid-template-columns:1fr}
+ .fecha-opcion{flex-wrap:wrap}
+ .fecha-detalle{width:100%;margin-left:30px;text-align:left}
+ .acciones button{width:100%}
 }
 
-body {
-    margin: 0;
-    background: #f5f5f5;
-    color: #333;
+.boleta-pdf{
+ width:281mm;
+ min-width:281mm;
+ background:#fff;
+ color:#222;
+ padding:5mm;
+ font-size:12px;
+ line-height:1.2
 }
-
-header {
-    background: #5B2326;
-    color: white;
-    padding: 20px 30px;
-    border-bottom: 4px solid #E14E39;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 31px;
-    font-weight: 700;
-}
-
-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
-}
-
-.contenedor {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.panel {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-    margin-bottom: 22px;
-}
-
-h2, h3 {
-    color: #5B2326;
-}
-
-h2 {
-    margin-top: 0;
-}
-
-.descripcion {
-    color: #666;
-    line-height: 1.5;
-}
-
-.lista-fechas {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.fecha-opcion {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: .15s;
-}
-
-.fecha-opcion:hover {
-    border-color: #2DADD6;
-    background: #f7fcfe;
-}
-
-.fecha-opcion.seleccionada {
-    border: 2px solid #5B2326;
-    background: #fff8f7;
-}
-
-.fecha-opcion input[type="radio"] {
-    accent-color: #5B2326;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.fecha-texto {
-    font-weight: 700;
-    color: #5B2326;
-}
-
-.fecha-detalle {
-    margin-left: auto;
-    color: #777;
-    font-size: 13px;
-    text-align: right;
-}
-
-.acciones {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-button {
-    border: none;
-    padding: 12px 22px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.boton-principal {
-    background: #E14E39;
-    color: white;
-}
-
-.boton-principal:hover {
-    background: #5B2326;
-}
-
-.boton-principal:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-}
-
-.mensaje {
-    display: none;
-    padding: 12px 15px;
-    border-radius: 6px;
-    margin-top: 18px;
-    overflow-wrap: anywhere;
-}
-
-.mensaje.visible {
-    display: block;
-}
-
-.mensaje.error {
-    background: #fdecea;
-    color: #a00000;
-}
-
-.mensaje.exito {
-    background: #e8f5e9;
-    color: #007F49;
-}
-
-.mensaje.info {
-    background: #eaf7fc;
-    color: #245a70;
-}
-
-.vacio {
-    text-align: center;
-    padding: 30px 15px;
-    color: #777;
-    line-height: 1.5;
-}
-
-.resumen {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.tarjeta {
-    background: #fafafa;
-    border-left: 4px solid #E14E39;
-    padding: 16px;
-    border-radius: 6px;
-}
-
-.tarjeta small {
-    display: block;
-    color: #666;
-    margin-bottom: 7px;
-}
-
-.tarjeta strong {
-    color: #5B2326;
-    font-size: 19px;
-    overflow-wrap: anywhere;
-}
-
-@media(max-width: 600px) {
-    .contenedor {
-        padding: 0 12px;
-    }
-
-    .panel {
-        padding: 18px;
-    }
-
-    .resumen {
-        grid-template-columns: 1fr;
-    }
-
-    .fecha-opcion {
-        flex-wrap: wrap;
-    }
-
-    .fecha-detalle {
-        width: 100%;
-        margin-left: 30px;
-        text-align: left;
-    }
-
-    .acciones button {
-        width: 100%;
-    }
-}
-
-/* BOLETA PDF - A4 HORIZONTAL */
-
-.boleta-pdf {
-    width: 281mm;
-    max-width: none;
-    min-width: 281mm;
-    background: #ffffff;
-    color: #222222;
-    padding: 5mm;
-    font-size: 12px;
-    line-height: 1.2;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-}
-
-.boleta-pdf,
-.boleta-pdf * {
-    font-family: "Barlow", Arial, sans-serif;
-    box-sizing: border-box;
-}
-
-.boleta-encabezado {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 12px 0 14px;
-    border-bottom: 3px solid #5B2326;
-    margin-bottom: 14px;
-}
-
-.boleta-empresa {
-    width: 100%;
-    text-align: left;
-}
-
-.boleta-empresa h1 {
-    font-size: 26px;
-    line-height: 1.2;
-    color: #5B2326;
-    margin: 0 0 5px;
-    font-weight: 800;
-}
-
-.boleta-empresa p {
-    font-size: 14px;
-    line-height: 1.3;
-    color: #444;
-    margin: 3px 0 0;
-    font-weight: 500;
-}
-
-.boleta-datos {
-    margin-bottom: 9px;
-    font-size: 12px;
-}
-
-.boleta-dato {
-    display: flex;
-    gap: 3px;
-    margin: 0 0 4px;
-    align-items: flex-start;
-}
-
-.boleta-dato strong {
-    color: #5B2326;
-    min-width: 140px;
-    font-weight: 700;
-}
-
-.boleta-dato span {
-    flex: 1;
-    overflow-wrap: anywhere;
-    font-weight: 500;
-}
-
-.boleta-subtitulo {
-    color: #5B2326;
-    font-size: 15px;
-    margin: 10px 0 5px;
-    font-weight: 800;
-}
-
-.boleta-tabla {
-    width: 100%;
-    max-width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 12px;
-}
-
-.boleta-tabla thead {
-    display: table-header-group;
-}
-
-.boleta-tabla th {
-    background: #5B2326;
-    color: #ffffff;
-    font-size: 12px;
-    line-height: 1.15;
-    font-weight: 800;
-    text-align: left;
-    padding: 5px 4px;
-    border: 1px solid #5B2326;
-    overflow-wrap: break-word;
-    word-break: normal;
-    vertical-align: middle;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-.boleta-tabla td {
-    padding: 5px 4px;
-    border: 1px solid #ddd;
-    font-size: 12px;
-    line-height: 1.2;
-    overflow-wrap: break-word;
-    word-break: normal;
-    vertical-align: middle;
-    font-weight: 500;
-    min-width: 0;
-}
-
-.boleta-tabla .numero {
-    text-align: right;
-}
-
-/* CÓDIGOS */
-
-.tabla-detalle th:nth-child(4),
-.tabla-detalle td:nth-child(4),
-.tabla-productos th:nth-child(1),
-.tabla-productos td:nth-child(1) {
-    overflow-wrap: anywhere;
-    word-break: break-all;
-    white-space: normal;
-    text-align: center;
-    font-size: 12px;
-}
-
-/* DETALLE DE VENTAS */
-
-.tabla-detalle th:nth-child(1),
-.tabla-detalle td:nth-child(1) { width: 9%; }
-
-.tabla-detalle th:nth-child(2),
-.tabla-detalle td:nth-child(2) { width: 13%; }
-
-.tabla-detalle th:nth-child(3),
-.tabla-detalle td:nth-child(3) { width: 13%; }
-
-.tabla-detalle th:nth-child(4),
-.tabla-detalle td:nth-child(4) { width: 11%; }
-
-.tabla-detalle th:nth-child(5),
-.tabla-detalle td:nth-child(5) { width: 20%; }
-
-.tabla-detalle th:nth-child(6),
-.tabla-detalle td:nth-child(6) { width: 7%; }
-
-.tabla-detalle th:nth-child(7),
-.tabla-detalle td:nth-child(7) { width: 13%; }
-
-.tabla-detalle th:nth-child(8),
-.tabla-detalle td:nth-child(8) { width: 14%; }
-
-/* RESUMEN POR PRODUCTO */
-
-.tabla-productos th:nth-child(1),
-.tabla-productos td:nth-child(1) { width: 20%; }
-
-.tabla-productos th:nth-child(2),
-.tabla-productos td:nth-child(2) { width: 40%; }
-
-.tabla-productos th:nth-child(3),
-.tabla-productos td:nth-child(3) { width: 20%; }
-
-.tabla-productos th:nth-child(4),
-.tabla-productos td:nth-child(4) { width: 20%; }
-
-/* RESUMEN POR CANAL */
-
-.tabla-canales th:nth-child(1),
-.tabla-canales td:nth-child(1) { width: 45%; }
-
-.tabla-canales th:nth-child(2),
-.tabla-canales td:nth-child(2) { width: 25%; }
-
-.tabla-canales th:nth-child(3),
-.tabla-canales td:nth-child(3) { width: 30%; }
-
-/* RESUMEN DE PAGOS */
-
-.tabla-pagos th:nth-child(1),
-.tabla-pagos td:nth-child(1) { width: 28%; }
-
-.tabla-pagos th:nth-child(2),
-.tabla-pagos td:nth-child(2) { width: 18%; }
-
-.tabla-pagos th:nth-child(3),
-.tabla-pagos td:nth-child(3) { width: 18%; }
-
-.tabla-pagos th:nth-child(4),
-.tabla-pagos td:nth-child(4) { width: 20%; }
-
-.tabla-pagos th:nth-child(5),
-.tabla-pagos td:nth-child(5) { width: 16%; }
-
-/* FILAS DE TOTALES */
-
-.boleta-tabla tfoot .fila-total td {
-    background: #5B2326 !important;
-    color: #ffffff !important;
-    border: 1px solid #5B2326;
-    padding: 6px 4px;
-    font-size: 12px;
-    line-height: 1.15;
-    font-weight: 800;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-.boleta-tabla tfoot .fila-total td:last-child {
-    text-align: right;
-}
-
-.boleta-pie {
-    margin-top: 12px;
-    padding-top: 6px;
-    border-top: 1px solid #ddd;
-    font-size: 12px;
-    color: #666;
-    text-align: center;
-    font-weight: 500;
-}
-
-.boleta-tabla tr {
-    page-break-inside: avoid;
-    break-inside: avoid;
-}
-
-.resumen-canales {
-    margin-top: 14px;
-    padding-top: 0;
-    page-break-before: auto;
-    break-before: auto;
-}
-
-.resumen-canales .boleta-subtitulo {
-    margin-top: 10px;
-    padding-top: 0;
-}
-
-#contenedorBoleta {
-    position: fixed;
-    left: -300mm;
-    top: 0;
-    width: 281mm;
-    min-width: 281mm;
-    background: #ffffff;
-    pointer-events: none;
-}
-
-@media print {
-    .boleta-pdf {
-        padding: 0;
-    }
-}
+.boleta-pdf,.boleta-pdf *{font-family:Barlow,Arial,sans-serif;box-sizing:border-box}
+.boleta-encabezado{width:100%;padding:12px 0 14px;border-bottom:3px solid #5B2326;margin-bottom:14px}
+.boleta-empresa h1{font-size:26px;color:#5B2326;margin:0 0 5px;font-weight:800}
+.boleta-empresa p{font-size:14px;color:#444;margin:3px 0}
+.boleta-datos{margin-bottom:9px}
+.boleta-dato{display:flex;gap:3px;margin-bottom:4px}
+.boleta-dato strong{color:#5B2326;min-width:140px}
+.boleta-dato span{flex:1;overflow-wrap:anywhere}
+.boleta-subtitulo{color:#5B2326;font-size:15px;margin:12px 0 5px}
+.boleta-tabla{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;margin-bottom:10px}
+.boleta-tabla th{background:#5B2326;color:#fff;font-weight:800;text-align:left;padding:5px 4px;border:1px solid #5B2326;overflow-wrap:anywhere;print-color-adjust:exact}
+.boleta-tabla td{padding:5px 4px;border:1px solid #ddd;overflow-wrap:anywhere;vertical-align:middle}
+.boleta-tabla .numero{text-align:right}
+.boleta-tabla tfoot .fila-total td{background:#5B2326!important;color:#fff!important;border:1px solid #5B2326;padding:6px 4px;font-weight:800;print-color-adjust:exact}
+.boleta-pie{margin-top:12px;padding-top:6px;border-top:1px solid #ddd;font-size:12px;color:#666;text-align:center}
+#contenedorBoleta{position:fixed;left:-300mm;top:0;width:281mm;min-width:281mm;background:#fff;pointer-events:none}
 </style>
 </head>
 
 <body>
-
 <header>
-    <h1>Cacaotería S.R.L.</h1>
-    <p>Sistema de Gestión Operativa</p>
+ <h1>Cacaotería S.R.L.</h1>
+ <p>Sistema de Gestión Operativa</p>
 </header>
 
 <main class="contenedor">
+ <section class="panel">
+  <h2>Boletas semanales de ventas</h2>
+  <p class="descripcion">
+   Seleccioná una semana para consultar y generar una boleta con las ventas
+   y los cierres de pago registrados durante ese periodo. Los cierres se
+   agrupan por semana y por canal de venta.
+  </p>
 
-    <section class="panel">
-        <h2>Boletas semanales de ventas</h2>
+  <div id="estadoCarga" class="mensaje info visible">
+   Cargando ventas y cierres registrados...
+  </div>
 
-        <p class="descripcion">
-            Seleccioná una semana para consultar y generar una boleta
-            con todas las ventas registradas durante ese periodo.
-        </p>
+  <div id="listaFechas" class="lista-fechas"></div>
 
-        <div id="estadoCarga" class="mensaje info visible">
-            Cargando ventas registradas...
-        </div>
+  <div id="fechasVacias" class="vacio" hidden>
+   No hay ventas ni cierres registrados para generar boletas semanales.
+  </div>
 
-        <div id="listaFechas" class="lista-fechas"></div>
+  <div class="acciones">
+   <button type="button" class="boton-principal" id="botonGenerar"
+    onclick="generarBoleta()" disabled>
+    Generar boleta semanal PDF
+   </button>
+  </div>
 
-        <div id="fechasVacias" class="vacio" hidden>
-            No hay ventas registradas para generar boletas semanales.
-        </div>
+  <div id="mensaje" class="mensaje"></div>
+ </section>
 
-        <div class="acciones">
-            <button
-                type="button"
-                class="boton-principal"
-                id="botonGenerar"
-                onclick="generarBoleta()"
-                disabled
-            >
-                Generar boleta semanal PDF
-            </button>
-        </div>
+ <section class="panel" id="panelResumen" hidden>
+  <h3>Resumen de la boleta seleccionada</h3>
 
-        <div id="mensaje" class="mensaje"></div>
-    </section>
+  <div class="resumen">
+   <div class="tarjeta">
+    <small>Periodo semanal</small>
+    <strong id="resumenFecha">—</strong>
+   </div>
+   <div class="tarjeta">
+    <small>Registros de venta</small>
+    <strong id="resumenCantidad">0</strong>
+   </div>
+   <div class="tarjeta">
+    <small>Total vendido en Ventas</small>
+    <strong id="resumenTotal">₡0,00</strong>
+   </div>
+  </div>
 
-    <section class="panel" id="panelResumen" hidden>
-        <h3>Resumen de la boleta seleccionada</h3>
-
-        <div class="resumen">
-            <div class="tarjeta">
-                <small>Periodo semanal</small>
-                <strong id="resumenFecha">—</strong>
-            </div>
-
-            <div class="tarjeta">
-                <small>Registros de venta</small>
-                <strong id="resumenCantidad">0</strong>
-            </div>
-
-            <div class="tarjeta">
-                <small>Total vendido</small>
-                <strong id="resumenTotal">₡0,00</strong>
-            </div>
-        </div>
-
-        <p class="descripcion">
-            La boleta reúne las ventas de todos los responsables y canales
-            registrados durante la semana seleccionada.
-        </p>
-    </section>
-
+  <p class="descripcion">
+   El detalle de productos proviene de <b>Ventas</b>.
+   Los importes por método de pago provienen de <b>Cierres_venta</b>,
+   agrupados por semana y canal de venta.
+  </p>
+ </section>
 </main>
 
 <div id="contenedorBoleta"></div>
@@ -582,803 +150,740 @@ button {
 <script>
 "use strict";
 
-/* CONEXIÓN CON SUPABASE */
-
-const SUPABASE_URL =
-    "https://shjfohkiyfnqedrzjqpy.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+const SUPABASE_URL = "https://shjfohkiyfnqedrzjqpy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
 
 const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+ SUPABASE_URL,
+ SUPABASE_KEY
 );
 
 let ventas = [];
+let cierres = [];
 let boletasDisponibles = [];
 let boletaSeleccionada = null;
 
-/* UTILIDADES */
-
-function limpiarTexto(valor) {
-    if (valor === null || valor === undefined) return "";
-    return String(valor).trim();
+function limpiarTexto(v){
+ return v === null || v === undefined ? "" : String(v).trim();
 }
 
-function formatearColones(valor) {
-    return "₡" + (Number(valor) || 0).toLocaleString(
-        "es-CR",
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
+function formatearColones(v){
+ return "₡" + (Number(v) || 0).toLocaleString("es-CR",{
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
+ });
 }
 
-function formatearNumero(valor) {
-    return (Number(valor) || 0).toLocaleString(
-        "es-CR",
-        { maximumFractionDigits: 2 }
-    );
+function formatearNumero(v){
+ return (Number(v) || 0).toLocaleString("es-CR",{
+  maximumFractionDigits:2
+ });
 }
 
-function obtenerFechaISO(valor) {
-    if (!valor) return "";
+function obtenerFechaISO(v){
+ if(!v) return "";
 
-    const texto = String(valor).trim();
-    const coincidencia = texto.match(/^(\d{4}-\d{2}-\d{2})/);
+ const s = String(v).trim();
+ const m = s.match(/^(\d{4}-\d{2}-\d{2})/);
 
-    if (coincidencia) {
-        const fecha = coincidencia[1];
-        const prueba = new Date(fecha + "T12:00:00");
+ if(m) return m[1];
 
-        if (
-            !Number.isNaN(prueba.getTime()) &&
-            prueba.getFullYear() === Number(fecha.slice(0, 4)) &&
-            prueba.getMonth() + 1 === Number(fecha.slice(5, 7)) &&
-            prueba.getDate() === Number(fecha.slice(8, 10))
-        ) {
-            return fecha;
-        }
+ const d = new Date(s);
+ if(Number.isNaN(d.getTime())) return "";
+
+ return [
+  d.getFullYear(),
+  String(d.getMonth()+1).padStart(2,"0"),
+  String(d.getDate()).padStart(2,"0")
+ ].join("-");
+}
+
+function fechaISOaObjeto(s){
+ const [a,m,d] = s.split("-").map(Number);
+ return new Date(a,m-1,d,12);
+}
+
+function objetoAFechaISO(d){
+ return [
+  d.getFullYear(),
+  String(d.getMonth()+1).padStart(2,"0"),
+  String(d.getDate()).padStart(2,"0")
+ ].join("-");
+}
+
+function formatearFecha(s){
+ if(!s) return "No registrado";
+ const [a,m,d] = s.split("-");
+ return `${d}/${m}/${a}`;
+}
+
+function obtenerInicioSemana(s){
+ const d = fechaISOaObjeto(s);
+ d.setDate(d.getDate()-((d.getDay()+6)%7));
+ return objetoAFechaISO(d);
+}
+
+function obtenerFinSemana(s){
+ const d = fechaISOaObjeto(s);
+ d.setDate(d.getDate()+6);
+ return objetoAFechaISO(d);
+}
+
+function obtenerFechaHoy(){
+ return objetoAFechaISO(new Date());
+}
+
+function escaparHTML(v){
+ return String(v ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+}
+
+function mostrarMensaje(t,tipo){
+ const e = document.getElementById("mensaje");
+ e.textContent = t;
+ e.className = "mensaje visible " + tipo;
+}
+
+function ocultarMensaje(){
+ const e = document.getElementById("mensaje");
+ e.textContent = "";
+ e.className = "mensaje";
+}
+
+function obtenerDestino(v){
+ return limpiarTexto(v.Destino) ||
+        limpiarTexto(v.Ubicacion) ||
+        "No registrado";
+}
+
+function obtenerResponsable(v){
+ return limpiarTexto(v.Responsable) || "No registrado";
+}
+
+function obtenerCodigo(v){
+ return limpiarTexto(v.Codigo) || "Sin código";
+}
+
+function valorColumna(obj,nombres){
+ for(const n of nombres){
+  if(obj[n] !== undefined && obj[n] !== null && obj[n] !== ""){
+   return Number(obj[n]) || 0;
+  }
+ }
+ return 0;
+}
+
+function obtenerCanalCierre(c){
+ return limpiarTexto(c["Canal_venta"]) || "No registrado";
+}
+
+function obtenerPagosCierre(c){
+ return {
+  efectivo: valorColumna(c,[
+   "Total efectivo",
+   "Total Efectivo",
+   "Total_Efectivo"
+  ]),
+  tarjeta: valorColumna(c,[
+   "Total Tarjeta",
+   "Total tarjeta",
+   "Total_Tarjeta"
+  ]),
+  sinpe: valorColumna(c,[
+   "Total SINPE",
+   "Total Sinpe",
+   "Total_SINPE"
+  ]),
+  transferencia: valorColumna(c,[
+   "Total Transferencia",
+   "Total Trasferencia",
+   "Total_Transferencia",
+   "Total_Trasferencia"
+  ])
+ };
+}
+
+async function consultarPaginado(tabla,seleccion){
+ let todos = [];
+ let desde = 0;
+
+ while(true){
+  const {data,error} = await supabaseClient
+   .from(tabla)
+   .select(seleccion)
+   .range(desde,desde+999);
+
+  if(error){
+   throw new Error(`${tabla}: ${error.message}`);
+  }
+
+  todos = todos.concat(data || []);
+
+  if(!data || data.length < 1000) break;
+  desde += 1000;
+ }
+
+ return todos;
+}
+
+async function cargarDatos(){
+ const estado = document.getElementById("estadoCarga");
+ const lista = document.getElementById("listaFechas");
+ const boton = document.getElementById("botonGenerar");
+
+ estado.textContent = "Cargando ventas y cierres registrados...";
+ estado.className = "mensaje info visible";
+ lista.replaceChildren();
+ boton.disabled = true;
+ document.getElementById("fechasVacias").hidden = true;
+
+ try{
+  ventas = await consultarPaginado(
+   "Ventas",
+   'id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino, "Pago SINPE", "Pago Efectivo", "Pago Transferencia"'
+  );
+
+  cierres = await consultarPaginado(
+   "Cierres_venta",
+   'id, "Fecha", "Canal_venta", "Total efectivo", "Total Tarjeta", "Total SINPE", "Total Transferencia"'
+  );
+
+  construirBoletasSemanales();
+  mostrarBoletasDisponibles();
+
+  estado.className = "mensaje";
+
+  if(!boletasDisponibles.length){
+   document.getElementById("fechasVacias").hidden = false;
+  }
+ }catch(e){
+  console.error("Error cargando datos",e);
+
+  estado.textContent =
+   "No se pudieron cargar los datos: " +
+   (e.message || String(e)) +
+   ". Verificá los nombres exactos de las columnas y los permisos SELECT.";
+
+  estado.className = "mensaje error visible";
+ }
+}
+
+function construirBoletasSemanales(){
+ const grupos = new Map();
+
+ function crear(fecha){
+  if(!fecha) return null;
+
+  const inicio = obtenerInicioSemana(fecha);
+  const fin = obtenerFinSemana(inicio);
+
+  if(!grupos.has(inicio)){
+   grupos.set(inicio,{
+    clave:inicio,
+    inicioSemana:inicio,
+    finSemana:fin,
+    ventas:[],
+    cierres:[]
+   });
+  }
+
+  return grupos.get(inicio);
+ }
+
+ ventas.forEach(v=>{
+  const b = crear(obtenerFechaISO(v.Fecha));
+  if(b) b.ventas.push(v);
+ });
+
+ cierres.forEach(c=>{
+  const b = crear(obtenerFechaISO(c["Fecha"]));
+  if(b) b.cierres.push(c);
+ });
+
+ boletasDisponibles = Array.from(grupos.values())
+  .sort((a,b)=>b.inicioSemana.localeCompare(a.inicioSemana));
+}
+
+function totalVentas(boleta){
+ return boleta.ventas.reduce(
+  (s,v)=>s+(Number(v.Total)||0),
+  0
+ );
+}
+
+function mostrarBoletasDisponibles(){
+ const lista = document.getElementById("listaFechas");
+ lista.replaceChildren();
+
+ document.getElementById("fechasVacias").hidden =
+  boletasDisponibles.length !== 0;
+
+ boletasDisponibles.forEach((b,i)=>{
+  const l = document.createElement("label");
+  l.className = "fecha-opcion";
+
+  const r = document.createElement("input");
+  r.type = "radio";
+  r.name = "boletaSemanal";
+  r.value = String(i);
+
+  r.addEventListener("change",()=>seleccionarBoleta(i));
+
+  const t = document.createElement("span");
+  t.className = "fecha-texto";
+  t.textContent =
+   `${formatearFecha(b.inicioSemana)} al ${formatearFecha(b.finSemana)}`;
+
+  const d = document.createElement("span");
+  d.className = "fecha-detalle";
+  d.textContent =
+   `${b.ventas.length} venta(s) · ${b.cierres.length} cierre(s) · Ventas: ${formatearColones(totalVentas(b))}`;
+
+  l.append(r,t,d);
+  lista.appendChild(l);
+ });
+}
+
+function seleccionarBoleta(i){
+ const b = boletasDisponibles[i];
+ if(!b) return;
+
+ boletaSeleccionada = b;
+
+ document.querySelectorAll(".fecha-opcion").forEach(l=>{
+  l.classList.toggle(
+   "seleccionada",
+   l.querySelector("input").checked
+  );
+ });
+
+ document.getElementById("resumenFecha").textContent =
+  `${formatearFecha(b.inicioSemana)} al ${formatearFecha(b.finSemana)}`;
+
+ document.getElementById("resumenCantidad").textContent =
+  formatearNumero(b.ventas.length);
+
+ document.getElementById("resumenTotal").textContent =
+  formatearColones(totalVentas(b));
+
+ document.getElementById("panelResumen").hidden = false;
+
+ document.getElementById("botonGenerar").disabled =
+  !(b.ventas.length || b.cierres.length);
+
+ ocultarMensaje();
+}
+
+function agruparVentas(vs){
+ const m = new Map();
+
+ vs.forEach(v=>{
+  const codigo = obtenerCodigo(v);
+  const producto =
+   limpiarTexto(v.Descripcion) || "Producto sin descripción";
+  const k = (codigo+"||"+producto).toLocaleLowerCase("es");
+
+  if(!m.has(k)){
+   m.set(k,{
+    codigo,
+    producto,
+    cantidad:0,
+    total:0
+   });
+  }
+
+  const g = m.get(k);
+  g.cantidad += Number(v.Cantidad) || 0;
+  g.total += Number(v.Total) || 0;
+ });
+
+ return Array.from(m.values()).sort((a,b)=>
+  a.codigo.localeCompare(b.codigo,"es") ||
+  a.producto.localeCompare(b.producto,"es")
+ );
+}
+
+function agruparPorCanal(vs){
+ const m = new Map();
+
+ vs.forEach(v=>{
+  const canal = obtenerDestino(v);
+  const k = canal.toLocaleLowerCase("es");
+
+  if(!m.has(k)){
+   m.set(k,{
+    canal,
+    cantidad:0,
+    total:0
+   });
+  }
+
+  m.get(k).cantidad += Number(v.Cantidad) || 0;
+  m.get(k).total += Number(v.Total) || 0;
+ });
+
+ return Array.from(m.values()).sort(
+  (a,b)=>a.canal.localeCompare(b.canal,"es")
+ );
+}
+
+/*
+ * AGRUPACIÓN DE CIERRES:
+ * Los cierres ya se filtraron por semana al construir boletas.
+ * Esta función reúne los cierres de esa semana por Canal_venta.
+ * Los importes se suman por método de pago.
+ */
+function agruparPagosPorCanal(cs){
+ const m = new Map();
+
+ cs.forEach(c=>{
+  const canal = obtenerCanalCierre(c);
+  const clave = canal.toLocaleLowerCase("es-CR");
+  const p = obtenerPagosCierre(c);
+
+  if(!m.has(clave)){
+   m.set(clave,{
+    canal,
+    efectivo:0,
+    tarjeta:0,
+    sinpe:0,
+    transferencia:0,
+    total:0,
+    cierres:0
+   });
+  }
+
+  const g = m.get(clave);
+
+  g.efectivo += p.efectivo;
+  g.tarjeta += p.tarjeta;
+  g.sinpe += p.sinpe;
+  g.transferencia += p.transferencia;
+
+  g.total +=
+   p.efectivo +
+   p.tarjeta +
+   p.sinpe +
+   p.transferencia;
+
+  g.cierres++;
+ });
+
+ return Array.from(m.values()).sort(
+  (a,b)=>a.canal.localeCompare(b.canal,"es-CR")
+ );
+}
+
+function crearContenidoBoleta(b){
+ const vs = [...b.ventas].sort((a,c)=>
+  obtenerFechaISO(a.Fecha).localeCompare(obtenerFechaISO(c.Fecha)) ||
+  obtenerResponsable(a).localeCompare(obtenerResponsable(c),"es") ||
+  obtenerDestino(a).localeCompare(obtenerDestino(c),"es")
+ );
+
+ const productos = agruparVentas(vs);
+ const canales = agruparPorCanal(vs);
+
+ // b.cierres contiene solamente los cierres de la semana elegida.
+ const pagos = agruparPagosPorCanal(b.cierres);
+
+ const unidades = vs.reduce(
+  (s,v)=>s+(Number(v.Cantidad)||0),
+  0
+ );
+
+ const total = totalVentas(b);
+
+ const sum = campo =>
+  pagos.reduce((s,p)=>s+(Number(p[campo])||0),0);
+
+ const totalEfectivo = sum("efectivo");
+ const totalTarjeta = sum("tarjeta");
+ const totalSinpe = sum("sinpe");
+ const totalTransferencia = sum("transferencia");
+
+ // Suma de los totales de cada canal de venta.
+ const totalPagos = sum("total");
+
+ const filasDetalle = vs.map(v=>`
+  <tr>
+   <td>${escaparHTML(formatearFecha(obtenerFechaISO(v.Fecha)))}</td>
+   <td>${escaparHTML(obtenerResponsable(v))}</td>
+   <td>${escaparHTML(obtenerDestino(v))}</td>
+   <td>${escaparHTML(obtenerCodigo(v))}</td>
+   <td>${escaparHTML(limpiarTexto(v.Descripcion)||"Producto sin descripción")}</td>
+   <td class="numero">${formatearNumero(v.Cantidad)}</td>
+   <td class="numero">${formatearColones(v.Precio_Unitario)}</td>
+   <td class="numero">${formatearColones(v.Total)}</td>
+  </tr>
+ `).join("");
+
+ const filasProductos = productos.map(g=>`
+  <tr>
+   <td>${escaparHTML(g.codigo)}</td>
+   <td>${escaparHTML(g.producto)}</td>
+   <td class="numero">${formatearNumero(g.cantidad)}</td>
+   <td class="numero">${formatearColones(g.total)}</td>
+  </tr>
+ `).join("");
+
+ const filasCanales = canales.map(g=>`
+  <tr>
+   <td>${escaparHTML(g.canal)}</td>
+   <td class="numero">${formatearNumero(g.cantidad)}</td>
+   <td class="numero">${formatearColones(g.total)}</td>
+  </tr>
+ `).join("");
+
+ const filasPagos = pagos.map(g=>`
+  <tr>
+   <td>${escaparHTML(g.canal)}</td>
+   <td class="numero">${formatearColones(g.efectivo)}</td>
+   <td class="numero">${formatearColones(g.tarjeta)}</td>
+   <td class="numero">${formatearColones(g.sinpe)}</td>
+   <td class="numero">${formatearColones(g.transferencia)}</td>
+   <td class="numero"><strong>${formatearColones(g.total)}</strong></td>
+  </tr>
+ `).join("");
+
+ return `
+ <div class="boleta-pdf">
+
+  <div class="boleta-encabezado">
+   <div class="boleta-empresa">
+    <h1>CACAOTERÍA S.R.L.</h1>
+    <p><strong>BOLETA SEMANAL DE VENTAS Y CIERRES</strong></p>
+    <p>Registro semanal</p>
+   </div>
+  </div>
+
+  <div class="boleta-datos">
+   <div class="boleta-dato">
+    <strong>Periodo semanal:</strong>
+    <span>${formatearFecha(b.inicioSemana)} al ${formatearFecha(b.finSemana)}</span>
+   </div>
+   <div class="boleta-dato">
+    <strong>Fecha de emisión:</strong>
+    <span>${formatearFecha(obtenerFechaHoy())}</span>
+   </div>
+   <div class="boleta-dato">
+    <strong>Registros de venta:</strong>
+    <span>${formatearNumero(vs.length)}</span>
+   </div>
+   <div class="boleta-dato">
+    <strong>Unidades vendidas:</strong>
+    <span>${formatearNumero(unidades)}</span>
+   </div>
+   <div class="boleta-dato">
+    <strong>Cierres registrados:</strong>
+    <span>${formatearNumero(b.cierres.length)}</span>
+   </div>
+  </div>
+
+  <h2 class="boleta-subtitulo">Detalle de las ventas de la semana</h2>
+
+  <table class="boleta-tabla">
+   <thead>
+    <tr>
+     <th>Fecha</th>
+     <th>Responsable</th>
+     <th>Canal</th>
+     <th>Código</th>
+     <th>Producto</th>
+     <th>Cant.</th>
+     <th>Precio unitario</th>
+     <th>Total</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${filasDetalle || '<tr><td colspan="8">No hay ventas registradas esta semana.</td></tr>'}
+   </tbody>
+   <tfoot>
+    <tr class="fila-total">
+     <td colspan="7">TOTAL DE VENTAS (tabla Ventas)</td>
+     <td class="numero">${formatearColones(total)}</td>
+    </tr>
+   </tfoot>
+  </table>
+
+  <h2 class="boleta-subtitulo">Resumen por producto</h2>
+
+  <table class="boleta-tabla">
+   <thead>
+    <tr>
+     <th>Código</th>
+     <th>Producto</th>
+     <th>Cantidad total</th>
+     <th>Importe total</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${filasProductos || '<tr><td colspan="4">Sin datos</td></tr>'}
+   </tbody>
+   <tfoot>
+    <tr class="fila-total">
+     <td colspan="2">TOTAL</td>
+     <td class="numero">${formatearNumero(unidades)}</td>
+     <td class="numero">${formatearColones(total)}</td>
+    </tr>
+   </tfoot>
+  </table>
+
+  <h2 class="boleta-subtitulo">Resumen de ventas por canal (tabla Ventas)</h2>
+
+  <table class="boleta-tabla">
+   <thead>
+    <tr>
+     <th>Canal</th>
+     <th>Unidades vendidas</th>
+     <th>Total vendido</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${filasCanales || '<tr><td colspan="3">Sin datos</td></tr>'}
+   </tbody>
+   <tfoot>
+    <tr class="fila-total">
+     <td>TOTAL GENERAL</td>
+     <td class="numero">${formatearNumero(unidades)}</td>
+     <td class="numero">${formatearColones(total)}</td>
+    </tr>
+   </tfoot>
+  </table>
+
+  <h2 class="boleta-subtitulo">
+   Resumen de cierres de pago por canal (tabla Cierres_venta)
+  </h2>
+
+  <table class="boleta-tabla">
+   <thead>
+    <tr>
+     <th>Canal de venta</th>
+     <th>Efectivo</th>
+     <th>Tarjeta</th>
+     <th>SINPE</th>
+     <th>Transferencia</th>
+     <th>Total del canal</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${filasPagos || '<tr><td colspan="6">No hay cierres registrados en esta semana.</td></tr>'}
+   </tbody>
+   <tfoot>
+    <tr class="fila-total">
+     <td>TOTAL SEMANAL</td>
+     <td class="numero">${formatearColones(totalEfectivo)}</td>
+     <td class="numero">${formatearColones(totalTarjeta)}</td>
+     <td class="numero">${formatearColones(totalSinpe)}</td>
+     <td class="numero">${formatearColones(totalTransferencia)}</td>
+     <td class="numero">${formatearColones(totalPagos)}</td>
+    </tr>
+   </tfoot>
+  </table>
+
+  <div class="boleta-pie">
+   Cacaotería S.R.L. · Registro semanal de ventas y cierres de pago
+  </div>
+ </div>
+ `;
+}
+
+async function generarBoleta(){
+ const b = boletaSeleccionada;
+
+ if(!b){
+  mostrarMensaje("Seleccioná una semana antes de continuar.","error");
+  return;
+ }
+
+ if(!b.ventas.length && !b.cierres.length){
+  mostrarMensaje("No hay ventas ni cierres registrados para esta semana.","error");
+  return;
+ }
+
+ if(typeof html2pdf !== "function"){
+  mostrarMensaje(
+   "No se cargó la librería para generar PDF. Revisá tu conexión.",
+   "error"
+  );
+  return;
+ }
+
+ const boton = document.getElementById("botonGenerar");
+ const contenedor = document.getElementById("contenedorBoleta");
+
+ try{
+  boton.disabled = true;
+  boton.textContent = "Generando PDF...";
+  mostrarMensaje("Preparando la boleta...","info");
+
+  contenedor.innerHTML = crearContenidoBoleta(b);
+
+  const el = contenedor.querySelector(".boleta-pdf");
+
+  if(document.fonts?.ready){
+   await document.fonts.ready;
+  }
+
+  await new Promise(r=>
+   requestAnimationFrame(()=>
+    requestAnimationFrame(r)
+   )
+  );
+
+  await html2pdf()
+   .set({
+    margin:[3,3,3,3],
+    filename:"boleta_semanal_"+b.inicioSemana+".pdf",
+    image:{type:"jpeg",quality:.98},
+    html2canvas:{
+     scale:2,
+     useCORS:true,
+     backgroundColor:"#fff",
+     scrollX:0,
+     scrollY:0,
+     logging:false
+    },
+    jsPDF:{
+     unit:"mm",
+     format:"a4",
+     orientation:"landscape",
+     compress:true
+    },
+    pagebreak:{
+     mode:["css","legacy"],
+     avoid:["tr"]
     }
+   })
+   .from(el)
+   .save();
 
-    const fechaAlternativa = new Date(texto);
+  mostrarMensaje("La boleta semanal se generó correctamente.","exito");
 
-    if (Number.isNaN(fechaAlternativa.getTime())) return "";
+ }catch(e){
+  console.error(e);
+  mostrarMensaje(
+   "Error al generar el PDF: "+(e.message||String(e)),
+   "error"
+  );
+ }finally{
+  boton.disabled = !(
+   boletaSeleccionada &&
+   (boletaSeleccionada.ventas.length ||
+    boletaSeleccionada.cierres.length)
+  );
 
-    return [
-        fechaAlternativa.getFullYear(),
-        String(fechaAlternativa.getMonth() + 1).padStart(2, "0"),
-        String(fechaAlternativa.getDate()).padStart(2, "0")
-    ].join("-");
+  boton.textContent = "Generar boleta semanal PDF";
+ }
 }
 
-function fechaISOaObjeto(fechaISO) {
-    const [anio, mes, dia] = fechaISO.split("-").map(Number);
-    return new Date(anio, mes - 1, dia, 12, 0, 0);
-}
-
-function objetoAFechaISO(fecha) {
-    return [
-        fecha.getFullYear(),
-        String(fecha.getMonth() + 1).padStart(2, "0"),
-        String(fecha.getDate()).padStart(2, "0")
-    ].join("-");
-}
-
-function formatearFecha(fechaISO) {
-    if (!fechaISO) return "No registrado";
-
-    const [anio, mes, dia] = fechaISO.split("-");
-    return `${dia}/${mes}/${anio}`;
-}
-
-function obtenerInicioSemana(fechaISO) {
-    const fecha = fechaISOaObjeto(fechaISO);
-    const diferencia = (fecha.getDay() + 6) % 7;
-
-    fecha.setDate(fecha.getDate() - diferencia);
-
-    return objetoAFechaISO(fecha);
-}
-
-function obtenerFinSemana(inicioISO) {
-    const fecha = fechaISOaObjeto(inicioISO);
-    fecha.setDate(fecha.getDate() + 6);
-
-    return objetoAFechaISO(fecha);
-}
-
-function obtenerFechaHoy() {
-    return objetoAFechaISO(new Date());
-}
-
-function escaparHTML(valor) {
-    return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function mostrarMensaje(texto, tipo) {
-    const elemento = document.getElementById("mensaje");
-
-    elemento.textContent = texto;
-    elemento.className = "mensaje visible " + tipo;
-}
-
-function ocultarMensaje() {
-    const elemento = document.getElementById("mensaje");
-
-    elemento.textContent = "";
-    elemento.className = "mensaje";
-}
-
-function obtenerDestino(venta) {
-    return (
-        limpiarTexto(venta.Destino) ||
-        limpiarTexto(venta.Ubicacion) ||
-        "No registrado"
-    );
-}
-
-function obtenerResponsable(venta) {
-    return limpiarTexto(venta.Responsable) || "No registrado";
-}
-
-function obtenerCodigo(venta) {
-    return limpiarTexto(venta.Codigo) || "Sin código";
-}
-
-/* AGRUPAR VENTAS POR SEMANA */
-
-function construirBoletasSemanales() {
-    const grupos = new Map();
-
-    ventas.forEach(venta => {
-        const fechaVenta = obtenerFechaISO(venta.Fecha);
-
-        if (!fechaVenta) return;
-
-        const inicioSemana = obtenerInicioSemana(fechaVenta);
-        const finSemana = obtenerFinSemana(inicioSemana);
-
-        if (!grupos.has(inicioSemana)) {
-            grupos.set(inicioSemana, {
-                clave: inicioSemana,
-                inicioSemana,
-                finSemana,
-                ventas: []
-            });
-        }
-
-        grupos.get(inicioSemana).ventas.push(venta);
-    });
-
-    boletasDisponibles = Array.from(grupos.values()).sort(
-        (a, b) => b.inicioSemana.localeCompare(a.inicioSemana)
-    );
-}
-
-/* CARGAR VENTAS DESDE SUPABASE */
-
-async function cargarVentas() {
-    const estadoCarga = document.getElementById("estadoCarga");
-    const lista = document.getElementById("listaFechas");
-    const fechasVacias = document.getElementById("fechasVacias");
-    const boton = document.getElementById("botonGenerar");
-
-    estadoCarga.textContent = "Cargando ventas registradas...";
-    estadoCarga.className = "mensaje info visible";
-
-    lista.replaceChildren();
-    fechasVacias.hidden = true;
-    boton.disabled = true;
-
-    try {
-        const { data, error } = await supabaseClient
-            .from("Ventas")
-            .select(
-                'id, Fecha, Codigo, Lote, Tipo, Unidad_Medida, Ubicacion, Responsable, Descripcion, Cantidad, Precio_Unitario, Total, Destino, "Pago SINPE", "Pago Efectivo", "Pago Transferencia"'
-            )
-            .order("Fecha", { ascending: false });
-
-        if (error) throw error;
-
-        ventas = data || [];
-
-        construirBoletasSemanales();
-        mostrarBoletasDisponibles();
-
-        estadoCarga.className = "mensaje";
-
-        if (boletasDisponibles.length === 0) {
-            fechasVacias.hidden = false;
-        }
-
-    } catch (error) {
-        console.error("Error cargando ventas:", error);
-
-        estadoCarga.textContent =
-            "No se pudieron cargar las ventas. Verificá la conexión y los permisos de la tabla Ventas.";
-
-        estadoCarga.className = "mensaje error visible";
-    }
-}
-
-/* MOSTRAR SEMANAS DISPONIBLES */
-
-function mostrarBoletasDisponibles() {
-    const lista = document.getElementById("listaFechas");
-    const fechasVacias = document.getElementById("fechasVacias");
-
-    lista.replaceChildren();
-    fechasVacias.hidden = boletasDisponibles.length !== 0;
-
-    boletasDisponibles.forEach((boleta, indice) => {
-        const etiqueta = document.createElement("label");
-        etiqueta.className = "fecha-opcion";
-
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "boletaSemanal";
-        radio.value = String(indice);
-
-        radio.addEventListener("change", () => {
-            seleccionarBoleta(indice);
-        });
-
-        const texto = document.createElement("span");
-        texto.className = "fecha-texto";
-        texto.textContent =
-            `${formatearFecha(boleta.inicioSemana)} al ` +
-            `${formatearFecha(boleta.finSemana)}`;
-
-        const detalle = document.createElement("span");
-        detalle.className = "fecha-detalle";
-
-        detalle.textContent =
-            `${boleta.ventas.length} registro` +
-            `${boleta.ventas.length === 1 ? "" : "s"} · ` +
-            formatearColones(
-                boleta.ventas.reduce(
-                    (suma, venta) => suma + (Number(venta.Total) || 0),
-                    0
-                )
-            );
-
-        etiqueta.append(radio, texto, detalle);
-        lista.appendChild(etiqueta);
-    });
-}
-
-/* SELECCIONAR BOLETA */
-
-function seleccionarBoleta(indice) {
-    const boleta = boletasDisponibles[indice];
-
-    if (!boleta) {
-        mostrarMensaje(
-            "La boleta seleccionada no está disponible.",
-            "error"
-        );
-        return;
-    }
-
-    boletaSeleccionada = boleta;
-
-    document.querySelectorAll(".fecha-opcion").forEach(etiqueta => {
-        etiqueta.classList.toggle(
-            "seleccionada",
-            etiqueta.querySelector("input").checked
-        );
-    });
-
-    const total = boleta.ventas.reduce(
-        (suma, venta) => suma + (Number(venta.Total) || 0),
-        0
-    );
-
-    document.getElementById("resumenFecha").textContent =
-        `${formatearFecha(boleta.inicioSemana)} al ` +
-        `${formatearFecha(boleta.finSemana)}`;
-
-    document.getElementById("resumenCantidad").textContent =
-        formatearNumero(boleta.ventas.length);
-
-    document.getElementById("resumenTotal").textContent =
-        formatearColones(total);
-
-    document.getElementById("panelResumen").hidden = false;
-
-    document.getElementById("botonGenerar").disabled =
-        boleta.ventas.length === 0;
-
-    ocultarMensaje();
-}
-
-/* RESUMEN POR PRODUCTO */
-
-function agruparVentas(ventasSemana) {
-    const grupos = new Map();
-
-    ventasSemana.forEach(venta => {
-        const codigo = obtenerCodigo(venta);
-
-        const producto =
-            limpiarTexto(venta.Descripcion) ||
-            "Producto sin descripción";
-
-        const clave =
-            `${codigo.toLocaleLowerCase("es")}||` +
-            `${producto.toLocaleLowerCase("es")}`;
-
-        if (!grupos.has(clave)) {
-            grupos.set(clave, {
-                codigo,
-                producto,
-                cantidad: 0,
-                total: 0
-            });
-        }
-
-        const grupo = grupos.get(clave);
-
-        grupo.cantidad += Number(venta.Cantidad) || 0;
-        grupo.total += Number(venta.Total) || 0;
-    });
-
-    return Array.from(grupos.values()).sort((a, b) => {
-        const comparacionCodigo = a.codigo.localeCompare(b.codigo, "es");
-
-        if (comparacionCodigo !== 0) {
-            return comparacionCodigo;
-        }
-
-        return a.producto.localeCompare(b.producto, "es");
-    });
-}
-
-/* RESUMEN POR CANAL */
-
-function agruparVentasPorCanal(ventasSemana) {
-    const grupos = new Map();
-
-    ventasSemana.forEach(venta => {
-        const canal = obtenerDestino(venta);
-        const clave = canal.toLocaleLowerCase("es");
-
-        if (!grupos.has(clave)) {
-            grupos.set(clave, {
-                canal,
-                cantidad: 0,
-                total: 0
-            });
-        }
-
-        const grupo = grupos.get(clave);
-
-        grupo.cantidad += Number(venta.Cantidad) || 0;
-        grupo.total += Number(venta.Total) || 0;
-    });
-
-    return Array.from(grupos.values()).sort(
-        (a, b) => a.canal.localeCompare(b.canal, "es")
-    );
-}
-
-/* RESUMEN DE PAGOS POR CANAL Y TIPO DE PAGO */
-
-function agruparPagosPorCanal(ventasSemana) {
-    const grupos = new Map();
-
-    ventasSemana.forEach(venta => {
-        const canal = obtenerDestino(venta);
-        const clave = canal.toLocaleLowerCase("es");
-
-        if (!grupos.has(clave)) {
-            grupos.set(clave, {
-                canal,
-                sinpe: 0,
-                efectivo: 0,
-                transferencia: 0,
-                total: 0
-            });
-        }
-
-        const grupo = grupos.get(clave);
-
-        grupo.sinpe += Number(venta["Pago SINPE"]) || 0;
-        grupo.efectivo += Number(venta["Pago Efectivo"]) || 0;
-        grupo.transferencia += Number(venta["Pago Transferencia"]) || 0;
-    });
-
-    const resultado = Array.from(grupos.values());
-
-    resultado.forEach(grupo => {
-        grupo.total =
-            grupo.sinpe +
-            grupo.efectivo +
-            grupo.transferencia;
-    });
-
-    return resultado.sort(
-        (a, b) => a.canal.localeCompare(b.canal, "es")
-    );
-}
-
-/* CREAR CONTENIDO DE LA BOLETA */
-
-function crearContenidoBoleta(boleta) {
-    const ventasSemana = [...boleta.ventas].sort((a, b) => {
-        const porFecha = obtenerFechaISO(a.Fecha).localeCompare(
-            obtenerFechaISO(b.Fecha)
-        );
-
-        if (porFecha !== 0) return porFecha;
-
-        const porResponsable = obtenerResponsable(a).localeCompare(
-            obtenerResponsable(b), "es"
-        );
-
-        if (porResponsable !== 0) return porResponsable;
-
-        return obtenerDestino(a).localeCompare(
-            obtenerDestino(b), "es"
-        );
-    });
-
-    const agrupadas = agruparVentas(ventasSemana);
-    const agrupadasPorCanal = agruparVentasPorCanal(ventasSemana);
-    const pagosPorCanal = agruparPagosPorCanal(ventasSemana);
-
-    const totalUnidades = ventasSemana.reduce(
-        (suma, venta) => suma + (Number(venta.Cantidad) || 0),
-        0
-    );
-
-    const totalVendido = ventasSemana.reduce(
-        (suma, venta) => suma + (Number(venta.Total) || 0),
-        0
-    );
-
-    const filasDetalle = ventasSemana.map(venta => {
-        const producto =
-            limpiarTexto(venta.Descripcion) ||
-            "Producto sin descripción";
-
-        return `
-            <tr>
-                <td>${escaparHTML(formatearFecha(obtenerFechaISO(venta.Fecha)))}</td>
-                <td>${escaparHTML(obtenerResponsable(venta))}</td>
-                <td>${escaparHTML(obtenerDestino(venta))}</td>
-                <td class="celda-codigo">${escaparHTML(obtenerCodigo(venta))}</td>
-                <td>${escaparHTML(producto)}</td>
-                <td class="numero">${formatearNumero(venta.Cantidad)}</td>
-                <td class="numero">${formatearColones(venta.Precio_Unitario)}</td>
-                <td class="numero">${formatearColones(venta.Total)}</td>
-            </tr>
-        `;
-    }).join("");
-
-    const filasProductos = agrupadas.map(grupo => `
-        <tr>
-            <td class="celda-codigo">${escaparHTML(grupo.codigo)}</td>
-            <td>${escaparHTML(grupo.producto)}</td>
-            <td class="numero">${formatearNumero(grupo.cantidad)}</td>
-            <td class="numero">${formatearColones(grupo.total)}</td>
-        </tr>
-    `).join("");
-
-    const filasCanales = agrupadasPorCanal.map(grupo => `
-        <tr>
-            <td>${escaparHTML(grupo.canal)}</td>
-            <td class="numero">${formatearNumero(grupo.cantidad)}</td>
-            <td class="numero">${formatearColones(grupo.total)}</td>
-        </tr>
-    `).join("");
-
-    const filasPagos = pagosPorCanal.map(grupo => `
-        <tr>
-            <td>${escaparHTML(grupo.canal)}</td>
-            <td class="numero">${formatearColones(grupo.sinpe)}</td>
-            <td class="numero">${formatearColones(grupo.efectivo)}</td>
-            <td class="numero">${formatearColones(grupo.transferencia)}</td>
-            <td class="numero">${formatearColones(grupo.total)}</td>
-        </tr>
-    `).join("");
-
-    const totalSinpe = pagosPorCanal.reduce(
-        (suma, grupo) => suma + grupo.sinpe, 0
-    );
-
-    const totalEfectivo = pagosPorCanal.reduce(
-        (suma, grupo) => suma + grupo.efectivo, 0
-    );
-
-    const totalTransferencia = pagosPorCanal.reduce(
-        (suma, grupo) => suma + grupo.transferencia, 0
-    );
-
-    const totalPagos =
-        totalSinpe + totalEfectivo + totalTransferencia;
-
-    return `
-        <div class="boleta-pdf">
-
-            <div class="boleta-encabezado">
-                <div class="boleta-empresa">
-                    <h1>CACAOTERÍA S.R.L.</h1>
-                    <p><strong>BOLETA SEMANAL DE VENTAS</strong></p>
-                    <p>Registro de ventas</p>
-                </div>
-            </div>
-
-            <div class="boleta-datos">
-                <div class="boleta-dato">
-                    <strong>Periodo semanal:</strong>
-                    <span>
-                        ${escaparHTML(formatearFecha(boleta.inicioSemana))}
-                        al
-                        ${escaparHTML(formatearFecha(boleta.finSemana))}
-                    </span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Fecha de emisión:</strong>
-                    <span>${escaparHTML(formatearFecha(obtenerFechaHoy()))}</span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Registros de venta:</strong>
-                    <span>${formatearNumero(ventasSemana.length)}</span>
-                </div>
-
-                <div class="boleta-dato">
-                    <strong>Unidades vendidas:</strong>
-                    <span>${escaparHTML(formatearNumero(totalUnidades))}</span>
-                </div>
-            </div>
-
-            <h2 class="boleta-subtitulo">Detalle de las ventas de la semana</h2>
-
-            <table class="boleta-tabla tabla-detalle">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Responsable</th>
-                        <th>Canal</th>
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th class="numero">Cant.</th>
-                        <th class="numero">Precio unitario</th>
-                        <th class="numero">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${filasDetalle}
-                </tbody>
-                <tfoot>
-                    <tr class="fila-total">
-                        <td colspan="7">TOTAL DE VENTAS DE LA SEMANA</td>
-                        <td class="numero">${formatearColones(totalVendido)}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <h2 class="boleta-subtitulo">Resumen por producto</h2>
-
-            <table class="boleta-tabla tabla-productos">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th class="numero">Cantidad total</th>
-                        <th class="numero">Importe total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${filasProductos}
-                </tbody>
-                <tfoot>
-                    <tr class="fila-total">
-                        <td colspan="2">TOTAL</td>
-                        <td class="numero">${formatearNumero(totalUnidades)}</td>
-                        <td class="numero">${formatearColones(totalVendido)}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <div class="resumen-canales">
-                <h2 class="boleta-subtitulo">Resumen de ventas por canal</h2>
-
-                <table class="boleta-tabla tabla-canales">
-                    <thead>
-                        <tr>
-                            <th>Canal</th>
-                            <th class="numero">Unidades vendidas</th>
-                            <th class="numero">Total vendido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filasCanales}
-                    </tbody>
-                    <tfoot>
-                        <tr class="fila-total">
-                            <td>TOTAL GENERAL</td>
-                            <td class="numero">${formatearNumero(totalUnidades)}</td>
-                            <td class="numero">${formatearColones(totalVendido)}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <h2 class="boleta-subtitulo">
-                    Resumen de pagos por canal y tipo de pago
-                </h2>
-
-                <table class="boleta-tabla tabla-pagos">
-                    <thead>
-                        <tr>
-                            <th>Canal de venta</th>
-                            <th class="numero">SINPE</th>
-                            <th class="numero">Efectivo</th>
-                            <th class="numero">Transferencia</th>
-                            <th class="numero">Total pagado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filasPagos}
-                    </tbody>
-                    <tfoot>
-                        <tr class="fila-total">
-                            <td>TOTAL GENERAL</td>
-                            <td class="numero">${formatearColones(totalSinpe)}</td>
-                            <td class="numero">${formatearColones(totalEfectivo)}</td>
-                            <td class="numero">${formatearColones(totalTransferencia)}</td>
-                            <td class="numero">${formatearColones(totalPagos)}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div class="boleta-pie">
-                    Cacaotería S.R.L. · Registro semanal de ventas
-                </div>
-            </div>
-
-        </div>
-    `;
-}
-
-/* GENERAR PDF */
-
-async function generarBoleta() {
-    if (!boletaSeleccionada) {
-        mostrarMensaje(
-            "Seleccioná una boleta semanal antes de continuar.",
-            "error"
-        );
-        return;
-    }
-
-    if (boletaSeleccionada.ventas.length === 0) {
-        mostrarMensaje(
-            "No hay ventas registradas para esta boleta.",
-            "error"
-        );
-        return;
-    }
-
-    if (typeof html2pdf !== "function") {
-        mostrarMensaje(
-            "No se cargó la librería para generar PDF. Revisá tu conexión a internet.",
-            "error"
-        );
-        return;
-    }
-
-    const boton = document.getElementById("botonGenerar");
-    const contenedor = document.getElementById("contenedorBoleta");
-
-    try {
-        boton.disabled = true;
-        boton.textContent = "Generando PDF...";
-
-        mostrarMensaje("Preparando la boleta...", "info");
-
-        contenedor.innerHTML = crearContenidoBoleta(boletaSeleccionada);
-
-        const elementoBoleta = contenedor.querySelector(".boleta-pdf");
-
-        if (!elementoBoleta) {
-            throw new Error("No se pudo crear el contenido de la boleta.");
-        }
-
-        if (document.fonts && document.fonts.ready) {
-            await document.fonts.ready;
-        }
-
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(resolve);
-            });
-        });
-
-        const opciones = {
-            margin: [3, 3, 3, 3],
-
-            filename:
-                "boleta_semanal_" +
-                boletaSeleccionada.inicioSemana + ".pdf",
-
-            image: {
-                type: "png",
-                quality: 1
-            },
-
-            html2canvas: {
-                scale: 3,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: "#ffffff",
-                scrollX: 0,
-                scrollY: 0,
-                logging: false,
-                removeContainer: true
-            },
-
-            jsPDF: {
-                unit: "mm",
-                format: "a4",
-                orientation: "landscape",
-                compress: true,
-                putOnlyUsedFonts: true
-            },
-
-            pagebreak: {
-                mode: ["css", "legacy"],
-                avoid: [
-                    "tr",
-                    ".boleta-encabezado",
-                    ".boleta-dato"
-                ]
-            }
-        };
-
-        await html2pdf()
-            .set(opciones)
-            .from(elementoBoleta)
-            .save();
-
-        mostrarMensaje(
-            "La boleta semanal se generó correctamente.",
-            "exito"
-        );
-
-    } catch (error) {
-        console.error("Error generando la boleta:", error);
-
-        mostrarMensaje(
-            "Error al generar el PDF: " +
-            (error.message || String(error)),
-            "error"
-        );
-
-    } finally {
-        boton.disabled = !boletaSeleccionada ||
-            boletaSeleccionada.ventas.length === 0;
-
-        boton.textContent = "Generar boleta semanal PDF";
-    }
-}
-
-/* INICIAR */
-
-cargarVentas();
+cargarDatos();
 </script>
-
 </body>
 </html>
+
 
