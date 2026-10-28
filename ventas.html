@@ -580,6 +580,10 @@ tr:hover {
         Resumen ventas
     </button>
 
+    <button type="button" class="boton-superior" id="botonCierreFeria" onclick="alternarCierreFeria()">
+        Cierres de venta
+    </button>
+
 </div>
 
 
@@ -868,20 +872,6 @@ tr:hover {
 
         </div>
 
-        <div class="campo">
-            <label for="pagoSINPE">Monto pagado por SINPE (₡)</label>
-            <input type="number" id="pagoSINPE" min="0" step="0.01" placeholder="0.00" value="0">
-        </div>
-
-        <div class="campo">
-            <label for="pagoEfectivo">Monto pagado en efectivo (₡)</label>
-            <input type="number" id="pagoEfectivo" min="0" step="0.01" placeholder="0.00" value="0">
-        </div>
-
-        <div class="campo">
-            <label for="pagoTransferencia">Monto pagado por transferencia (₡)</label>
-            <input type="number" id="pagoTransferencia" min="0" step="0.01" placeholder="0.00" value="0">
-        </div>
 
     </div>
 
@@ -910,6 +900,62 @@ tr:hover {
 
 </div>
 
+<!-- =====================================================
+     CIERRES DE VENTA: TOTALES POR CANAL Y MÉTODO DE PAGO
+====================================================== -->
+<div class="formulario" id="formularioCierreFeria" style="display:none;">
+    <h3>Cierres de venta</h3>
+    <p>Registre los montos totales recibidos por canal de venta. No es necesario asignar un método de pago a cada producto.</p>
+    <div class="grid-formulario">
+        <div class="campo">
+            <label for="fechaCierre">Fecha</label>
+            <input type="date" id="fechaCierre" required>
+        </div>
+        <div class="campo">
+            <label for="nombreFeria">Canal de venta</label>
+            <input
+                type="text"
+                id="nombreFeria"
+                placeholder="Escriba el canal de venta"
+                maxlength="150"
+                autocomplete="off"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="cierreEfectivo">Total Efectivo (₡)</label>
+            <input type="number" id="cierreEfectivo" min="0" step="0.01" value="0" required>
+        </div>
+        <div class="campo">
+            <label for="cierreTarjeta">Total Tarjeta (₡)</label>
+            <input type="number" id="cierreTarjeta" min="0" step="0.01" value="0" required>
+        </div>
+        <div class="campo">
+            <label for="cierreSINPE">Total SINPE (₡)</label>
+            <input type="number" id="cierreSINPE" min="0" step="0.01" value="0" required>
+        </div>
+        <div class="campo">
+            <label for="cierreTransferencia">Total Transferencia (₡)</label>
+            <input type="number" id="cierreTransferencia" min="0" step="0.01" value="0" required>
+        </div>
+        <div class="campo">
+            <label>Total recibido</label>
+            <input type="text" id="totalCierreFeria" class="total" value="₡0,00" readonly>
+        </div>
+    </div>
+    <div class="acciones">
+        <button type="button" class="boton-cancelar" id="botonCancelarCierre" onclick="cancelarEdicionCierre()" style="display:inline-block;">Cancelar</button>
+        <button type="button" class="boton-principal" id="botonGuardarCierre" onclick="guardarCierreFeria()">Guardar cierre</button>
+    </div>
+    <h3 style="margin-top:28px;">Cierres registrados</h3>
+    <div class="tabla-contenedor">
+        <table style="min-width:1000px;">
+            <thead><tr><th>Fecha</th><th>Canal</th><th>Efectivo</th><th>Tarjeta</th><th>SINPE</th><th>Transferencia</th><th>Total recibido</th><th>Acciones</th></tr></thead>
+            <tbody id="cuerpoCierresFeria"></tbody>
+        </table>
+        <div id="cierresFeriaVacios" class="mensaje-vacio">No hay cierres registrados.</div>
+    </div>
+</div>
 
 <!-- =====================================================
      RESUMEN DE VENTAS
@@ -1161,9 +1207,6 @@ tr:hover {
                 <th>Precio Unitario</th>
                 <th>Total</th>
                 <th>Destino / Cliente</th>
-                <th>Pago SINPE</th>
-                <th>Pago Efectivo</th>
-                <th>Pago Transferencia</th>
                 <th>Acciones</th>
 
             </tr>
@@ -2094,7 +2137,7 @@ async function cargarVentas() {
  
     cuerpo.innerHTML = 
         `<tr> 
-            <td colspan="16" class="mensaje-vacio"> 
+            <td colspan="13" class="mensaje-vacio"> 
                 Cargando ventas... 
             </td> 
         </tr>`; 
@@ -2608,14 +2651,11 @@ async function guardarVentaSupabase() {
         Destino:
             destino,
 
-        "Pago SINPE":
-            Number(document.getElementById("pagoSINPE").value) || 0,
-
-        "Pago Efectivo":
-            Number(document.getElementById("pagoEfectivo").value) || 0,
-
-        "Pago Transferencia":
-            Number(document.getElementById("pagoTransferencia").value) || 0
+        // Los pagos de feria se registran por separado en CierresFeria.
+        // Se conservan los valores históricos al editar registros antiguos.
+        "Pago SINPE": ventaEditando !== null && ventas[ventaEditando] ? (ventas[ventaEditando]["Pago SINPE"] || 0) : 0,
+        "Pago Efectivo": ventaEditando !== null && ventas[ventaEditando] ? (ventas[ventaEditando]["Pago Efectivo"] || 0) : 0,
+        "Pago Transferencia": ventaEditando !== null && ventas[ventaEditando] ? (ventas[ventaEditando]["Pago Transferencia"] || 0) : 0
 
     }; 
  
@@ -3303,16 +3343,6 @@ function editarVenta(indice) {
         venta.Destino || ""; 
  
  
-    
-    document.getElementById("pagoSINPE").value =
-        venta["Pago SINPE"] ?? 0;
-
-    document.getElementById("pagoEfectivo").value =
-        venta["Pago Efectivo"] ?? 0;
-
-    document.getElementById("pagoTransferencia").value =
-        venta["Pago Transferencia"] ?? 0;
-
     calcularTotal(); 
  
  
@@ -3630,9 +3660,6 @@ function limpiarFormulario() {
     document.getElementById("destino").value = ""; 
  
 
-    document.getElementById("pagoSINPE").value = 0;
-    document.getElementById("pagoEfectivo").value = 0;
-    document.getElementById("pagoTransferencia").value = 0;
 
 } 
  
@@ -3735,21 +3762,6 @@ function mostrarVentas() {
         ); 
  
  
-        
-        const pagoSINPE = document.createElement("td");
-        pagoSINPE.className = "numero";
-        pagoSINPE.textContent = formatearColones(venta["Pago SINPE"]);
-        fila.appendChild(pagoSINPE);
-
-        const pagoEfectivo = document.createElement("td");
-        pagoEfectivo.className = "numero";
-        pagoEfectivo.textContent = formatearColones(venta["Pago Efectivo"]);
-        fila.appendChild(pagoEfectivo);
-
-        const pagoTransferencia = document.createElement("td");
-        pagoTransferencia.className = "numero";
-        pagoTransferencia.textContent = formatearColones(venta["Pago Transferencia"]);
-        fila.appendChild(pagoTransferencia);
 
         const acciones = 
             document.createElement("td"); 
@@ -4975,6 +4987,197 @@ function actualizarGraficoVentas() {
 } 
  
  
+/* =========================================================
+   CIERRES DE VENTA (TOTALES POR CANAL Y MÉTODO DE PAGO)
+   Requiere la tabla Cierres_venta en Supabase.
+========================================================= */
+let cierresFeria = [];
+let cierreEditandoId = null;
+
+function alternarCierreFeria() {
+    const panel = document.getElementById("formularioCierreFeria");
+    const visible = panel.classList.contains("visible");
+    panel.classList.toggle("visible", !visible);
+    panel.style.display = !visible ? "block" : "none";
+    if (!visible) {
+        document.getElementById("fechaCierre").value = obtenerFechaActual();
+        cargarCierresFeria();
+    }
+}
+
+function calcularTotalCierre() {
+    const ids = ["cierreEfectivo", "cierreTarjeta", "cierreSINPE", "cierreTransferencia"];
+    const total = ids.reduce((suma, id) => suma + (Number(document.getElementById(id).value) || 0), 0);
+    document.getElementById("totalCierreFeria").value = formatearColones(total);
+}
+
+function limpiarCierreFeria() {
+    cierreEditandoId = null;
+    document.getElementById("fechaCierre").value = obtenerFechaActual();
+    document.getElementById("nombreFeria").value = "";
+    ["cierreEfectivo", "cierreTarjeta", "cierreSINPE", "cierreTransferencia"].forEach(id => document.getElementById(id).value = 0);
+    document.getElementById("botonGuardarCierre").textContent = "Guardar cierre";
+    document.getElementById("botonCancelarCierre").textContent = "Cancelar";
+    calcularTotalCierre();
+}
+function cancelarEdicionCierre() { limpiarCierreFeria(); }
+function editarCierreFeria(id) {
+    const cierre = cierresFeria.find(item => String(item.id) === String(id));
+    if (!cierre) { mostrarMensaje("No se encontró el cierre seleccionado.", "error"); return; }
+    cierreEditandoId = cierre.id;
+    document.getElementById("fechaCierre").value = cierre["Fecha"] || "";
+    document.getElementById("nombreFeria").value = cierre["Canal_venta"] || "";
+    document.getElementById("cierreEfectivo").value = Number(cierre["Total efectivo"] || 0);
+    document.getElementById("cierreTarjeta").value = Number(cierre["Total Tarjeta"] || 0);
+    document.getElementById("cierreSINPE").value = Number(cierre["Total SINPE"] || 0);
+    document.getElementById("cierreTransferencia").value = Number(cierre["Total Transferencia"] || 0);
+    document.getElementById("botonGuardarCierre").textContent = "Guardar cambios";
+    document.getElementById("botonCancelarCierre").textContent = "Cancelar edición";
+    calcularTotalCierre();
+    document.getElementById("formularioCierreFeria").scrollIntoView({behavior:"smooth", block:"start"});
+}
+async function eliminarCierreFeria(id) {
+    const cierre = cierresFeria.find(item => String(item.id) === String(id));
+    if (!cierre) { mostrarMensaje("No se encontró el cierre seleccionado.", "error"); return; }
+    if (!confirm("¿Eliminar el cierre del " + (cierre["Fecha"] || "") + " — " + (cierre["Canal_venta"] || "") + "? Esta acción no se puede deshacer.")) return;
+    try {
+        const {error} = await supabaseClient.from("Cierres_venta").delete().eq("id", id);
+        if (error) throw error;
+        if (String(cierreEditandoId) === String(id)) limpiarCierreFeria();
+        mostrarMensaje("Cierre eliminado correctamente.", "exito");
+        await cargarCierresFeria();
+    } catch(error) {
+        console.error("Error eliminando cierre:", error);
+        mostrarMensaje("No se pudo eliminar el cierre: " + (error.message || "Revise permisos DELETE y la columna id."), "error");
+    }
+}
+
+async function guardarCierreFeria() {
+    const fecha = document.getElementById("fechaCierre").value;
+    const canalVenta = limpiarTexto(document.getElementById("nombreFeria").value);
+    const efectivo = Number(document.getElementById("cierreEfectivo").value);
+    const tarjeta = Number(document.getElementById("cierreTarjeta").value);
+    const sinpe = Number(document.getElementById("cierreSINPE").value);
+    const transferencia = Number(document.getElementById("cierreTransferencia").value);
+
+    if (!fecha || !canalVenta) {
+        mostrarMensaje("Ingrese la fecha y el nombre del canal de venta.", "error");
+        return;
+    }
+    if ([efectivo, tarjeta, sinpe, transferencia].some(n => !Number.isFinite(n) || n < 0)) {
+        mostrarMensaje("Los montos deben ser números válidos mayores o iguales a cero.", "error");
+        return;
+    }
+
+    const registro = {
+        "Fecha": fecha,
+        "Canal_venta": canalVenta,
+        "Total efectivo": efectivo,
+        "Total Tarjeta": tarjeta,
+        "Total SINPE": sinpe,
+        "Total Transferencia": transferencia
+    };
+
+    try {
+        let resultado;
+        if (cierreEditandoId !== null) {
+            resultado = await supabaseClient.from("Cierres_venta").update(registro).eq("id", cierreEditandoId);
+        } else {
+            resultado = await supabaseClient.from("Cierres_venta").insert(registro);
+        }
+        if (resultado.error) throw resultado.error;
+        mostrarMensaje(cierreEditandoId !== null ? "Cierre actualizado correctamente." : "Cierre de venta guardado correctamente.", "exito");
+        limpiarCierreFeria();
+        await cargarCierresFeria();
+    } catch (error) {
+        console.error("Error guardando cierre de venta:", error);
+        mostrarMensaje("No se pudo guardar el cierre. Verifique la tabla Cierres_venta, los nombres exactos de las columnas y los permisos de Supabase. " + (error.message || ""), "error");
+    }
+}
+
+async function cargarCierresFeria() {
+    const cuerpo = document.getElementById("cuerpoCierresFeria");
+    const vacios = document.getElementById("cierresFeriaVacios");
+    if (!cuerpo) {
+        console.error("No se encontró el elemento #cuerpoCierresFeria.");
+        return;
+    }
+
+    cuerpo.innerHTML = '<tr><td colspan="8">Cargando cierres...</td></tr>';
+    if (vacios) vacios.style.display = "none";
+
+    try {
+        // Seleccionar todas las columnas evita errores por nombres con espacios.
+        const { data, error } = await supabaseClient
+            .from("Cierres_venta")
+            .select("*")
+            .order("Fecha", { ascending: false });
+
+        if (error) throw error;
+        console.log("Cierres recibidos de Supabase:", data);
+        cierresFeria = Array.isArray(data) ? data : [];
+        cuerpo.innerHTML = "";
+
+        if (cierresFeria.length === 0) {
+            if (vacios) vacios.style.display = "block";
+            cuerpo.innerHTML = '<tr><td colspan="8">No hay cierres registrados.</td></tr>';
+            return;
+        }
+        if (vacios) vacios.style.display = "none";
+
+        cierresFeria.forEach(cierre => {
+            const fila = document.createElement("tr");
+            const efectivo = Number(cierre["Total efectivo"] || 0);
+            const tarjeta = Number(cierre["Total Tarjeta"] || 0);
+            const sinpe = Number(cierre["Total SINPE"] || 0);
+            const transferencia = Number(cierre["Total Transferencia"] || 0);
+            const total = efectivo + tarjeta + sinpe + transferencia;
+
+            agregarCelda(fila, cierre["Fecha"] || "");
+            agregarCelda(fila, cierre["Canal_venta"] || "");
+            agregarCelda(fila, formatearColones(efectivo));
+            agregarCelda(fila, formatearColones(tarjeta));
+            agregarCelda(fila, formatearColones(sinpe));
+            agregarCelda(fila, formatearColones(transferencia));
+            agregarCelda(fila, formatearColones(total));
+
+            const acciones = document.createElement("td");
+            const editar = document.createElement("button");
+            editar.type = "button";
+            editar.className = "boton-editar";
+            editar.textContent = "Editar";
+            editar.addEventListener("click", () => editarCierreFeria(cierre.id));
+
+            const eliminar = document.createElement("button");
+            eliminar.type = "button";
+            eliminar.className = "boton-eliminar";
+            eliminar.textContent = "Eliminar";
+            eliminar.addEventListener("click", () => eliminarCierreFeria(cierre.id));
+
+            acciones.appendChild(editar);
+            acciones.appendChild(eliminar);
+            fila.appendChild(acciones);
+            cuerpo.appendChild(fila);
+        });
+    } catch (error) {
+        console.error("Error cargando cierres de venta:", error);
+        cierresFeria = [];
+        cuerpo.innerHTML = '<tr><td colspan="8">No se pudieron cargar los cierres. Revise el mensaje de error.</td></tr>';
+        if (vacios) vacios.style.display = "none";
+        mostrarMensaje(
+            "No se pudieron cargar los cierres: " + (error.message || String(error)) +
+            ". Revise permisos SELECT/RLS de Cierres_venta.",
+            "error"
+        );
+    }
+}
+
+["cierreEfectivo", "cierreTarjeta", "cierreSINPE", "cierreTransferencia"].forEach(id => {
+    document.getElementById(id).addEventListener("input", calcularTotalCierre);
+});
+document.getElementById("fechaCierre").value = obtenerFechaActual();
+calcularTotalCierre();
+
 /* ========================================================= 
    EVENTOS 
 ========================================================= */ 
@@ -5050,3 +5253,4 @@ iniciarPagina();
 </body> 
  
 </html>
+
