@@ -1,1376 +1,3135 @@
+
+
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Costos - Cacaotería S.R.L.</title>
+
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
 <style>
-* {
-box-sizing: border-box;
+:root{
+    --cafe:#5B2326;
+    --cafe-hover:#43191B;
+    --blanco:#FFFFFF;
+    --fondo:#F5F5F5;
+    --gris:#DDDDDD;
 }
-body {
-margin: 0;
-font-family: 'Barlow', sans-serif;
-background: #f5f5f5;
-color: #333;
-}
-header {
-background: #5B2326;
-color: white;
-padding: 22px 30px;
-border-bottom: 5px solid #E14E39;
-}
-header h1 {
-margin: 0;
-font-size: 30px;
-font-weight: 700;
-}
-header p {
-margin: 4px 0 0;
-font-size: 17px;
-}
-main {
-width: 95%;
-max-width: 1600px;
-margin: 30px auto;
-}
-.barra-superior {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 20px;
-gap: 15px;
-flex-wrap: wrap;
-}
-.titulo {
-color: #5B2326;
-font-size: 27px;
-font-weight: 700;
-margin: 0;
-}
-.botones {
-display: flex;
-gap: 10px;
-flex-wrap: wrap;
-}
-button {
-border: none;
-background: #E14E39;
-color: white;
-padding: 11px 18px;
-border-radius: 7px;
-cursor: pointer;
-font-family: 'Barlow', sans-serif;
-font-size: 15px;
-font-weight: 600;
-}
-button:hover {
-background: #5B2326;
-}
-.btn-secundario {
-background: #2DADD6;
-}
-.btn-secundario:hover {
-background: #007F49;
-}
-.tabla-contenedor {
-background: white;
-border-radius: 10px;
-padding: 15px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-overflow-x: auto;
-}
-table {
-width: 100%;
-min-width: 1500px;
-border-collapse: collapse;
-}
-th {
-background: #5B2326;
-color: white;
-padding: 12px 10px;
-text-align: left;
-font-size: 14px;
-white-space: nowrap;
-border-bottom: 4px solid #E14E39;
-}
-td {
-padding: 11px 10px;
-border-bottom: 1px solid #ddd;
-font-size: 14px;
-vertical-align: middle;
-}
-tr:hover td {
-background: #faf4f4;
-}
-.numero {
-text-align: right;
-white-space: nowrap;
-}
-.acciones {
-white-space: nowrap;
-}
-.btn-editar {
-background: #2DADD6;
-padding: 7px 12px;
-font-size: 13px;
-}
-.btn-editar:hover {
-background: #007F49;
-}
-.btn-eliminar {
-background: #E14E39;
-padding: 7px 12px;
-font-size: 13px;
-margin-left: 5px;
-}
-.btn-eliminar:hover {
-background: #5B2326;
-}
-.estado-activo {
-color: #007F49;
-font-weight: 700;
-}
-.estado-inactivo {
-color: #E14E39;
-font-weight: 700;
-}
-.mensaje {
-padding: 15px;
-border-radius: 7px;
-margin-bottom: 20px;
-display: none;
-font-weight: 500;
-}
-.mensaje.exito {
-display: block;
-background: #e8f6ef;
-color: #007F49;
-border: 1px solid #b8dfca;
-}
-.mensaje.error {
-display: block;
-background: #fdecea;
-color: #b42318;
-border: 1px solid #f2b8b5;
-}
-.cargando {
-text-align: center;
-padding: 30px;
-color: #666;
-}
-.modal {
-display: none;
-position: fixed;
-z-index: 1000;
-inset: 0;
-background: rgba(0,0,0,0.55);
-align-items: center;
-justify-content: center;
-padding: 20px;
-}
-.modal-contenido {
-background: white;
-width: 100%;
-max-width: 1000px;
-max-height: 92vh;
-overflow-y: auto;
-border-radius: 12px;
-padding: 25px;
-}
-.modal-titulo {
-margin-top: 0;
-margin-bottom: 20px;
-color: #5B2326;
-font-size: 25px;
-}
-.formulario {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 16px;
-}
-.campo {
-display: flex;
-flex-direction: column;
-}
-.campo-completo {
-grid-column: 1 / -1;
-}
-label {
-font-weight: 600;
-margin-bottom: 6px;
-color: #5B2326;
-}
-input,
-select,
-textarea {
-width: 100%;
-padding: 10px 12px;
-border: 1px solid #ccc;
-border-radius: 6px;
-font-family: 'Barlow', sans-serif;
-font-size: 15px;
-}
-input:focus,
-select:focus,
-textarea:focus {
-outline: none;
-border-color: #2DADD6;
-box-shadow: 0 0 0 2px rgba(45,173,214,0.15);
-}
-input[readonly] {
-background: #eeeeee;
-color: #555;
-cursor: not-allowed;
-}
-.ayuda {
-margin-top: 4px;
-font-size: 12px;
-color: #777;
-}
-.separador {
-grid-column: 1 / -1;
-border-top: 1px solid #ddd;
-margin: 5px 0;
-}
-.producto-info {
-background: #f8f8f8;
-border: 1px solid #ddd;
-border-radius: 8px;
-padding: 15px;
-grid-column: 1 / -1;
-}
-.producto-info-titulo {
-color: #5B2326;
-font-weight: 700;
-margin-bottom: 12px;
-}
-.modal-botones {
-margin-top: 25px;
-display: flex;
-justify-content: flex-end;
-gap: 10px;
-}
-.btn-cancelar {
-background: #777;
-}
-.btn-cancelar:hover {
-background: #555;
-}
-@media (max-width: 700px) {
-.formulario {
-grid-template-columns: 1fr;
-}
-.campo-completo {
-grid-column: auto;
-}
-header h1 {
-font-size: 24px;
-}
-.titulo {
-font-size: 23px;
-}
+*{box-sizing:border-box;font-family:"Barlow",sans-serif}
+body{margin:0;background:var(--fondo);color:#333}
+header{background:var(--cafe);color:var(--blanco);padding:18px 30px;text-align:left;border-bottom:4px solid var(--cafe)}
+header h1{margin:0;font-size:30px;font-weight:700}
+header p{margin:4px 0 0;font-size:16px}
+main{width:95%;max-width:1600px;margin:25px auto}
+.barra-superior{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:15px;flex-wrap:wrap}
+.titulo{color:var(--cafe);font-size:24px;font-weight:700;margin:0;border-left:5px solid var(--cafe);padding-left:10px}
+.botones{display:flex;gap:10px;flex-wrap:wrap}
+button{border:none;background:var(--cafe);color:white;padding:10px 18px;border-radius:6px;cursor:pointer;font-family:"Barlow",sans-serif;font-size:15px;font-weight:600;transition:background .2s}
+button:hover{background:var(--cafe-hover)}
+button:disabled{opacity:.6;cursor:wait}
+.btn-secundario{background:var(--cafe)}
+.btn-secundario:hover{background:var(--cafe-hover)}
+.filtros{background:white;padding:18px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:end;border-left:4px solid var(--cafe)}
+.filtro-campo{display:flex;flex-direction:column;gap:6px}
+.filtro-campo label{font-size:14px;font-weight:600;color:var(--cafe);margin:0}
+.filtros select{width:100%;padding:10px;border:1px solid #ccc;border-radius:5px;font-size:15px;background:white;color:#333;outline:none}
+.filtros select:focus{border-color:var(--cafe);box-shadow:0 0 0 2px rgba(91,35,38,.12)}
+.filtros select:disabled{background:#eee;color:#888;cursor:not-allowed}
+.tabla-contenedor{width:100%;background:white;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);overflow-x:auto}
+table{width:100%;min-width:1650px;border-collapse:collapse;background:white}
+th{background:var(--cafe);color:white;padding:12px;border-bottom:1px solid var(--gris);text-align:center;white-space:nowrap;font-size:15px;font-weight:600}
+td{padding:12px;border-bottom:1px solid var(--gris);text-align:center;white-space:nowrap;font-size:14px;background:white;vertical-align:middle}
+td:nth-child(2),td:nth-child(3),td:nth-child(4),td:nth-child(5){text-align:left}
+tbody tr:hover td{background:#F3EEEE}
+tbody tr:last-child td{border-bottom:none}
+.tabla-contenedor::-webkit-scrollbar{height:10px}
+.tabla-contenedor::-webkit-scrollbar-track{background:#eee;border-radius:10px}
+.tabla-contenedor::-webkit-scrollbar-thumb{background:var(--cafe);border-radius:10px}
+.tabla-contenedor::-webkit-scrollbar-thumb:hover{background:var(--cafe-hover)}
+.numero{text-align:right;white-space:nowrap}
+.acciones{white-space:nowrap}
+.btn-editar,.btn-eliminar{background:transparent;border:none;padding:3px;margin-right:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--cafe)}
+.btn-editar:hover,.btn-eliminar:hover{background:transparent;color:var(--cafe-hover)}
+.btn-editar svg,.btn-eliminar svg{width:20px;height:20px}
+.estado-activo{color:#007F49;font-weight:700}
+.estado-inactivo{color:#E14E39;font-weight:700}
+.cpp-valor{font-weight:700;color:#007F49}
+.mensaje{padding:15px;border-radius:7px;margin-bottom:20px;display:none;font-weight:500;white-space:pre-line}
+.mensaje.exito{display:block;background:#e8f6ef;color:#007F49;border:1px solid #b8dfca}
+.mensaje.error{display:block;background:#fdecea;color:#b42318;border:1px solid #f2b8b5}
+.cargando{text-align:center;padding:30px;color:#666}
+.total{margin-top:15px;font-size:17px;font-weight:600;color:var(--cafe);border-left:4px solid var(--cafe);padding-left:10px}
+.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,0,0,.35);align-items:center;justify-content:center;padding:20px}
+.modal-contenido{background:white;width:90%;max-width:1000px;max-height:92vh;overflow-y:auto;border-radius:10px;padding:25px;border-top:5px solid var(--cafe);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.modal-titulo{margin-top:0;margin-bottom:20px;color:var(--cafe);font-size:25px}
+.formulario{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.campo{display:flex;flex-direction:column}
+.campo-completo{grid-column:1/-1}
+label{font-weight:600;margin-bottom:6px;color:var(--cafe)}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:5px;font-family:"Barlow",sans-serif;font-size:15px}
+input:focus,select:focus{outline:none;border-color:var(--cafe);box-shadow:0 0 0 2px rgba(91,35,38,.12)}
+input[readonly]{background:#eee;color:#555;cursor:not-allowed}
+.ayuda{margin-top:4px;font-size:12px;color:#777}
+.separador{grid-column:1/-1;border-top:1px solid #ddd;margin:5px 0}
+.producto-info{background:#f8f8f8;border:1px solid #ddd;border-radius:8px;padding:15px;grid-column:1/-1}
+.producto-info-titulo{color:var(--cafe);font-weight:700;margin-bottom:12px}
+.modal-botones{margin-top:25px;display:flex;justify-content:flex-end;gap:10px}
+.btn-cancelar{background:#777}
+.btn-cancelar:hover{background:#555}
+@media(max-width:700px){
+    .formulario{grid-template-columns:1fr}
+    .campo-completo{grid-column:auto}
+    header{padding:16px 20px}
+    header h1{font-size:24px}
+    .titulo{font-size:23px}
+    main{width:94%}
+    .filtros{grid-template-columns:1fr}
 }
 </style>
+
 </head>
+
+
+
 <body>
+
+
+
 <header>
+
 <h1>Cacaotería S.R.L.</h1>
+
 <p>Sistema de Gestión Operativa</p>
+
 </header>
+
+
+
 <main>
+
+
+
 <div class="barra-superior">
-<h2 class="titulo">
-Costos
-</h2>
+
+<h2 class="titulo">Costos</h2>
+
 <div class="botones">
-<button onclick="abrirNuevoCosto()">
-+ Nuevo costo
-</button>
-<button
-class="btn-secundario"
-onclick="cargarCostos()"
->
-↻ Actualizar
-</button>
+
+<button onclick="abrirNuevoCosto()">+ Nuevo costo</button>
+
+<button class="btn-secundario" onclick="cargarCostos()">↻ Actualizar</button>
+
+<button class="btn-secundario" id="btnProcesarCPP" onclick="procesarComprasCPP()">Procesar compras CPP</button>
+
 </div>
+
 </div>
-<div
-id="mensaje"
-class="mensaje"
-></div>
+
+
+
+<div id="mensaje" class="mensaje"></div>
+
+    <div class="filtros">
+        <div class="filtro-campo">
+            <label for="filtroTipo">Filtrar por tipo</label>
+            <select id="filtroTipo" onchange="cambiarTipo()">
+                <option value="">Todos los tipos</option>
+                <option value="Producto Terminado">Producto Terminado</option>
+                <option value="Materia Prima">Materia Prima</option>
+                <option value="Material Empaque">Material Empaque</option>
+                <option value="Uniformes">Uniformes</option>
+                <option value="Otro">Otro</option>
+            </select>
+        </div>
+        <div class="filtro-campo">
+            <label for="filtroProducto">Filtrar por producto</label>
+            <select id="filtroProducto" onchange="aplicarFiltros()" disabled>
+                <option value="">Todos los productos</option>
+            </select>
+        </div>
+    </div>
+
+
+
 <div class="tabla-contenedor">
+
 <table>
+
 <thead>
+
 <tr>
+
 <th>ID</th>
+
 <th>Código</th>
+
 <th>Tipo</th>
+
 <th>Unidad de medida</th>
+
 <th>Descripción</th>
-<th>
-Costo unitario sin impuesto
-</th>
+
+<th>Costo unitario inicial sin impuesto</th>
+
 <th>Tipo de cambio</th>
-<th>
-Precio unitario sin impuesto
-</th>
-<th>
-Precio unitario con impuesto
-</th>
+
+<th>CPP actualizado</th>
+
+<th>Precio unitario sin impuesto</th>
+
+<th>Precio unitario con impuesto</th>
+
 <th>Activo</th>
+
 <th>IVA</th>
+
 <th>Moneda costo</th>
+
 <th>Moneda precio</th>
+
 <th>Acciones</th>
+
 </tr>
+
 </thead>
+
 <tbody id="tablaCostos">
-<tr>
-<td
-colspan="14"
-class="cargando"
->
-Cargando información...
-</td>
-</tr>
+
+<tr><td colspan="15" class="cargando">Cargando información...</td></tr>
+
 </tbody>
+
 </table>
+
 </div>
+
+
+
 </main>
-<div
-id="modalCosto"
-class="modal"
->
+
+
+
+<div class="total" id="totalCostos">Registros encontrados: 0</div>
+
+<div id="modalCosto" class="modal">
+
 <div class="modal-contenido">
-<h2
-id="modalTitulo"
-class="modal-titulo"
->
-Nuevo costo
-</h2>
+
+
+
+<h2 id="modalTitulo" class="modal-titulo">Nuevo costo</h2>
+
+
+
 <form id="formCosto">
+
 <div class="formulario">
+
+
+
 <div class="campo campo-completo">
-<label for="producto">
-Producto
-</label>
+
+<label for="producto">Producto</label>
+
 <select id="producto">
-<option value="">
-Seleccione un producto...
-</option>
+
+<option value="">Seleccione un producto...</option>
+
 </select>
-<span class="ayuda">
-Seleccione el producto. Los datos de
-código, tipo, unidad de medida y
-descripción se completarán automáticamente.
-</span>
+
+<span class="ayuda">Seleccione el producto. Los datos se completarán automáticamente.</span>
+
 </div>
-<div
-id="productoInfo"
-class="producto-info"
-style="display:none;"
->
-<div class="producto-info-titulo">
-Información del producto
-</div>
+
+
+
+<div id="productoInfo" class="producto-info" style="display:none">
+
+<div class="producto-info-titulo">Información del producto</div>
+
 <div class="formulario">
+
+
+
 <div class="campo">
-<label for="codigo">
-Código
-</label>
-<input
-type="text"
-id="codigo"
-readonly
->
+
+<label for="codigo">Código</label>
+
+<input type="text" id="codigo" readonly>
+
 </div>
+
+
+
 <div class="campo">
-<label for="tipo">
-Tipo
-</label>
-<input
-type="text"
-id="tipo"
-readonly
->
+
+<label for="tipo">Tipo</label>
+
+<input type="text" id="tipo" readonly>
+
 </div>
+
+
+
 <div class="campo">
-<label for="unidad_medida">
-Unidad de medida
-</label>
-<input
-type="text"
-id="unidad_medida"
-readonly
->
+
+<label for="unidad_medida">Unidad de medida</label>
+
+<input type="text" id="unidad_medida" readonly>
+
 </div>
+
+
+
 <div class="campo">
-<label for="descripcion">
-Descripción
-</label>
-<input
-type="text"
-id="descripcion"
-readonly
->
+
+<label for="descripcion">Descripción</label>
+
+<input type="text" id="descripcion" readonly>
+
 </div>
+
+
+
 </div>
+
 </div>
+
+
+
 <div class="separador"></div>
+
+
+
 <div class="campo">
-<label for="costo_unitario">
-Costo unitario sin impuesto
-</label>
-<input
-type="number"
-id="costo_unitario"
-step="0.000001"
-min="0"
->
-<span class="ayuda">
-Costo unitario del producto.
-</span>
+
+<label for="costo_unitario">Costo unitario inicial sin impuesto</label>
+
+<input type="number" id="costo_unitario" step="0.000001" min="0">
+
+<span class="ayuda">Costo de partida. No se modifica al procesar nuevas compras.</span>
+
 </div>
+
+
+
 <div class="campo">
-<label for="tipo_cambio">
-Tipo de cambio
-</label>
-<input
-type="number"
-id="tipo_cambio"
-step="0.000001"
-min="0"
->
+
+<label for="tipo_cambio">Tipo de cambio</label>
+
+<input type="number" id="tipo_cambio" step="0.000001" min="0">
+
+<span class="ayuda">Tipo de cambio original asociado al costo inicial.</span>
+
 </div>
+
+
+
 <div class="campo">
-<label for="precio_sin_impuesto">
-Precio unitario sin impuesto
-</label>
-<input
-type="number"
-id="precio_sin_impuesto"
-step="0.000001"
-min="0"
->
+
+<label for="precio_sin_impuesto">Precio unitario sin impuesto</label>
+
+<input type="number" id="precio_sin_impuesto" step="0.000001" min="0">
+
 </div>
+
+
+
 <div class="campo">
-<label for="iva">
-IVA
-</label>
-<input
-type="number"
-id="iva"
-step="0.01"
-min="0"
-placeholder="Ej.: 0.13"
->
-<span class="ayuda">
-Ejemplo: 1% = 0.01 | 13% = 0.13
-</span>
+
+<label for="iva">IVA</label>
+
+<input type="number" id="iva" step="0.01" min="0" placeholder="Ej.: 0.13">
+
+<span class="ayuda">Ejemplo: 1% = 0.01 | 13% = 0.13</span>
+
 </div>
+
+
+
 <div class="campo">
-<label for="precio_con_impuesto">
-Precio unitario con impuesto
-</label>
-<input
-type="number"
-id="precio_con_impuesto"
-step="0.01"
-readonly
->
-<span class="ayuda">
-Se calcula automáticamente:
-precio sin impuesto × (1 + IVA).
-</span>
+
+<label for="precio_con_impuesto">Precio unitario con impuesto</label>
+
+<input type="number" id="precio_con_impuesto" step="0.01" readonly>
+
 </div>
+
+
+
 <div class="separador"></div>
+
+
+
 <div class="campo">
-<label for="activo">
-Activo
-</label>
+
+<label for="activo">Activo</label>
+
 <select id="activo">
-<option value="Si">
-Sí
-</option>
-<option value="No">
-No
-</option>
+
+<option value="Si">Sí</option>
+
+<option value="No">No</option>
+
 </select>
+
 </div>
+
+
+
 <div class="campo">
-<label for="moneda_costo">
-Moneda del costo unitario
-</label>
+
+<label for="moneda_costo">Moneda del costo unitario</label>
+
 <select id="moneda_costo">
-<option value="">
-Seleccione...
-</option>
-<option value="CRC">
-CRC
-</option>
-<option value="USD">
-USD
-</option>
+
+<option value="">Seleccione...</option>
+
+<option value="CRC">CRC</option>
+
+<option value="USD">USD</option>
+
 </select>
+
 </div>
+
+
+
 <div class="campo">
-<label for="moneda_precio">
-Moneda del precio unitario
-</label>
+
+<label for="moneda_precio">Moneda del precio unitario</label>
+
 <select id="moneda_precio">
-<option value="">
-Seleccione...
-</option>
-<option value="CRC">
-CRC
-</option>
-<option value="USD">
-USD
-</option>
+
+<option value="">Seleccione...</option>
+
+<option value="CRC">CRC</option>
+
+<option value="USD">USD</option>
+
 </select>
+
 </div>
+
+
+
 </div>
+
+
+
 <div class="modal-botones">
-<button
-type="button"
-class="btn-cancelar"
-onclick="cerrarModal()"
->
-Cancelar
-</button>
-<button type="submit">
-Guardar
-</button>
+
+<button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+
+<button type="submit">Guardar</button>
+
 </div>
+
 </form>
+
 </div>
+
 </div>
+
+
+
 <script>
-const SUPABASE_URL =
-"https://shjfohkiyfnqedrzjqpy.supabase.co";
-const SUPABASE_KEY =
-"sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
-const supabaseClient =
-window.supabase.createClient(
+
+const SUPABASE_URL="https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY="sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+
+
+
+const supabaseClient=window.supabase.createClient(
+
 SUPABASE_URL,
+
 SUPABASE_KEY
+
 );
-let idEditando = null;
-let productos = [];
-async function cargarProductos() {
-const select =
-document.getElementById("producto");
-select.innerHTML = `
-<option value="">
-Cargando productos...
-</option>
-`;
-const { data, error } =
-await supabaseClient
-.from("Productos")
-.select(
-"id, Codigo, Tipo, Descripcion, Unidad_Medida"
-)
-.order(
-"Descripcion",
-{
-ascending: true
+
+
+
+let idEditando=null;
+
+let productos=[];
+let costos=[];
+
+
+
+/* =====================================================
+
+   UTILIDADES
+
+===================================================== */
+
+
+
+function normalizarTexto(valor){
+
+    return String(valor??"")
+
+        .normalize("NFD")
+
+        .replace(/[\u0300-\u036f]/g,"")
+
+        .trim()
+
+        .toLowerCase();
+
 }
+
+
+
+function esTipoCPP(tipo){
+
+    return [
+
+        "materia prima",
+
+        "material empaque",
+
+        "material de empaque"
+
+    ].includes(normalizarTexto(tipo));
+
+}
+
+
+
+/*
+
+   IDENTIFICADOR DE PRODUCTO
+
+
+
+   REGLA 1:
+
+   Si tiene código, se utiliza exclusivamente el código.
+
+
+
+   REGLA 2:
+
+   Si no tiene código, se utiliza la descripción.
+
+
+
+   Nunca se utiliza la descripción como alternativa
+
+   para productos que sí tienen código.
+
+*/
+
+
+
+function obtenerClaveProducto(registro){
+
+
+
+    const codigo=String(registro?.Codigo??"").trim();
+
+
+
+    if(codigo!==""){
+
+        return "CODIGO:"+codigo;
+
+    }
+
+
+
+    const descripcion=normalizarTexto(registro?.Descripcion);
+
+
+
+    if(descripcion===""){
+
+        return null;
+
+    }
+
+
+
+    return "DESCRIPCION:"+descripcion;
+
+}
+
+
+
+function nombreIdentificador(registro){
+
+
+
+    const codigo=String(registro?.Codigo??"").trim();
+
+
+
+    if(codigo!==""){
+
+        return "Código "+codigo;
+
+    }
+
+
+
+    return "Descripción: "+String(registro?.Descripcion??"Sin descripción");
+
+}
+
+
+
+/* =====================================================
+
+   PRODUCTOS
+
+===================================================== */
+
+
+
+async function cargarProductos(){
+
+
+
+    const select=document.getElementById("producto");
+
+
+
+    select.innerHTML='<option value="">Cargando productos...</option>';
+
+
+
+    const {data,error}=await supabaseClient
+
+        .from("Productos")
+
+        .select("id, Codigo, Tipo, Descripcion, Unidad_Medida")
+
+        .order("Descripcion",{ascending:true});
+
+
+
+    if(error){
+
+        console.error(error);
+
+        select.innerHTML='<option value="">Error al cargar productos</option>';
+
+        mostrarMensaje("Error al cargar los productos: "+error.message,"error");
+
+        return;
+
+    }
+
+
+
+    productos=data||[];
+
+
+
+    select.innerHTML='<option value="">Seleccione un producto...</option>';
+
+
+
+    productos.forEach(producto=>{
+
+
+
+        const option=document.createElement("option");
+
+        option.value=producto.id;
+
+
+
+        let texto=producto.Descripcion||"Sin descripción";
+
+
+
+        if(producto.Codigo){
+
+            texto+=" — "+producto.Codigo;
+
+        }else{
+
+            texto+=" — SIN CÓDIGO";
+
+        }
+
+
+
+        option.textContent=texto;
+
+        select.appendChild(option);
+
+
+
+    });
+
+
+
+}
+
+
+
+function mostrarProductoSeleccionado(){
+
+
+
+    const productoId=document.getElementById("producto").value;
+
+
+
+    const producto=productos.find(
+
+        p=>String(p.id)===String(productoId)
+
+    );
+
+
+
+    const informacion=document.getElementById("productoInfo");
+
+
+
+    if(!producto){
+
+
+
+        informacion.style.display="none";
+
+
+
+        ["codigo","tipo","unidad_medida","descripcion"].forEach(id=>{
+
+            document.getElementById(id).value="";
+
+        });
+
+
+
+        return;
+
+    }
+
+
+
+    informacion.style.display="block";
+
+
+
+    document.getElementById("codigo").value=producto.Codigo??"";
+
+    document.getElementById("tipo").value=producto.Tipo??"";
+
+    document.getElementById("unidad_medida").value=producto.Unidad_Medida??"";
+
+    document.getElementById("descripcion").value=producto.Descripcion??"";
+
+
+
+}
+
+
+
+document.getElementById("producto").addEventListener(
+
+    "change",
+
+    mostrarProductoSeleccionado
+
 );
-if (error) {
-console.error(error);
-select.innerHTML = `
-<option value="">
-Error al cargar productos
-</option>
-`;
-mostrarMensaje(
-"Error al cargar los productos: " +
-error.message,
-"error"
+
+
+
+/* =====================================================
+
+   CONSULTAR COSTOS
+
+===================================================== */
+
+
+
+function actualizarListaProductosCostos(){
+    const select=document.getElementById("filtroProducto");
+    const tipo=document.getElementById("filtroTipo").value;
+    const seleccionado=select.value;
+    let lista=costos;
+    if(tipo) lista=costos.filter(c=>normalizarTexto(c.Tipo)===normalizarTexto(tipo));
+
+    const unicos=new Map();
+    lista.forEach(costo=>{
+        const clave=costo.producto_id!==null && costo.producto_id!==undefined
+            ? "ID:"+costo.producto_id
+            : (String(costo.Codigo||"").trim()
+                ? "CODIGO:"+String(costo.Codigo).trim()
+                : "DESC:"+normalizarTexto(costo.Descripcion));
+        if(!unicos.has(clave)) unicos.set(clave,costo);
+    });
+
+    const ordenados=[...unicos.entries()].sort((a,b)=>
+        String(a[1].Descripcion||"").localeCompare(String(b[1].Descripcion||""),"es",{sensitivity:"base"})
+    );
+    select.innerHTML='<option value="">Todos los productos</option>';
+    ordenados.forEach(([clave,costo])=>{
+        const option=document.createElement("option");
+        option.value=clave;
+        option.textContent=costo.Descripcion||"Producto sin descripción";
+        select.appendChild(option);
+    });
+    select.disabled=!tipo;
+    if(seleccionado && unicos.has(seleccionado)) select.value=seleccionado;
+}
+
+function cambiarTipo(){
+    document.getElementById("filtroProducto").value="";
+    actualizarListaProductosCostos();
+    aplicarFiltros();
+}
+
+function obtenerCostosFiltrados(){
+    const tipo=document.getElementById("filtroTipo").value;
+    const producto=document.getElementById("filtroProducto").value;
+    return costos.filter(costo=>{
+        const coincideTipo=!tipo || normalizarTexto(costo.Tipo)===normalizarTexto(tipo);
+        const clave=costo.producto_id!==null && costo.producto_id!==undefined
+            ? "ID:"+costo.producto_id
+            : (String(costo.Codigo||"").trim()
+                ? "CODIGO:"+String(costo.Codigo).trim()
+                : "DESC:"+normalizarTexto(costo.Descripcion));
+        return coincideTipo && (!producto || clave===producto);
+    });
+}
+
+function aplicarFiltros(){
+    const tabla=document.getElementById("tablaCostos");
+    const registros=obtenerCostosFiltrados();
+    document.getElementById("totalCostos").textContent="Registros encontrados: "+registros.length;
+    if(registros.length===0){
+        tabla.innerHTML='<tr><td colspan="15" class="cargando">No hay registros de costos que coincidan con los filtros.</td></tr>';
+        return;
+    }
+    tabla.innerHTML="";
+    registros.forEach(costo=>{
+        let precioConImpuesto=costo["Precio unitario con impuesto"];
+        if(precioConImpuesto===null || precioConImpuesto===undefined || precioConImpuesto===""){
+            precioConImpuesto=calcularPrecioConImpuesto(costo["Precio unitario sin impuesto"],costo.IVA);
+        }
+        const fila=document.createElement("tr");
+        fila.innerHTML=`
+            <td>${escapeHTML(costo.id)}</td>
+            <td>${escapeHTML(costo.Codigo||"—")}</td>
+            <td>${escapeHTML(costo.Tipo)}</td>
+            <td>${escapeHTML(costo.Unidad_Medida)}</td>
+            <td>${escapeHTML(costo.Descripcion)}</td>
+            <td class="numero">${formatearNumero(costo["Costo unitario inicial sin impuesto"])}</td>
+            <td class="numero">${formatearNumero(costo["Tipo de cambio"])}</td>
+            <td class="numero cpp-valor">${formatearNumero(costo["CPP actualizado"])}</td>
+            <td class="numero">${formatearNumero(costo["Precio unitario sin impuesto"])}</td>
+            <td class="numero">${formatearNumero(precioConImpuesto)}</td>
+            <td>${costo.Activo==="Si"?'<span class="estado-activo">Sí</span>':'<span class="estado-inactivo">No</span>'}</td>
+            <td class="numero">${formatearIVA(costo.IVA)}</td>
+            <td>${escapeHTML(costo["Moneda del costo unitario sin impuesto"])}</td>
+            <td>${escapeHTML(costo["Moneda del precio unitario sin impuesto"])}</td>
+            <td class="acciones">
+                <button class="btn-editar" onclick="editarCosto(${Number(costo.id)})" title="Editar costo" aria-label="Editar costo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 5.5L18.5 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </button>
+                <button class="btn-eliminar" onclick="eliminarCosto(${Number(costo.id)})" title="Eliminar costo" aria-label="Eliminar costo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7H19M9 7V4H15V7M7 7L8 20H16L17 7M10 11V17M14 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </td>`;
+        tabla.appendChild(fila);
+    });
+}
+
+async function cargarCostos(){
+
+
+
+    const tabla=document.getElementById("tablaCostos");
+
+
+
+    tabla.innerHTML='<tr><td colspan="15" class="cargando">Cargando información...</td></tr>';
+
+
+
+    const {data,error}=await supabaseClient
+
+        .from("Costos")
+
+        .select("*")
+
+        .order("id",{ascending:true});
+
+
+
+    if(error){
+
+        console.error(error);
+
+        tabla.innerHTML='<tr><td colspan="15" class="cargando">Error al cargar los costos.</td></tr>';
+
+        mostrarMensaje("Error al cargar la información: "+error.message,"error");
+
+        return;
+
+    }
+
+
+
+    costos=data||[];
+    actualizarListaProductosCostos();
+    aplicarFiltros();
+}
+
+/* =====================================================
+
+   PRECIOS E IMPUESTOS
+
+===================================================== */
+
+
+
+function calcularPrecioConImpuesto(precioSinImpuesto,iva){
+
+
+
+    if(precioSinImpuesto===null||
+
+       precioSinImpuesto===undefined||
+
+       precioSinImpuesto==="")return null;
+
+
+
+    if(iva===null||iva===undefined||iva==="")return null;
+
+
+
+    const precio=parseFloat(precioSinImpuesto);
+
+    const impuesto=parseFloat(iva);
+
+
+
+    if(Number.isNaN(precio)||Number.isNaN(impuesto))return null;
+
+
+
+    return precio*(1+impuesto);
+
+
+
+}
+
+
+
+function actualizarPrecioConImpuesto(){
+
+
+
+    const precio=parseFloat(
+
+        document.getElementById("precio_sin_impuesto").value
+
+    );
+
+
+
+    const iva=parseFloat(
+
+        document.getElementById("iva").value
+
+    );
+
+
+
+    const campo=document.getElementById("precio_con_impuesto");
+
+
+
+    if(Number.isNaN(precio)||Number.isNaN(iva)){
+
+        campo.value="";
+
+        return;
+
+    }
+
+
+
+    const resultado=calcularPrecioConImpuesto(precio,iva);
+
+
+
+    campo.value=resultado===null?"":resultado.toFixed(2);
+
+
+
+}
+
+
+
+document.getElementById("precio_sin_impuesto").addEventListener(
+
+    "input",
+
+    actualizarPrecioConImpuesto
+
 );
-return;
-}
-productos =
-data || [];
-select.innerHTML = `
-<option value="">
-Seleccione un producto...
-</option>
-`;
-productos.forEach(producto => {
-const option =
-document.createElement("option");
-option.value =
-producto.id;
-let texto =
-producto.Descripcion ||
-"Sin descripción";
-if (
-producto.Codigo !== null &&
-producto.Codigo !== undefined &&
-String(producto.Codigo).trim() !== ""
-) {
-texto +=
-" — " +
-String(producto.Codigo).trim();
-}
-option.textContent =
-texto;
-select.appendChild(option);
-});
-}
-function mostrarProductoSeleccionado() {
-const productoId =
-document.getElementById(
-"producto"
-).value;
-const producto =
-productos.find(
-p =>
-String(p.id) ===
-String(productoId)
+
+
+
+document.getElementById("iva").addEventListener(
+
+    "input",
+
+    actualizarPrecioConImpuesto
+
 );
-const informacion =
-document.getElementById(
-"productoInfo"
+
+
+
+/* =====================================================
+
+   NUEVO Y EDITAR COSTO
+
+===================================================== */
+
+
+
+async function abrirNuevoCosto(){
+
+
+
+    idEditando=null;
+
+
+
+    document.getElementById("modalTitulo").textContent="Nuevo costo";
+
+    document.getElementById("formCosto").reset();
+
+    document.getElementById("productoInfo").style.display="none";
+
+    document.getElementById("activo").value="Si";
+
+    document.getElementById("precio_con_impuesto").value="";
+
+
+
+    await cargarProductos();
+
+
+
+    document.getElementById("modalCosto").style.display="flex";
+
+
+
+}
+
+
+
+async function editarCosto(id){
+
+
+
+    const {data,error}=await supabaseClient
+
+        .from("Costos")
+
+        .select("*")
+
+        .eq("id",id)
+
+        .single();
+
+
+
+    if(error){
+
+        console.error(error);
+
+        mostrarMensaje("No se pudo cargar el registro: "+error.message,"error");
+
+        return;
+
+    }
+
+
+
+    if(!data)return;
+
+
+
+    idEditando=id;
+
+
+
+    document.getElementById("modalTitulo").textContent="Editar costo";
+
+
+
+    await cargarProductos();
+
+
+
+    if(data.producto_id!==null&&data.producto_id!==undefined){
+
+
+
+        document.getElementById("producto").value=data.producto_id;
+
+        mostrarProductoSeleccionado();
+
+
+
+    }else{
+
+
+
+        document.getElementById("productoInfo").style.display="block";
+
+
+
+        document.getElementById("codigo").value=data.Codigo??"";
+
+        document.getElementById("tipo").value=data.Tipo??"";
+
+        document.getElementById("unidad_medida").value=data.Unidad_Medida??"";
+
+        document.getElementById("descripcion").value=data.Descripcion??"";
+
+
+
+    }
+
+
+
+    document.getElementById("costo_unitario").value=data["Costo unitario inicial sin impuesto"]??"";
+
+    document.getElementById("tipo_cambio").value=data["Tipo de cambio"]??"";
+
+    document.getElementById("precio_sin_impuesto").value=data["Precio unitario sin impuesto"]??"";
+
+    document.getElementById("iva").value=data.IVA??"";
+
+    document.getElementById("activo").value=data.Activo??"Si";
+
+    document.getElementById("moneda_costo").value=data["Moneda del costo unitario sin impuesto"]??"";
+
+    document.getElementById("moneda_precio").value=data["Moneda del precio unitario sin impuesto"]??"";
+
+
+
+    actualizarPrecioConImpuesto();
+
+
+
+    document.getElementById("modalCosto").style.display="flex";
+
+
+
+}
+
+
+
+async function eliminarCosto(id){
+
+
+
+    if(!confirm("¿Está seguro de que desea eliminar este registro de costos?"))return;
+
+
+
+    const {error}=await supabaseClient
+
+        .from("Costos")
+
+        .delete()
+
+        .eq("id",id);
+
+
+
+    if(error){
+
+        console.error(error);
+
+        mostrarMensaje("No se pudo eliminar el costo: "+error.message,"error");
+
+        return;
+
+    }
+
+
+
+    mostrarMensaje("Costo eliminado correctamente.","exito");
+
+
+
+    await cargarCostos();
+
+
+
+}
+
+
+
+/* =====================================================
+
+   GUARDAR COSTO
+
+===================================================== */
+
+
+
+document.getElementById("formCosto").addEventListener(
+
+    "submit",
+
+    async function(event){
+
+
+
+        event.preventDefault();
+
+
+
+        const productoId=document.getElementById("producto").value;
+
+
+
+        if(productoId===""){
+
+            mostrarMensaje("Debe seleccionar un producto.","error");
+
+            return;
+
+        }
+
+
+
+        const producto=productos.find(
+
+            p=>String(p.id)===String(productoId)
+
+        );
+
+
+
+        if(!producto){
+
+            mostrarMensaje("No se encontró el producto seleccionado.","error");
+
+            return;
+
+        }
+
+
+
+        const precioSinImpuesto=obtenerNumero("precio_sin_impuesto");
+
+        const iva=obtenerNumero("iva");
+
+
+
+        const precioConImpuesto=calcularPrecioConImpuesto(
+
+            precioSinImpuesto,
+
+            iva
+
+        );
+
+
+
+        const datos={
+
+
+
+            producto_id:Number(productoId),
+
+
+
+            Codigo:producto.Codigo||null,
+
+            Tipo:producto.Tipo||null,
+
+            Unidad_Medida:producto.Unidad_Medida||null,
+
+            Descripcion:producto.Descripcion||null,
+
+
+
+            "Costo unitario inicial sin impuesto":obtenerNumero("costo_unitario"),
+
+            "Tipo de cambio":obtenerNumero("tipo_cambio"),
+
+
+
+            "Precio unitario sin impuesto":precioSinImpuesto,
+
+            "Precio unitario con impuesto":precioConImpuesto,
+
+
+
+            Activo:obtenerTexto("activo"),
+
+            IVA:iva,
+
+
+
+            "Moneda del costo unitario sin impuesto":obtenerTexto("moneda_costo"),
+
+            "Moneda del precio unitario sin impuesto":obtenerTexto("moneda_precio")
+
+
+
+        };
+
+
+
+        let resultado;
+
+
+
+        if(idEditando!==null){
+
+
+
+            resultado=await supabaseClient
+
+                .from("Costos")
+
+                .update(datos)
+
+                .eq("id",idEditando);
+
+
+
+        }else{
+
+
+
+            resultado=await supabaseClient
+
+                .from("Costos")
+
+                .insert([datos]);
+
+
+
+        }
+
+
+
+        if(resultado.error){
+
+            console.error(resultado.error);
+
+            mostrarMensaje("Error al guardar: "+resultado.error.message,"error");
+
+            return;
+
+        }
+
+
+
+        const eraEdicion=idEditando!==null;
+
+
+
+        idEditando=null;
+
+
+
+        cerrarModal();
+
+
+
+        mostrarMensaje(
+
+            eraEdicion
+
+                ?"Costo actualizado correctamente."
+
+                :"Costo agregado correctamente.",
+
+            "exito"
+
+        );
+
+
+
+        await cargarCostos();
+
+
+
+    }
+
 );
-if (!producto) {
-informacion.style.display =
-"none";
-document.getElementById(
-"codigo"
-).value = "";
-document.getElementById(
-"tipo"
-).value = "";
-document.getElementById(
-"unidad_medida"
-).value = "";
-document.getElementById(
-"descripcion"
-).value = "";
-return;
+
+
+
+/* =====================================================
+
+   UTILIDADES
+
+===================================================== */
+
+
+
+function cerrarModal(){
+
+    document.getElementById("modalCosto").style.display="none";
+
 }
-informacion.style.display =
-"block";
-document.getElementById(
-"codigo"
-).value =
-producto.Codigo ?? "";
-document.getElementById(
-"tipo"
-).value =
-producto.Tipo ?? "";
-document.getElementById(
-"unidad_medida"
-).value =
-producto.Unidad_Medida ?? "";
-document.getElementById(
-"descripcion"
-).value =
-producto.Descripcion ?? "";
-}
-document.getElementById(
-"producto"
-).addEventListener(
-"change",
-mostrarProductoSeleccionado
+
+
+
+document.getElementById("modalCosto").addEventListener(
+
+    "click",
+
+    function(event){
+
+        if(event.target===document.getElementById("modalCosto")){
+
+            cerrarModal();
+
+        }
+
+    }
+
 );
-async function cargarCostos() {
-const tabla =
-document.getElementById(
-"tablaCostos"
-);
-tabla.innerHTML = `
-<tr>
-<td
-colspan="14"
-class="cargando"
->
-Cargando información...
-</td>
-</tr>
-`;
-const { data, error } =
-await supabaseClient
-.from("Costos")
-.select("*")
-.order(
-"id",
-{
-ascending: true
+
+
+
+function mostrarMensaje(texto,tipo){
+
+
+
+    const mensaje=document.getElementById("mensaje");
+
+
+
+    mensaje.textContent=texto;
+
+    mensaje.className="mensaje "+tipo;
+
+
+
+    setTimeout(()=>{
+
+        mensaje.className="mensaje";
+
+    },10000);
+
+
+
 }
-);
-if (error) {
-console.error(error);
-tabla.innerHTML = `
-<tr>
-<td
-colspan="14"
-class="cargando"
->
-Error al cargar los costos.
-</td>
-</tr>
-`;
-mostrarMensaje(
-"Error al cargar la información: " +
-error.message,
-"error"
-);
-return;
+
+
+
+function obtenerTexto(id){
+
+
+
+    const valor=document.getElementById(id).value;
+
+
+
+    return valor.trim()===""?null:valor.trim();
+
+
+
 }
-if (
-!data ||
-data.length === 0
-) {
-tabla.innerHTML = `
-<tr>
-<td
-colspan="14"
-class="cargando"
->
-No hay registros de costos.
-</td>
-</tr>
-`;
-return;
+
+
+
+function obtenerNumero(id){
+
+
+
+    const valor=document.getElementById(id).value;
+
+
+
+    if(valor===""||valor===null||valor===undefined)return null;
+
+
+
+    const numero=parseFloat(valor);
+
+
+
+    return Number.isNaN(numero)?null:numero;
+
+
+
 }
-tabla.innerHTML = "";
-data.forEach(costo => {
-const fila =
-document.createElement("tr");
-let precioConImpuesto =
-costo[
-"Precio unitario con impuesto"
-];
-if (
-precioConImpuesto === null ||
-precioConImpuesto === undefined ||
-precioConImpuesto === ""
-) {
-precioConImpuesto =
-calcularPrecioConImpuesto(
-costo[
-"Precio unitario sin impuesto"
-],
-costo.IVA
-);
+
+
+
+function formatearNumero(valor){
+
+
+
+    if(valor===null||valor===undefined||valor==="")return "—";
+
+
+
+    const numero=Number(valor);
+
+
+
+    if(Number.isNaN(numero))return "—";
+
+
+
+    return numero.toLocaleString("es-CR",{
+
+        minimumFractionDigits:2,
+
+        maximumFractionDigits:2
+
+    });
+
+
+
 }
-fila.innerHTML = `
-<td>
-${escapeHTML(costo.id)}
-</td>
-<td>
-${escapeHTML(costo.Codigo)}
-</td>
-<td>
-${escapeHTML(costo.Tipo)}
-</td>
-<td>
-${escapeHTML(costo.Unidad_Medida)}
-</td>
-<td>
-${escapeHTML(costo.Descripcion)}
-</td>
-<td class="numero">
-${formatearNumero(
-costo[
-"Costo unitario sin impuesto"
-]
-)}
-</td>
-<td class="numero">
-${formatearNumero(
-costo["Tipo de cambio"]
-)}
-</td>
-<td class="numero">
-${formatearNumero(
-costo[
-"Precio unitario sin impuesto"
-]
-)}
-</td>
-<td class="numero">
-${formatearNumero(
-precioConImpuesto
-)}
-</td>
-<td>
-${
-costo.Activo === "Si"
-? '<span class="estado-activo">Sí</span>'
-: '<span class="estado-inactivo">No</span>'
+
+
+
+function formatearIVA(valor){
+
+
+
+    if(valor===null||valor===undefined||valor==="")return "—";
+
+
+
+    const numero=Number(valor);
+
+
+
+    if(Number.isNaN(numero))return "—";
+
+
+
+    return (numero*100).toLocaleString("es-CR",{
+
+        minimumFractionDigits:0,
+
+        maximumFractionDigits:2
+
+    })+"%";
+
+
+
 }
-</td>
-<td class="numero">
-${formatearIVA(costo.IVA)}
-</td>
-<td>
-${escapeHTML(
-costo[
-"Moneda del costo unitario sin impuesto"
-]
-)}
-</td>
-<td>
-${escapeHTML(
-costo[
-"Moneda del precio unitario sin impuesto"
-]
-)}
-</td>
-<td class="acciones">
-<button
-class="btn-editar"
-onclick="editarCosto(${costo.id})"
->
-Editar
-</button>
-<button
-class="btn-eliminar"
-onclick="eliminarCosto(${costo.id})"
->
-Eliminar
-</button>
-</td>
-`;
-tabla.appendChild(fila);
-});
+
+
+
+function escapeHTML(valor){
+
+
+
+    if(valor===null||valor===undefined)return "";
+
+
+
+    return String(valor)
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#039;");
+
+
+
 }
-function calcularPrecioConImpuesto(
-precioSinImpuesto,
-iva
-) {
-if (
-precioSinImpuesto === null ||
-precioSinImpuesto === undefined ||
-precioSinImpuesto === ""
-) {
-return null;
+
+
+
+/* =====================================================
+
+   COSTO PROMEDIO PONDERADO (CPP)
+
+
+
+   INVENTARIO INICIAL:
+
+   Tabla Inventario.
+
+
+
+   MOVIMIENTOS:
+
+   Tabla Movimientos.
+
+
+
+   COMPRAS:
+
+   Entrada + Compra.
+
+
+
+   IDENTIFICACIÓN:
+
+   Con código: Codigo.
+
+   Sin código: Descripcion.
+
+
+
+   La descripción nunca sustituye un código existente.
+
+===================================================== */
+
+
+
+/* =====================================================
+
+   FECHAS
+
+===================================================== */
+
+
+
+function fechaOrdenMovimiento(mov){
+
+
+
+    const fecha=String(mov.Fecha??"").trim();
+
+
+
+    let m=fecha.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+
+
+    if(m){
+
+
+
+        return new Date(
+
+            Number(m[1]),
+
+            Number(m[2])-1,
+
+            Number(m[3])
+
+        ).getTime();
+
+
+
+    }
+
+
+
+    m=fecha.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+
+
+
+    if(m){
+
+
+
+        return new Date(
+
+            Number(m[3]),
+
+            Number(m[2])-1,
+
+            Number(m[1])
+
+        ).getTime();
+
+
+
+    }
+
+
+
+    if(mov.created_at){
+
+
+
+        const creado=new Date(mov.created_at).getTime();
+
+
+
+        if(Number.isFinite(creado)){
+
+            return creado;
+
+        }
+
+
+
+    }
+
+
+
+    throw new Error(
+
+        `El movimiento ${mov.id} no tiene una fecha válida. Revise el campo Fecha.`
+
+    );
+
+
+
 }
-if (
-iva === null ||
-iva === undefined ||
-iva === ""
-) {
-return null;
+
+
+
+/* =====================================================
+
+   IDENTIFICAR COMPRAS
+
+===================================================== */
+
+
+
+function esCompraCPP(mov){
+
+
+
+    return normalizarTexto(mov.Movimiento)==="entrada" &&
+
+           normalizarTexto(mov.Motivo)==="compra" &&
+
+           esTipoCPP(mov.Tipo);
+
+
+
 }
-const precio =
-parseFloat(
-precioSinImpuesto
-);
-const impuesto =
-parseFloat(
-iva
-);
-if (
-Number.isNaN(precio) ||
-Number.isNaN(impuesto)
-) {
-return null;
+
+
+
+/* =====================================================
+
+   IDENTIFICAR TRASPASOS
+
+===================================================== */
+
+
+
+function esTraspasoCPP(mov){
+
+
+
+    const movimiento=normalizarTexto(mov.Movimiento);
+
+    const motivo=normalizarTexto(mov.Motivo);
+
+
+
+    return movimiento==="traspaso" ||
+
+           movimiento==="transferencia" ||
+
+           motivo==="traspaso" ||
+
+           motivo==="transferencia" ||
+
+           motivo==="traslado";
+
+
+
 }
-return precio *
-(1 + impuesto);
+
+
+
+/* =====================================================
+
+   OBTENER COSTO DE COMPRA EN COLONES
+
+===================================================== */
+
+
+
+function obtenerCostoCompraCRC(mov){
+
+
+
+    const moneda=String(mov.Moneda||"").trim().toUpperCase();
+
+
+
+    const tipoCambio=Number(mov["Tipo de cambio"]);
+
+    const costoCRC=Number(mov["Costo unitario en colones"]);
+
+
+
+    const identificador=nombreIdentificador(mov);
+
+
+
+    if(!["CRC","USD"].includes(moneda)){
+
+        throw new Error(
+
+            `La compra ${mov.id} (${identificador}) no tiene una moneda válida.`
+
+        );
+
+    }
+
+
+
+    if(!Number.isFinite(costoCRC)||costoCRC<0){
+
+        throw new Error(
+
+            `La compra ${mov.id} (${identificador}) no tiene un costo unitario en colones válido.`
+
+        );
+
+    }
+
+
+
+    if(moneda==="USD"&&(!Number.isFinite(tipoCambio)||tipoCambio<=0)){
+
+        throw new Error(
+
+            `La compra ${mov.id} (${identificador}) está en USD y no tiene un tipo de cambio válido.`
+
+        );
+
+    }
+
+
+
+    return {
+
+        costoCRC,
+
+        tipoCambio:Number.isFinite(tipoCambio)?tipoCambio:null
+
+    };
+
+
+
 }
-function actualizarPrecioConImpuesto() {
-const precio =
-parseFloat(
-document.getElementById(
-"precio_sin_impuesto"
-).value
-);
-const iva =
-parseFloat(
-document.getElementById(
-"iva"
-).value
-);
-const campo =
-document.getElementById(
-"precio_con_impuesto"
-);
-if (
-Number.isNaN(precio) ||
-Number.isNaN(iva)
-) {
-campo.value = "";
-return;
+
+
+
+/* =====================================================
+
+   PROCESAR CPP
+
+===================================================== */
+
+
+
+async function procesarComprasCPP(){
+
+
+
+    const boton=document.getElementById("btnProcesarCPP");
+
+
+
+    boton.disabled=true;
+
+
+
+    try{
+
+
+
+        const confirmar=confirm(
+
+
+
+            "Se reconstruirá el inventario cronológicamente para calcular el CPP.\n\n"+
+
+
+
+            "El proceso utilizará:\n"+
+
+            "• Inventario: saldo inicial histórico.\n"+
+
+            "• Movimientos: entradas y salidas posteriores.\n"+
+
+            "• Código: identificación principal de los productos.\n"+
+
+            "• Descripción: identificación únicamente de productos sin código.\n"+
+
+            "• Fecha: orden cronológico de cada movimiento.\n"+
+
+            "• Costo unitario en colones: costo de cada compra.\n\n"+
+
+
+
+            "Si las existencias llegan a cero, el costo anterior dejará de participar en el nuevo CPP.\n\n"+
+
+
+
+            "El costo inicial y el tipo de cambio originales de Costos NO se modificarán.\n\n"+
+
+
+
+            "¿Desea continuar?"
+
+
+
+        );
+
+
+
+        if(!confirmar)return;
+
+
+
+        /* -------------------------------------------------
+
+           1. CONSULTAR INFORMACIÓN
+
+        ------------------------------------------------- */
+
+
+
+        const [
+
+            inventarioResp,
+
+            movResp,
+
+            costosResp,
+
+            histResp
+
+        ]=await Promise.all([
+
+
+
+            supabaseClient
+
+                .from("Inventario")
+
+                .select("Codigo, Descripcion, Cantidad, Tipo"),
+
+
+
+            supabaseClient
+
+                .from("Movimientos")
+
+                .select(`
+
+                    id,
+
+                    created_at,
+
+                    Fecha,
+
+                    "Fecha factura",
+
+                    Codigo,
+
+                    Descripcion,
+
+                    Lote,
+
+                    Cantidad,
+
+                    Movimiento,
+
+                    Motivo,
+
+                    Tipo,
+
+                    Proveedor,
+
+                    Moneda,
+
+                    "Tipo de cambio",
+
+                    "Costo unitario en colones"
+
+                `),
+
+
+
+            supabaseClient
+
+                .from("Costos")
+
+                .select("*"),
+
+
+
+            supabaseClient
+
+                .from("Historial_CPP")
+
+                .select("*")
+
+
+
+        ]);
+
+
+
+        for(const respuesta of [
+
+            inventarioResp,
+
+            movResp,
+
+            costosResp,
+
+            histResp
+
+        ]){
+
+
+
+            if(respuesta.error){
+
+                throw new Error(respuesta.error.message);
+
+            }
+
+
+
+        }
+
+
+
+        /* -------------------------------------------------
+
+           2. INVENTARIO INICIAL
+
+
+
+           Se agrupa por código cuando existe.
+
+           Si no existe código, se agrupa por descripción.
+
+        ------------------------------------------------- */
+
+
+
+        const saldosIniciales=new Map();
+
+
+
+        (inventarioResp.data||[]).forEach(row=>{
+
+
+
+            if(!esTipoCPP(row.Tipo))return;
+
+
+
+            const clave=obtenerClaveProducto(row);
+
+
+
+            if(!clave){
+
+                console.warn(
+
+                    "Registro de inventario sin código ni descripción:",
+
+                    row
+
+                );
+
+                return;
+
+            }
+
+
+
+            const cantidad=Number(row.Cantidad??0);
+
+
+
+            if(!Number.isFinite(cantidad)||cantidad<0){
+
+
+
+                throw new Error(
+
+                    `La cantidad inicial de ${nombreIdentificador(row)} no es válida.`
+
+                );
+
+
+
+            }
+
+
+
+            saldosIniciales.set(
+
+                clave,
+
+                (saldosIniciales.get(clave)||0)+cantidad
+
+            );
+
+
+
+        });
+
+
+
+        /* -------------------------------------------------
+
+           3. COSTOS POR IDENTIFICADOR
+
+
+
+           Código cuando existe.
+
+           Descripción únicamente cuando no existe código.
+
+        ------------------------------------------------- */
+
+
+
+        const costosPorClave=new Map();
+
+
+
+        (costosResp.data||[]).forEach(costo=>{
+
+
+
+            if(!esTipoCPP(costo.Tipo))return;
+
+
+
+            const clave=obtenerClaveProducto(costo);
+
+
+
+            if(!clave)return;
+
+
+
+            if(costosPorClave.has(clave)){
+
+
+
+                throw new Error(
+
+                    `Hay más de un registro en Costos para ${nombreIdentificador(costo)}.`
+
+                );
+
+
+
+            }
+
+
+
+            costosPorClave.set(clave,costo);
+
+
+
+        });
+
+
+
+        /* -------------------------------------------------
+
+           4. HISTORIAL EXISTENTE POR MOVIMIENTO
+
+        ------------------------------------------------- */
+
+
+
+        const historialPorMovimiento=new Map();
+
+
+
+        (histResp.data||[]).forEach(historial=>{
+
+
+
+            historialPorMovimiento.set(
+
+                String(historial.movimiento_id),
+
+                historial
+
+            );
+
+
+
+        });
+
+
+
+        /* -------------------------------------------------
+
+           5. AGRUPAR MOVIMIENTOS
+
+
+
+           Se utiliza la misma regla:
+
+           Código primero.
+
+           Descripción únicamente si no hay código.
+
+        ------------------------------------------------- */
+
+
+
+        const movimientosPorClave=new Map();
+
+
+
+        (movResp.data||[]).forEach(mov=>{
+
+
+
+            if(!esTipoCPP(mov.Tipo))return;
+
+
+
+            const clave=obtenerClaveProducto(mov);
+
+
+
+            if(!clave){
+
+                console.warn(
+
+                    "Movimiento sin código ni descripción:",
+
+                    mov
+
+                );
+
+                return;
+
+            }
+
+
+
+            if(!movimientosPorClave.has(clave)){
+
+                movimientosPorClave.set(clave,[]);
+
+            }
+
+
+
+            movimientosPorClave.get(clave).push(mov);
+
+
+
+        });
+
+
+
+        let comprasProcesadas=0;
+
+        let comprasActualizadas=0;
+
+        let movimientosOmitidos=0;
+
+        let productosActualizados=0;
+
+        let productosSinMovimiento=0;
+
+
+
+        /* -------------------------------------------------
+
+           6. PRODUCTOS A PROCESAR
+
+
+
+           Se incluyen:
+
+           - Productos del inventario inicial.
+
+           - Productos con movimientos.
+
+        ------------------------------------------------- */
+
+
+
+        const clavesAProcesar=new Set([
+
+
+
+            ...saldosIniciales.keys(),
+
+            ...movimientosPorClave.keys()
+
+
+
+        ]);
+
+
+
+        for(const clave of clavesAProcesar){
+
+
+
+            const costoRegistro=costosPorClave.get(clave);
+
+
+
+            const movimientosProducto=movimientosPorClave.get(clave)||[];
+
+
+
+            if(!costoRegistro){
+
+
+
+                const tieneCompra=movimientosProducto.some(esCompraCPP);
+
+
+
+                if(tieneCompra){
+
+
+
+                    throw new Error(
+
+                        `${clave} tiene compras registradas, pero no existe un registro correspondiente en Costos.`
+
+                    );
+
+
+
+                }
+
+
+
+                continue;
+
+
+
+            }
+
+
+
+            const identificador=nombreIdentificador(costoRegistro);
+
+
+
+            /* ------------------------------------------------
+
+               7. ORDEN CRONOLÓGICO
+
+            ------------------------------------------------ */
+
+
+
+            movimientosProducto.sort((a,b)=>{
+
+
+
+                const fechaA=fechaOrdenMovimiento(a);
+
+                const fechaB=fechaOrdenMovimiento(b);
+
+
+
+                return fechaA-fechaB||Number(a.id)-Number(b.id);
+
+
+
+            });
+
+
+
+            /* ------------------------------------------------
+
+               8. INICIAR RECONSTRUCCIÓN
+
+            ------------------------------------------------ */
+
+
+
+            let existencia=Number(saldosIniciales.get(clave)||0);
+
+
+
+            let cpp=0;
+
+
+
+            if(existencia>0){
+
+
+
+                cpp=Number(
+
+                    costoRegistro["Costo unitario inicial sin impuesto"]
+
+                );
+
+
+
+                const monedaBase=String(
+
+                    costoRegistro["Moneda del costo unitario sin impuesto"]||"CRC"
+
+                ).trim().toUpperCase();
+
+
+
+                if(!Number.isFinite(cpp)||cpp<0){
+
+
+
+                    throw new Error(
+
+                        `El costo inicial de ${identificador} no es válido.`
+
+                    );
+
+
+
+                }
+
+
+
+                if(monedaBase==="USD"){
+
+
+
+                    const tcBase=Number(costoRegistro["Tipo de cambio"]);
+
+
+
+                    if(!Number.isFinite(tcBase)||tcBase<=0){
+
+
+
+                        throw new Error(
+
+                            `El costo inicial de ${identificador} está en USD y no tiene un tipo de cambio válido.`
+
+                        );
+
+
+
+                    }
+
+
+
+                    cpp=cpp*tcBase;
+
+
+
+                }else if(monedaBase!=="CRC"){
+
+
+
+                    throw new Error(
+
+                        `El producto ${identificador} tiene una moneda inicial no reconocida.`
+
+                    );
+
+
+
+                }
+
+
+
+            }else{
+
+
+
+                cpp=0;
+
+
+
+            }
+
+
+
+            /* ------------------------------------------------
+
+               9. RECORRER MOVIMIENTOS CRONOLÓGICAMENTE
+
+            ------------------------------------------------ */
+
+
+
+            for(const mov of movimientosProducto){
+
+
+
+                const movimiento=normalizarTexto(mov.Movimiento);
+
+
+
+                const cantidad=Number(mov.Cantidad??0);
+
+
+
+                if(!Number.isFinite(cantidad)||cantidad<0){
+
+
+
+                    throw new Error(
+
+                        `Cantidad inválida en el movimiento ${mov.id} de ${identificador}.`
+
+                    );
+
+
+
+                }
+
+
+
+                /* TRASPASOS */
+
+
+
+                if(esTraspasoCPP(mov)){
+
+
+
+                    movimientosOmitidos++;
+
+
+
+                    continue;
+
+
+
+                }
+
+
+
+                /* --------------------------------------------
+
+                   COMPRAS
+
+                -------------------------------------------- */
+
+
+
+                if(esCompraCPP(mov)){
+
+
+
+                    if(cantidad<=0){
+
+
+
+                        throw new Error(
+
+                            `La compra ${mov.id} de ${identificador} tiene una cantidad igual a cero.`
+
+                        );
+
+
+
+                    }
+
+
+
+                    const datosCompra=obtenerCostoCompraCRC(mov);
+
+
+
+                    const costoCompra=datosCompra.costoCRC;
+
+
+
+                    const existenciaAntes=existencia;
+
+
+
+                    let cppAnterior=null;
+
+                    let cppNuevo;
+
+
+
+                    /*
+
+                       Si ya no quedan unidades anteriores,
+
+                       la nueva compra inicia un CPP independiente.
+
+                    */
+
+
+
+                    if(existenciaAntes<=0.000001){
+
+
+
+                        existencia=0;
+
+                        cpp=0;
+
+
+
+                        cppNuevo=costoCompra;
+
+
+
+                    }else{
+
+
+
+                        cppAnterior=cpp;
+
+
+
+                        const denominador=existenciaAntes+cantidad;
+
+
+
+                        cppNuevo=(
+
+                            (existenciaAntes*cpp)+
+
+                            (cantidad*costoCompra)
+
+                        )/denominador;
+
+
+
+                    }
+
+
+
+                    if(!Number.isFinite(cppNuevo)||cppNuevo<0){
+
+
+
+                        throw new Error(
+
+                            `No se pudo calcular correctamente el CPP de la compra ${mov.id} de ${identificador}.`
+
+                        );
+
+
+
+                    }
+
+
+
+                    /* PREPARAR HISTORIAL */
+
+
+
+                    const datosHistorial={
+
+
+
+                        movimiento_id:mov.id,
+
+
+
+                        producto_id:costoRegistro.producto_id??null,
+
+
+
+                        Codigo:mov.Codigo||null,
+
+
+
+                        Lote:mov.Lote??null,
+
+
+
+                        Fecha:mov.Fecha||null,
+
+
+
+                        Cantidad:cantidad,
+
+
+
+                        Costo_compra:costoCompra,
+
+
+
+                        Moneda:"CRC",
+
+
+
+                        Tipo_cambio:null,
+
+
+
+                        Costo_compra_crc:costoCompra,
+
+
+
+                        CPP_anterior:cppAnterior,
+
+
+
+                        CPP_nuevo:cppNuevo
+
+
+
+                    };
+
+
+
+                    /* GUARDAR O ACTUALIZAR HISTORIAL */
+
+
+
+                    const historialExistente=
+
+                        historialPorMovimiento.get(String(mov.id));
+
+
+
+                    let errorHistorial;
+
+
+
+                    if(historialExistente){
+
+
+
+                        const resultado=await supabaseClient
+
+                            .from("Historial_CPP")
+
+                            .update(datosHistorial)
+
+                            .eq("id",historialExistente.id);
+
+
+
+                        errorHistorial=resultado.error;
+
+
+
+                        if(!errorHistorial){
+
+                            comprasActualizadas++;
+
+                        }
+
+
+
+                    }else{
+
+
+
+                        const resultado=await supabaseClient
+
+                            .from("Historial_CPP")
+
+                            .insert([datosHistorial]);
+
+
+
+                        errorHistorial=resultado.error;
+
+
+
+                        if(!errorHistorial){
+
+                            comprasProcesadas++;
+
+                        }
+
+
+
+                    }
+
+
+
+                    if(errorHistorial){
+
+
+
+                        throw new Error(
+
+                            `No se pudo guardar el historial de la compra ${mov.id}: ${errorHistorial.message}`
+
+                        );
+
+
+
+                    }
+
+
+
+                    /* ACTUALIZAR EXISTENCIAS Y CPP */
+
+
+
+                    cpp=cppNuevo;
+
+                    existencia=existenciaAntes+cantidad;
+
+
+
+                    continue;
+
+
+
+                }
+
+
+
+                /* --------------------------------------------
+
+                   OTRAS ENTRADAS
+
+                -------------------------------------------- */
+
+
+
+                if(movimiento==="entrada"){
+
+
+
+                    existencia+=cantidad;
+
+
+
+                    continue;
+
+
+
+                }
+
+
+
+                /* --------------------------------------------
+
+                   SALIDAS
+
+                -------------------------------------------- */
+
+
+
+                if(movimiento==="salida"){
+
+
+
+                    if(cantidad>existencia+0.000001){
+
+
+
+                        throw new Error(
+
+
+
+                            `El movimiento ${mov.id} de ${identificador} deja existencias negativas.\n\n`+
+
+                            `Existencias disponibles: ${existencia}.\n`+
+
+                            `Salida: ${cantidad}.\n\n`+
+
+                            `Revise el inventario inicial y la secuencia de movimientos.`
+
+
+
+                        );
+
+
+
+                    }
+
+
+
+                    existencia-=cantidad;
+
+
+
+                    if(existencia<=0.000001){
+
+
+
+                        existencia=0;
+
+                        cpp=0;
+
+
+
+                    }
+
+
+
+                    continue;
+
+
+
+                }
+
+
+
+                /* OTROS MOVIMIENTOS */
+
+
+
+                movimientosOmitidos++;
+
+
+
+                console.warn(
+
+                    "Movimiento omitido del cálculo CPP:",
+
+                    {
+
+                        id:mov.id,
+
+                        Codigo:mov.Codigo,
+
+                        Descripcion:mov.Descripcion,
+
+                        Tipo:mov.Tipo,
+
+                        Movimiento:mov.Movimiento,
+
+                        Motivo:mov.Motivo
+
+                    }
+
+                );
+
+
+
+            }
+
+
+
+            /* ------------------------------------------------
+
+               10. ACTUALIZAR CPP EN COSTOS
+
+
+
+               Se modifica únicamente CPP actualizado.
+
+
+
+               No se modifica:
+
+               - Costo unitario inicial.
+
+               - Tipo de cambio original.
+
+               - Precio unitario.
+
+            ------------------------------------------------ */
+
+
+
+            const {error:cppError}=await supabaseClient
+
+                .from("Costos")
+
+                .update({
+
+
+
+                    "CPP actualizado":existencia>0?cpp:null
+
+
+
+                })
+
+                .eq("id",costoRegistro.id);
+
+
+
+            if(cppError){
+
+
+
+                throw new Error(
+
+                    `No se pudo actualizar CPP de ${identificador}: ${cppError.message}`
+
+                );
+
+
+
+            }
+
+
+
+            productosActualizados++;
+
+
+
+            if(movimientosProducto.length===0){
+
+                productosSinMovimiento++;
+
+            }
+
+
+
+        }
+
+
+
+        /* -------------------------------------------------
+
+           11. ACTUALIZAR PANTALLA
+
+        ------------------------------------------------- */
+
+
+
+        await cargarCostos();
+
+
+
+        mostrarMensaje(
+
+
+
+            `Proceso finalizado correctamente.
+
+
+
+Compras nuevas procesadas: ${comprasProcesadas}.
+
+Historiales de compras recalculados: ${comprasActualizadas}.
+
+Productos actualizados: ${productosActualizados}.
+
+Productos sin movimientos: ${productosSinMovimiento}.
+
+Movimientos omitidos (incluidos traspasos): ${movimientosOmitidos}.
+
+
+
+Se procesaron productos identificados por código y productos sin código identificados por descripción.
+
+
+
+El inventario inicial se obtuvo de la tabla Inventario.
+
+Las entradas y salidas se reconstruyeron desde Movimientos.
+
+Se utilizó Fecha para ordenar los movimientos.
+
+
+
+Los costos iniciales y los tipos de cambio originales se conservaron sin modificaciones.`,
+
+
+
+            "exito"
+
+
+
+        );
+
+
+
+    }catch(error){
+
+
+
+        console.error("Error al procesar CPP:",error);
+
+
+
+        mostrarMensaje(
+
+            error.message||"Ocurrió un error al procesar el CPP.",
+
+            "error"
+
+        );
+
+
+
+    }finally{
+
+
+
+        boton.disabled=false;
+
+
+
+    }
+
+
+
 }
-const resultado =
-calcularPrecioConImpuesto(
-precio,
-iva
-);
-if (
-resultado === null
-) {
-campo.value = "";
-} else {
-campo.value =
-resultado.toFixed(2);
+
+
+
+/* =====================================================
+
+   INICIO
+
+===================================================== */
+
+
+
+async function iniciarPagina(){
+
+
+
+    await cargarProductos();
+
+    await cargarCostos();
+
+
+
 }
-}
-async function abrirNuevoCosto() {
-idEditando = null;
-document.getElementById(
-"modalTitulo"
-).textContent =
-"Nuevo costo";
-document.getElementById(
-"formCosto"
-).reset();
-document.getElementById(
-"productoInfo"
-).style.display =
-"none";
-document.getElementById(
-"activo"
-).value =
-"Si";
-document.getElementById(
-"precio_con_impuesto"
-).value =
-"";
-await cargarProductos();
-document.getElementById(
-"modalCosto"
-).style.display =
-"flex";
-}
-async function editarCosto(id) {
-const { data, error } =
-await supabaseClient
-.from("Costos")
-.select("*")
-.eq(
-"id",
-id
-)
-.single();
-if (error) {
-console.error(error);
-mostrarMensaje(
-"No se pudo cargar el registro: " +
-error.message,
-"error"
-);
-return;
-}
-if (!data) {
-return;
-}
-idEditando = id;
-document.getElementById(
-"modalTitulo"
-).textContent =
-"Editar costo";
-await cargarProductos();
-if (
-data.producto_id !== null &&
-data.producto_id !== undefined
-) {
-document.getElementById(
-"producto"
-).value =
-data.producto_id;
-mostrarProductoSeleccionado();
-} else {
-document.getElementById(
-"productoInfo"
-).style.display =
-"block";
-document.getElementById(
-"codigo"
-).value =
-data.Codigo ?? "";
-document.getElementById(
-"tipo"
-).value =
-data.Tipo ?? "";
-document.getElementById(
-"unidad_medida"
-).value =
-data.Unidad_Medida ?? "";
-document.getElementById(
-"descripcion"
-).value =
-data.Descripcion ?? "";
-}
-document.getElementById(
-"costo_unitario"
-).value =
-data[
-"Costo unitario sin impuesto"
-] ?? "";
-document.getElementById(
-"tipo_cambio"
-).value =
-data["Tipo de cambio"] ?? "";
-document.getElementById(
-"precio_sin_impuesto"
-).value =
-data[
-"Precio unitario sin impuesto"
-] ?? "";
-document.getElementById(
-"iva"
-).value =
-data.IVA ?? "";
-document.getElementById(
-"activo"
-).value =
-data.Activo ?? "Si";
-document.getElementById(
-"moneda_costo"
-).value =
-data[
-"Moneda del costo unitario sin impuesto"
-] ?? "";
-document.getElementById(
-"moneda_precio"
-).value =
-data[
-"Moneda del precio unitario sin impuesto"
-] ?? "";
-actualizarPrecioConImpuesto();
-document.getElementById(
-"modalCosto"
-).style.display =
-"flex";
-}
-async function eliminarCosto(id) {
-const confirmar =
-confirm(
-"¿Está seguro de que desea eliminar este registro de costos?"
-);
-if (!confirmar) {
-return;
-}
-const { error } =
-await supabaseClient
-.from("Costos")
-.delete()
-.eq(
-"id",
-id
-);
-if (error) {
-console.error(error);
-mostrarMensaje(
-"No se pudo eliminar el costo: " +
-error.message,
-"error"
-);
-return;
-}
-mostrarMensaje(
-"Costo eliminado correctamente.",
-"exito"
-);
-await cargarCostos();
-}
-document.getElementById(
-"formCosto"
-).addEventListener(
-"submit",
-async function(event) {
-event.preventDefault();
-const productoId =
-document.getElementById(
-"producto"
-).value;
-if (
-productoId === ""
-) {
-mostrarMensaje(
-"Debe seleccionar un producto.",
-"error"
-);
-return;
-}
-const producto =
-productos.find(
-p =>
-String(p.id) ===
-String(productoId)
-);
-if (!producto) {
-mostrarMensaje(
-"No se encontró el producto seleccionado.",
-"error"
-);
-return;
-}
-const precioSinImpuesto =
-obtenerNumero(
-"precio_sin_impuesto"
-);
-const iva =
-obtenerNumero(
-"iva"
-);
-const precioConImpuesto =
-calcularPrecioConImpuesto(
-precioSinImpuesto,
-iva
-);
-const datos = {
-producto_id:
-Number(productoId),
-Codigo:
-producto.Codigo || null,
-Tipo:
-producto.Tipo || null,
-Unidad_Medida:
-producto.Unidad_Medida || null,
-Descripcion:
-producto.Descripcion || null,
-"Costo unitario sin impuesto":
-obtenerNumero(
-"costo_unitario"
-),
-"Tipo de cambio":
-obtenerNumero(
-"tipo_cambio"
-),
-"Precio unitario sin impuesto":
-precioSinImpuesto,
-"Precio unitario con impuesto":
-precioConImpuesto,
-Activo:
-obtenerTexto(
-"activo"
-),
-IVA:
-iva,
-"Moneda del costo unitario sin impuesto":
-obtenerTexto(
-"moneda_costo"
-),
-"Moneda del precio unitario sin impuesto":
-obtenerTexto(
-"moneda_precio"
-)
-};
-console.log(
-"Datos que se enviarán a Supabase:",
-datos
-);
-let resultado;
-if (
-idEditando !== null
-) {
-resultado =
-await supabaseClient
-.from("Costos")
-.update(datos)
-.eq(
-"id",
-idEditando
-);
-}
-else {
-resultado =
-await supabaseClient
-.from("Costos")
-.insert([
-datos
-]);
-}
-if (
-resultado.error
-) {
-console.error(
-resultado.error
-);
-mostrarMensaje(
-"Error al guardar: " +
-resultado.error.message,
-"error"
-);
-return;
-}
-cerrarModal();
-mostrarMensaje(
-idEditando !== null
-? "Costo actualizado correctamente."
-: "Costo agregado correctamente.",
-"exito"
-);
-idEditando = null;
-await cargarCostos();
-}
-);
-document.getElementById(
-"precio_sin_impuesto"
-).addEventListener(
-"input",
-actualizarPrecioConImpuesto
-);
-document.getElementById(
-"iva"
-).addEventListener(
-"input",
-actualizarPrecioConImpuesto
-);
-function cerrarModal() {
-document.getElementById(
-"modalCosto"
-).style.display =
-"none";
-}
-document.getElementById(
-"modalCosto"
-).addEventListener(
-"click",
-function(event) {
-if (
-event.target ===
-document.getElementById(
-"modalCosto"
-)
-) {
-cerrarModal();
-}
-}
-);
-function mostrarMensaje(
-texto,
-tipo
-) {
-const mensaje =
-document.getElementById(
-"mensaje"
-);
-mensaje.textContent =
-texto;
-mensaje.className =
-"mensaje " + tipo;
-setTimeout(
-function() {
-mensaje.className =
-"mensaje";
-},
-4000
-);
-}
-function obtenerTexto(id) {
-const valor =
-document.getElementById(
-id
-).value;
-return valor.trim() === ""
-? null
-: valor.trim();
-}
-function obtenerNumero(id) {
-const valor =
-document.getElementById(
-id
-).value;
-if (
-valor === "" ||
-valor === null ||
-valor === undefined
-) {
-return null;
-}
-const numero =
-parseFloat(valor);
-return Number.isNaN(numero)
-? null
-: numero;
-}
-function formatearNumero(valor) {
-if (
-valor === null ||
-valor === undefined ||
-valor === ""
-) {
-return "—";
-}
-const numero =
-Number(valor);
-if (
-Number.isNaN(numero)
-) {
-return "—";
-}
-return numero.toLocaleString(
-"es-CR",
-{
-minimumFractionDigits: 2,
-maximumFractionDigits: 2
-}
-);
-}
-function formatearIVA(valor) {
-if (
-valor === null ||
-valor === undefined ||
-valor === ""
-) {
-return "—";
-}
-const numero =
-Number(valor);
-if (
-Number.isNaN(numero)
-) {
-return "—";
-}
-return (
-numero * 100
-).toLocaleString(
-"es-CR",
-{
-minimumFractionDigits: 0,
-maximumFractionDigits: 2
-}
-) + "%";
-}
-function escapeHTML(valor) {
-if (
-valor === null ||
-valor === undefined
-) {
-return "";
-}
-return String(valor)
-.replace(
-/&/g,
-"&amp;"
-)
-.replace(
-/</g,
-"&lt;"
-)
-.replace(
-/>/g,
-"&gt;"
-)
-.replace(
-/"/g,
-"&quot;"
-)
-.replace(
-/'/g,
-"&#039;"
-);
-}
-async function iniciarPagina() {
-await cargarProductos();
-await cargarCostos();
-}
+
+
+
 iniciarPagina();
+
+
+
 </script>
+
 </body>
+
 </html>
+
