@@ -1,2185 +1,1363 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Movimientos - Cacaotería S.R.L.</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-* {
-    box-sizing: border-box;
-    font-family: "Barlow", Arial, sans-serif;
+:root{
+    --cafe:#5B2326;
+    --cafe-hover:#45191C;
+    --fondo:#f5f5f5;
+    --blanco:#fff;
+    --gris:#ddd;
+    --gris-texto:#777;
+    --gris-claro:#f3f3f3;
 }
 
-body {
-    margin: 0;
-    background-color: #f5f5f5;
-    color: #333;
+*{
+    box-sizing:border-box;
+    font-family:"Barlow",Arial,sans-serif;
 }
 
-header {
-    background-color: #5B2326;
-    color: white;
-    padding: 20px 30px;
-    border-bottom: 4px solid #E14E39;
+body{
+    margin:0;
+    background:var(--fondo);
+    color:#333;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 28px;
+header{
+    background:var(--cafe);
+    color:var(--blanco);
+    padding:20px 30px;
+    border-bottom:4px solid var(--cafe);
 }
 
-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
+header h1{
+    margin:0;
+    font-size:28px;
 }
 
-.contenedor {
-    max-width: 1600px;
-    margin: 30px auto;
-    padding: 0 20px;
+header p{
+    margin:5px 0 0;
+    font-size:14px;
 }
 
-.encabezado {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 20px;
+.contenedor{
+    max-width:1600px;
+    margin:30px auto;
+    padding:0 20px;
 }
 
-.encabezado h2 {
-    margin: 0;
-    color: #5B2326;
+.encabezado{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:16px;
+    margin-bottom:20px;
+    width:100%;
 }
 
-.acciones-superior {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.encabezado h2{
+    margin:0;
+    color:var(--cafe);
+    white-space:nowrap;
+    font-size:21px;
+    font-weight:700;
 }
 
-.total {
-    background-color: white;
-    padding: 12px 18px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    font-weight: bold;
+/* DISTRIBUCIÓN DE FILTROS Y ACCIONES */
+
+.acciones-superior{
+    display:grid;
+    grid-template-columns:minmax(280px,1fr) auto;
+    align-items:center;
+    gap:25px;
+    width:100%;
 }
 
-.filtro-responsable {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.filtros{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-width:430px;
+    width:100%;
 }
 
-.filtro-responsable label {
-    font-weight: bold;
-    color: #5B2326;
+.filtro-responsable{
+    display:grid;
+    grid-template-columns:110px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+    width:100%;
 }
 
-.filtro-responsable select {
-    padding: 10px 12px;
-    border: 1px solid #2DADD6;
-    border-radius: 6px;
-    background-color: white;
-    font-size: 14px;
-    min-width: 210px;
+.filtro-responsable label{
+    font-weight:700;
+    color:var(--cafe);
+    white-space:nowrap;
 }
 
-.filtro-responsable select:focus {
-    outline: none;
-    border-color: #007F49;
+.filtro-responsable select{
+    width:100%;
+    padding:9px 12px;
+    border:1px solid var(--cafe);
+    border-radius:6px;
+    background:var(--blanco);
+    font-size:14px;
+    min-width:0;
+    color:#333;
 }
 
-.btn-agregar {
-    background-color: #E14E39;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
+.filtro-responsable select:focus{
+    outline:none;
+    border-color:var(--cafe-hover);
 }
 
-.btn-agregar:hover {
-    background-color: #5B2326;
+.acciones-derecha{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:center;
+    gap:12px;
+    min-width:210px;
 }
 
-.btn-editar,
-.btn-eliminar {
-    background: transparent;
-    border: none;
-    padding: 3px;
-    margin-right: 8px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.total{
+    background:var(--blanco);
+    padding:12px 18px;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    font-weight:700;
+    text-align:center;
+    white-space:nowrap;
 }
 
-.btn-editar svg,
-.btn-eliminar svg {
-    width: 20px;
-    height: 20px;
+.btn-agregar{
+    background:var(--cafe);
+    color:var(--blanco);
+    border:0;
+    padding:12px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    white-space:nowrap;
+    width:100%;
 }
 
-.btn-editar {
-    color: #E14E39;
+.btn-agregar:hover{
+    background:var(--cafe-hover);
 }
 
-.btn-editar:hover {
-    color: #5B2326;
+.btn-editar,.btn-eliminar{
+    background:transparent;
+    border:0;
+    padding:3px;
+    margin-right:8px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--cafe);
 }
 
-.btn-eliminar {
-    color: #aaa;
+.btn-editar svg,.btn-eliminar svg{
+    width:20px;
+    height:20px;
 }
 
-.btn-eliminar:hover {
-    color: #777;
+.btn-editar:hover,.btn-eliminar:hover{
+    color:var(--cafe-hover);
 }
 
-.tabla-contenedor {
-    background-color: white;
-    border-radius: 10px;
-    overflow-x: auto;
-    width: 100%;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+.tabla-contenedor{
+    background:var(--blanco);
+    border-radius:10px;
+    overflow-x:auto;
+    width:100%;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1900px;
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1500px;
 }
 
-th {
-    background-color: #5B2326;
-    color: white;
-    padding: 14px 12px;
-    text-align: left;
-    white-space: nowrap;
-    border-bottom: 3px solid #E14E39;
+th{
+    background:var(--cafe);
+    color:var(--blanco);
+    padding:14px 12px;
+    text-align:left;
+    white-space:nowrap;
+    border-bottom:3px solid var(--cafe);
 }
 
-td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap;
+td{
+    padding:12px;
+    border-bottom:1px solid var(--gris);
+    white-space:nowrap;
 }
 
-tr:hover {
-    background-color: rgba(225, 78, 57, 0.08);
+tr:hover{
+    background:#f5f2f2;
 }
 
-.sin-dato {
-    color: #888;
+.sin-dato{
+    color:#888;
 }
 
-td.acciones {
-    min-width: 100px;
-    white-space: nowrap;
+td.acciones{
+    min-width:100px;
+    white-space:nowrap;
 }
 
-.mensaje-vacio {
-    text-align: center;
-    padding: 30px;
-    color: #777;
+.mensaje-vacio,.mensaje-cargando{
+    text-align:center;
+    padding:30px;
+    color:var(--gris-texto);
 }
 
-.mensaje-cargando {
-    text-align: center;
-    padding: 30px;
-    color: #5B2326;
+.mensaje-cargando{
+    color:var(--cafe);
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+.modal{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.5);
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
-.modal-contenido {
-    background-color: white;
-    width: 100%;
-    max-width: 1000px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+.modal-contenido{
+    background:var(--blanco);
+    width:100%;
+    max-width:1050px;
+    max-height:92vh;
+    overflow-y:auto;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.2);
 }
 
-.modal-contenido h3 {
-    margin: 0 0 20px 0;
-    color: #5B2326;
+.modal-contenido h3{
+    margin:0 0 20px;
+    color:var(--cafe);
+    font-size:21px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    gap: 15px;
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:15px;
+    align-items:start;
 }
 
-.campo {
-    margin-bottom: 0;
+.campo{
+    min-width:0;
 }
 
-.campo label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: bold;
-    font-size: 14px;
+.campo label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:700;
+    font-size:14px;
+    color:#393939;
 }
 
-.campo input,
-.campo select {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 9px 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
+.campo input,.campo select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+    background:var(--blanco);
+    min-height:40px;
+    color:#333;
 }
 
-.campo input:focus,
-.campo select:focus {
-    outline: none;
-    border-color: #2DADD6;
+.campo input:focus,.campo select:focus{
+    outline:none;
+    border-color:var(--cafe);
 }
 
-.campo input[readonly] {
-    background-color: #f3f3f3;
-    color: #555;
+.campo input[readonly]{
+    background:var(--gris-claro);
+    color:#555;
 }
 
-.grupo-origen {
-    grid-column: span 2;
-    background-color: rgba(45, 173, 214, 0.06);
-    border: 1px solid #2DADD6;
-    border-radius: 8px;
-    padding: 15px;
+.seccion-formulario{
+    grid-column:1/-1;
+    border-radius:8px;
+    padding:15px;
+    margin-top:3px;
 }
 
-.grupo-destino {
-    grid-column: span 2;
-    background-color: rgba(0, 127, 73, 0.06);
-    border: 1px solid #007F49;
-    border-radius: 8px;
-    padding: 15px;
+.seccion-formulario h4{
+    margin:0 0 13px;
+    color:var(--cafe);
+    font-size:15px;
 }
 
-.grupo-titulo {
-    color: #5B2326;
-    font-weight: bold;
-    margin-bottom: 12px;
-    font-size: 15px;
+.seccion-origen,
+.seccion-destino,
+.seccion-compra{
+    background:#f8f6f6;
+    border:1px solid var(--cafe);
 }
 
-.grupo-campos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+.seccion-campos{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:13px;
 }
 
-.campo-producto-nuevo {
-    display: none;
-    grid-column: span 2;
+.oculto{
+    display:none!important;
 }
 
-.campo-producto-nuevo.activo {
-    display: block;
+.aviso-producto-nuevo{
+    grid-column:1/-1;
+    background:#f3eeee;
+    border-left:4px solid var(--cafe);
+    padding:10px 12px;
+    border-radius:5px;
+    color:var(--cafe);
+    font-size:13px;
 }
 
-.aviso-producto-nuevo {
-    grid-column: 1 / -1;
-    display: none;
-    background-color: rgba(225, 78, 57, 0.08);
-    border-left: 4px solid #E14E39;
-    padding: 10px 12px;
-    border-radius: 5px;
-    color: #5B2326;
-    font-size: 13px;
+.botones-formulario{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:22px;
 }
 
-.aviso-producto-nuevo.activo {
-    display: block;
+.btn-cancelar{
+    background:#ddd;
+    color:#333;
+    border:0;
+    padding:10px 18px;
+    border-radius:6px;
+    cursor:pointer;
 }
 
-.botones-formulario {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 22px;
+.btn-cancelar:hover{
+    background:#ccc;
 }
 
-.btn-cancelar {
-    background-color: #ddd;
-    color: #333;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    cursor: pointer;
+.btn-guardar{
+    background:var(--cafe);
+    color:var(--blanco);
+    border:0;
+    padding:10px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:700;
 }
 
-.btn-guardar {
-    background-color: #E14E39;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
+.btn-guardar:hover{
+    background:var(--cafe-hover);
 }
 
-.btn-guardar:hover {
-    background-color: #5B2326;
+.btn-guardar:disabled{
+    background:#999;
+    cursor:wait;
 }
 
-.btn-guardar:disabled {
-    background-color: #999;
-    cursor: wait;
-}
-
-@media (max-width: 1100px) {
-
-    .encabezado {
-        flex-direction: column;
-        align-items: flex-start;
+@media(max-width:1000px){
+    .form-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
     }
 
-    .acciones-superior {
-        width: 100%;
-        flex-wrap: wrap;
+    .seccion-campos{
+        grid-template-columns:repeat(2,minmax(0,1fr));
     }
-
 }
 
-@media (max-width: 1000px) {
-
-    .form-grid {
-        grid-template-columns: 1fr 1fr;
+@media(max-width:700px){
+    header{
+        padding:18px 20px;
     }
 
-    .grupo-origen,
-    .grupo-destino {
-        grid-column: span 2;
+    .encabezado h2{
+        font-size:19px;
+        white-space:normal;
     }
 
+    .acciones-superior{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .filtros{
+        max-width:none;
+    }
+
+    .filtro-responsable{
+        grid-template-columns:1fr;
+        gap:5px;
+    }
+
+    .acciones-derecha{
+        width:100%;
+    }
+
+    .form-grid,.seccion-campos{
+        grid-template-columns:1fr;
+    }
+
+    .modal{
+        padding:10px;
+    }
+
+    .modal-contenido{
+        padding:18px;
+    }
 }
-
-@media (max-width: 700px) {
-
-    .encabezado {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .acciones-superior {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filtro-responsable {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filtro-responsable select {
-        width: 100%;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .grupo-origen,
-    .grupo-destino,
-    .campo-producto-nuevo {
-        grid-column: span 1;
-    }
-
-    .grupo-campos {
-        grid-template-columns: 1fr;
-    }
-
-}
-
 </style>
-
 </head>
 
 <body>
 
 <header>
-
     <h1>Cacaotería S.R.L.</h1>
     <p>Sistema de Gestión Operativa</p>
-
 </header>
 
-<div class="contenedor">
+<main class="contenedor">
 
-    <div class="encabezado">
+<div class="encabezado">
+    <h2>Movimientos de Inventario</h2>
 
-        <h2>
-            Movimientos de Inventario
-        </h2>
+    <div class="acciones-superior">
 
-        <div class="acciones-superior">
+        <!-- FILTROS A LA IZQUIERDA -->
+        <div class="filtros">
 
             <div class="filtro-responsable">
-
-                <label for="filtroResponsable">
-                    Responsable:
-                </label>
-
-                <select
-                    id="filtroResponsable"
-                    onchange="filtrarPorResponsable()"
-                >
-
-                    <option value="">
-                        Todos los responsables
-                    </option>
-
+                <label for="filtroTipo">Mostrar:</label>
+                <select id="filtroTipo" onchange="filtrarPorTipo()">
+                    <option value="insumos">Insumos</option>
+                    <option value="producto terminado">Producto terminado</option>
                 </select>
-
             </div>
+
+            <div class="filtro-responsable">
+                <label for="filtroProducto">Producto:</label>
+                <select id="filtroProducto" onchange="filtrarPorProducto()">
+                    <option value="">Todos los productos</option>
+                </select>
+            </div>
+
+            <div class="filtro-responsable">
+                <label for="filtroResponsable">Responsable:</label>
+                <select id="filtroResponsable" onchange="filtrarPorResponsable()">
+                    <option value="">Todos los responsables</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- CONTADOR Y BOTÓN A LA DERECHA -->
+        <div class="acciones-derecha">
 
             <div class="total">
-                Movimientos:
-                <span id="totalMovimientos">0</span>
+                Movimientos: <span id="totalMovimientos">0</span>
             </div>
 
-            <button
-                type="button"
-                class="btn-agregar"
-                onclick="abrirFormulario()"
-            >
+            <button type="button" class="btn-agregar" onclick="abrirFormulario()">
                 + Registrar movimiento
             </button>
 
         </div>
 
     </div>
+</div>
 
-    <div class="tabla-contenedor">
+<div class="tabla-contenedor">
+    <table>
+        <thead>
+            <tr id="encabezadosMovimientos"></tr>
+        </thead>
+        <tbody id="cuerpoMovimientos"></tbody>
+    </table>
 
-        <table>
+    <div id="mensajeCargando" class="mensaje-cargando">
+        Cargando movimientos...
+    </div>
 
-            <thead>
+    <div id="mensajeVacio" class="mensaje-vacio" style="display:none">
+        No hay movimientos registrados.
+    </div>
+</div>
 
-                <tr>
+</main>
 
-                    <th>Fecha</th>
-                    <th>Codigo</th>
-                    <th>Lote</th>
+<div id="modalMovimiento" class="modal">
 
-                    <th>Ubicacion origen</th>
-                    <th>Responsable origen</th>
+<div class="modal-contenido">
 
-                    <th>Descripcion</th>
-                    <th>Tipo</th>
-                    <th>Unidad_Medida</th>
-                    <th>Cantidad</th>
-                    <th>Movimiento</th>
-                    <th>Motivo</th>
+<h3 id="tituloFormulario">Registrar movimiento</h3>
 
-                    <th>Ubicacion destino</th>
-                    <th>Responsable destino</th>
+<form id="formMovimiento">
 
-                    <th>Acciones</th>
+<div class="form-grid">
 
-                </tr>
+    <div class="campo">
+        <label for="fecha">Fecha del movimiento</label>
+        <input type="date" id="fecha" required>
+    </div>
 
-            </thead>
+    <div class="campo">
+        <label for="codigo">Código</label>
+        <input type="text" id="codigo" readonly placeholder="Automático">
+    </div>
 
-            <tbody id="cuerpoMovimientos"></tbody>
+    <div class="campo">
+        <label for="descripcion">Producto o insumo</label>
+        <select id="descripcion" onchange="actualizarProducto()" required>
+            <option value="">Seleccione un producto</option>
+        </select>
+    </div>
 
-        </table>
+    <div class="campo oculto" id="campoDescripcionNueva">
+        <label for="descripcionNueva">Descripción del producto</label>
+        <input type="text" id="descripcionNueva" placeholder="Escriba el nombre o descripción">
+    </div>
 
-        <div
-            id="mensajeCargando"
-            class="mensaje-cargando"
-        >
-            Cargando movimientos...
+    <div class="campo oculto" id="campoCodigoNuevo">
+        <label for="codigoNuevo">Código del producto</label>
+        <input type="text" id="codigoNuevo" placeholder="Puede dejarlo vacío">
+    </div>
+
+    <div class="campo">
+        <label for="tipo">Tipo</label>
+        <select id="tipo" onchange="actualizarTipoFormulario()" required></select>
+    </div>
+
+    <div class="campo">
+        <label for="unidadMedida">Unidad de medida</label>
+        <input type="text" id="unidadMedida" placeholder="Ej.: unidad, kg, g, caja" required>
+    </div>
+
+    <div class="campo oculto" id="campoLote">
+        <label for="lote">Lote</label>
+        <select id="lote">
+            <option value="">Seleccione un lote</option>
+        </select>
+    </div>
+
+    <div class="campo">
+        <label for="cantidad">Cantidad</label>
+        <input type="number" id="cantidad" min="0" step="any" placeholder="Ingrese cantidad" required>
+    </div>
+
+    <div class="campo">
+        <label for="movimiento">Movimiento</label>
+        <select id="movimiento" required onchange="actualizarCamposSegunMovimiento()">
+            <option value="">Seleccione</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Salida">Salida</option>
+            <option value="Traspaso">Traspaso</option>
+        </select>
+    </div>
+
+    <div class="campo">
+        <label for="motivo">Motivo</label>
+        <select id="motivo" required>
+            <option value="">Seleccione primero el movimiento</option>
+        </select>
+    </div>
+
+    <section class="seccion-formulario seccion-origen oculto" id="grupoOrigen">
+        <h4 id="tituloOrigen">Origen del movimiento</h4>
+
+        <div class="seccion-campos">
+
+            <div class="campo">
+                <label id="labelUbicacionOrigen" for="ubicacionOrigen">Ubicación origen</label>
+                <input type="text" id="ubicacionOrigen" list="listaUbicaciones" placeholder="Escriba o seleccione una ubicación" autocomplete="off">
+            </div>
+
+            <div class="campo">
+                <label id="labelResponsableOrigen" for="responsableOrigen">Responsable origen</label>
+                <input type="text" id="responsableOrigen" list="listaResponsables" placeholder="Escriba o seleccione un responsable" autocomplete="off">
+            </div>
+
         </div>
+    </section>
 
-        <div
-            id="mensajeVacio"
-            class="mensaje-vacio"
-            style="display:none;"
-        >
-            No hay movimientos registrados.
+    <section class="seccion-formulario seccion-destino oculto" id="grupoDestino">
+        <h4 id="tituloDestino">Destino</h4>
+
+        <div class="seccion-campos">
+
+            <div class="campo">
+                <label id="labelUbicacionDestino" for="ubicacionDestino">Ubicación destino / recepción</label>
+                <input type="text" id="ubicacionDestino" list="listaUbicaciones" placeholder="Escriba o seleccione una ubicación" autocomplete="off">
+            </div>
+
+            <div class="campo">
+                <label id="labelResponsableDestino" for="responsableDestino">Responsable destino / recepción</label>
+                <input type="text" id="responsableDestino" list="listaResponsables" placeholder="Escriba o seleccione un responsable" autocomplete="off">
+            </div>
+
         </div>
+    </section>
 
+    <section class="seccion-formulario seccion-compra oculto" id="grupoCompra">
+        <h4>Información de compra y costo</h4>
+
+        <div class="seccion-campos">
+
+            <div class="campo">
+                <label for="proveedor">Proveedor</label>
+                <input type="text" id="proveedor" placeholder="Ingrese el proveedor">
+            </div>
+
+            <div class="campo">
+                <label for="fechaFactura">Fecha de factura</label>
+                <input type="date" id="fechaFactura">
+            </div>
+
+            <div class="campo">
+                <label for="moneda">Moneda de la factura</label>
+                <select id="moneda" onchange="actualizarConversionCosto()">
+                    <option value="CRC">Colones (CRC)</option>
+                    <option value="USD">Dólares (USD)</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="costoUnitario">Costo unitario (moneda factura)</label>
+                <input type="number" id="costoUnitario" min="0" step="any" placeholder="Ingrese el costo unitario" oninput="actualizarConversionCosto()">
+            </div>
+
+            <div class="campo">
+                <label for="tipoCambio">Tipo de cambio (₡ por USD)</label>
+                <input type="number" id="tipoCambio" min="0.000001" step="any" placeholder="Tipo de cambio de la fecha de factura" oninput="actualizarConversionCosto()">
+            </div>
+
+            <div class="campo">
+                <label for="costoUnitarioColones">Costo unitario (₡)</label>
+                <input type="number" id="costoUnitarioColones" readonly placeholder="Se calcula automáticamente">
+            </div>
+
+        </div>
+    </section>
+
+    <div class="aviso-producto-nuevo oculto" id="avisoProductoNuevo">
+        Este producto todavía no está registrado en la tabla Productos. El movimiento se guardará únicamente en Movimientos y no creará automáticamente un producto en Inventario.
     </div>
 
 </div>
 
-
-<div
-    id="modalMovimiento"
-    class="modal"
->
-
-    <div class="modal-contenido">
-
-        <h3 id="tituloFormulario">
-            Registrar movimiento
-        </h3>
-
-        <form id="formMovimiento">
-
-            <div class="form-grid">
-
-                <div class="campo">
-
-                    <label for="fecha">
-                        Fecha
-                    </label>
-
-                    <input
-                        type="date"
-                        id="fecha"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="codigo">
-                        Codigo
-                    </label>
-
-                    <input
-                        type="text"
-                        id="codigo"
-                        readonly
-                        placeholder="Automatico"
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="lote">
-                        Lote
-                    </label>
-
-                    <select
-                        id="lote"
-                    >
-
-                        <option value="">
-                            Seleccione un lote
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="descripcion">
-                        Producto
-                    </label>
-
-                    <select
-                        id="descripcion"
-                        onchange="actualizarProducto()"
-                    >
-
-                        <option value="">
-                            Seleccione un producto
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div
-                    class="campo campo-producto-nuevo"
-                    id="campoDescripcionNueva"
-                >
-
-                    <label for="descripcionNueva">
-                        Descripcion del producto
-                    </label>
-
-                    <input
-                        type="text"
-                        id="descripcionNueva"
-                        placeholder="Escriba el nombre o descripcion"
-                    >
-
-                </div>
-
-
-                <div
-                    class="campo campo-producto-nuevo"
-                    id="campoCodigoNuevo"
-                >
-
-                    <label for="codigoNuevo">
-                        Codigo del producto
-                    </label>
-
-                    <input
-                        type="text"
-                        id="codigoNuevo"
-                        placeholder="Puede dejarlo vacio"
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="tipo">
-                        Tipo
-                    </label>
-
-                    <select
-                        id="tipo"
-                        onchange="actualizarObligatoriedadCodigoYLote()"
-                    >
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                        <option value="Producto Terminado">
-                            Producto Terminado
-                        </option>
-
-                        <option value="Material Empaque">
-                            Material Empaque
-                        </option>
-
-                        <option value="Materia Prima">
-                            Materia Prima
-                        </option>
-
-                        <option value="Otro">
-                            Otro
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="unidadMedida">
-                        Unidad_Medida
-                    </label>
-
-                    <input
-                        type="text"
-                        id="unidadMedida"
-                        placeholder="Ej: unidad, kg, g, caja"
-                    >
-
-                </div>
-
-
-                <!-- =====================================
-                     ORIGEN
-                     ===================================== -->
-
-                <div class="grupo-origen">
-
-                    <div class="grupo-titulo">
-                        Origen
-                    </div>
-
-                    <div class="grupo-campos">
-
-                        <div class="campo">
-
-                            <label for="ubicacionOrigen">
-                                Ubicacion origen
-                            </label>
-
-                            <input
-                                type="text"
-                                id="ubicacionOrigen"
-                                list="listaUbicaciones"
-                                placeholder="Escriba o seleccione una ubicacion"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <div class="campo">
-
-                            <label for="responsableOrigen">
-                                Responsable origen
-                            </label>
-
-                            <input
-                                type="text"
-                                id="responsableOrigen"
-                                list="listaResponsables"
-                                placeholder="Escriba o seleccione un responsable"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =====================================
-                     DESTINO
-                     ===================================== -->
-
-                <div class="grupo-destino">
-
-                    <div class="grupo-titulo">
-                        Destino
-                    </div>
-
-                    <div class="grupo-campos">
-
-                        <div class="campo">
-
-                            <label for="ubicacionDestino">
-                                Ubicacion destino
-                            </label>
-
-                            <input
-                                type="text"
-                                id="ubicacionDestino"
-                                list="listaUbicaciones"
-                                placeholder="Escriba cualquier ubicacion"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <div class="campo">
-
-                            <label for="responsableDestino">
-                                Responsable destino
-                            </label>
-
-                            <input
-                                type="text"
-                                id="responsableDestino"
-                                list="listaResponsables"
-                                placeholder="Escriba cualquier responsable"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <datalist id="listaUbicaciones"></datalist>
-
-                <datalist id="listaResponsables"></datalist>
-
-
-                <div
-                    class="aviso-producto-nuevo"
-                    id="avisoProductoNuevo"
-                >
-
-                    Este producto todavía no está registrado en la tabla
-                    Productos. El movimiento se guardará únicamente en
-                    Movimientos y no creará automáticamente un producto en
-                    Inventario.
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="cantidad">
-                        Cantidad
-                    </label>
-
-                    <input
-                        type="number"
-                        id="cantidad"
-                        min="0"
-                        step="any"
-                        placeholder="Ingrese cantidad"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="movimiento">
-                        Movimiento
-                    </label>
-
-                    <select
-                        id="movimiento"
-                        required
-                        onchange="actualizarCamposSegunMovimiento()"
-                    >
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                        <option value="Entrada">
-                            Entrada
-                        </option>
-
-                        <option value="Salida">
-                            Salida
-                        </option>
-
-                        <option value="Traspaso">
-                            Traspaso
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="motivo">
-                        Motivo
-                    </label>
-
-                    <select
-                        id="motivo"
-                        required
-                    >
-
-                        <option value="">
-                            Seleccione primero el movimiento
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="botones-formulario">
-
-                <button
-                    type="button"
-                    class="btn-cancelar"
-                    onclick="cerrarFormulario()"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn-guardar"
-                    id="btnGuardar"
-                >
-                    Guardar
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
+<datalist id="listaUbicaciones"></datalist>
+<datalist id="listaResponsables"></datalist>
+
+<div class="botones-formulario">
+    <button type="button" class="btn-cancelar" onclick="cerrarFormulario()">Cancelar</button>
+    <button type="submit" class="btn-guardar" id="btnGuardar">Guardar</button>
 </div>
 
+</form>
+</div>
+</div>
 
 <script>
+const SUPABASE_URL="https://shjfohkiyfnqedrzjqpy.supabase.co";
+const SUPABASE_KEY="sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
 
-const SUPABASE_URL =
-    "https://shjfohkiyfnqedrzjqpy.supabase.co";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const SUPABASE_KEY =
-    "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+let productos=[],movimientos=[],productosDisponibles=[],personal=[],lotes=[];
+let indiceEdicion=null;
+let responsableSeleccionado="";
+let productoSeleccionado="";
+let vistaActual="insumos";
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+const TIPOS_INSUMOS=[
+    {value:"Materia Prima",label:"Materia prima"},
+    {value:"Material Empaque",label:"Material de empaque"},
+    {value:"Suministro",label:"Suministro"},
+    {value:"Otro",label:"Otro"}
+];
 
+function normalizarTexto(valor){
+    return String(valor??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase();
+}
 
-let productos = [];
-let movimientos = [];
-let productosDisponibles = [];
-let personal = [];
-let lotes = [];
-let indiceEdicion = null;
-let responsableSeleccionado = "";
+function obtenerValor(objeto,nombres){
+    const claves=Object.keys(objeto||{});
 
-
-function obtenerValor(objeto, nombres) {
-
-    const claves =
-        Object.keys(objeto || {});
-
-    for (const nombre of nombres) {
-
-        const buscada =
-            nombre
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .trim()
-                .toLowerCase();
-
-        const encontrada =
-            claves.find(
-                clave =>
-                    clave
-                        .normalize("NFD")
-                        .replace(/[\u0300-\u036f]/g, "")
-                        .trim()
-                        .toLowerCase()
-                    === buscada
-            );
-
-        if (encontrada) {
-            return objeto[encontrada];
-        }
-
+    for(const nombre of nombres){
+        const buscada=normalizarTexto(nombre);
+        const encontrada=claves.find(clave=>normalizarTexto(clave)===buscada);
+        if(encontrada)return objeto[encontrada];
     }
 
     return "";
-
 }
 
-
-function normalizarTexto(valor) {
-
-    return String(valor || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim()
-        .toLowerCase();
-
+function esTipoInsumo(tipo){
+    return ["materia prima","material empaque","suministro","otro","otros"].includes(normalizarTexto(tipo));
 }
 
-
-function actualizarObligatoriedadCodigoYLote() {
-
-    const tipo =
-        normalizarTexto(
-            document.getElementById("tipo").value
-        );
-
-    const selectorProducto =
-        document.getElementById("descripcion");
-
-    const indiceProducto =
-        selectorProducto.value;
-
-    const codigo =
-        document.getElementById("codigo");
-
-    const lote =
-        document.getElementById("lote");
-
-    const esProductoTerminado =
-        tipo === "producto terminado";
-
-    codigo.required =
-        false;
-
-    const productoManual =
-        indiceProducto === "__NUEVO__";
-
-    lote.required =
-        esProductoTerminado &&
-        !productoManual;
-
+function esTipoProductoTerminado(tipo){
+    return normalizarTexto(tipo)==="producto terminado";
 }
 
-
-async function cargarProductos() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("Productos")
-                .select("*")
-                .order("id", {
-                    ascending: true
-                });
-
-        if (error) {
-            throw error;
-        }
-
-        productos =
-            data || [];
-
-    } catch (error) {
-
-        console.error(
-            "Error al cargar productos:",
-            error
-        );
-
-        alert(
-            "No se pudieron cargar los productos desde Supabase.\n\n" +
-            error.message
-        );
-
-        productos = [];
-
-    }
-
+function tiposPermitidos(){
+    return vistaActual==="producto terminado"
+        ?["producto terminado"]
+        :["materia prima","material empaque","suministro","otro","otros"];
 }
 
+function tipoPerteneceVista(tipo){
+    return tiposPermitidos().includes(normalizarTexto(tipo));
+}
 
-function construirListaProductosDisponibles() {
+/* CLAVE PARA IDENTIFICAR PRODUCTOS POR TIPO Y DESCRIPCIÓN */
 
-    productosDisponibles = [];
+function claveProductoFiltro(tipo,descripcion){
+    return normalizarTexto(tipo)+"|||"+normalizarTexto(descripcion);
+}
 
-    productos.forEach(
-        function(producto) {
+/* ACTUALIZAR EL FILTRO DE PRODUCTOS */
 
-            const descripcion =
-                String(
-                    obtenerValor(
-                        producto,
-                        [
-                            "Descripcion",
-                            "Producto",
-                            "Nombre"
-                        ]
-                    ) || ""
-                ).trim();
+function actualizarFiltroProducto(){
 
-            if (!descripcion) {
-                return;
-            }
+    const filtro=document.getElementById("filtroProducto");
+    if(!filtro)return;
 
-            const existe =
-                productosDisponibles.some(
-                    productoExistente =>
-                        normalizarTexto(
-                            productoExistente.descripcion
-                        ) ===
-                        normalizarTexto(
-                            descripcion
-                        )
-                );
+    const valorAnterior=productoSeleccionado;
 
-            if (!existe) {
+    filtro.innerHTML='<option value="">Todos los productos</option>';
 
-                productosDisponibles.push({
+    const productosUnicos=[];
 
-                    origen: "Productos",
+    productosDisponibles.forEach(item=>{
 
-                    producto: producto,
+        if(!tipoPerteneceVista(item.tipo))return;
 
-                    descripcion:
-                        descripcion,
+        const clave=claveProductoFiltro(item.tipo,item.descripcion);
 
-                    codigo:
-                        obtenerValor(
-                            producto,
-                            ["Codigo"]
-                        ) || "",
+        const existe=productosUnicos.some(p=>p.clave===clave);
 
-                    tipo:
-                        obtenerValor(
-                            producto,
-                            ["Tipo"]
-                        ) || "",
-
-                    unidadMedida:
-                        obtenerValor(
-                            producto,
-                            [
-                                "Unidad_Medida",
-                                "Unidad Medida",
-                                "Unidad"
-                            ]
-                        ) || ""
-
-                });
-
-            }
-
-        }
-    );
-
-
-    movimientos.forEach(
-        function(movimiento) {
-
-            const descripcion =
-                String(
-                    movimiento["Descripcion"] || ""
-                ).trim();
-
-            if (!descripcion) {
-                return;
-            }
-
-            const existe =
-                productosDisponibles.some(
-                    productoExistente =>
-                        normalizarTexto(
-                            productoExistente.descripcion
-                        ) ===
-                        normalizarTexto(
-                            descripcion
-                        )
-                );
-
-            if (existe) {
-                return;
-            }
-
-            productosDisponibles.push({
-
-                origen: "Movimientos",
-
-                producto: null,
-
-                descripcion:
-                    descripcion,
-
-                codigo:
-                    movimiento["Codigo"] || "",
-
-                tipo:
-                    movimiento["Tipo"] || "",
-
-                unidadMedida:
-                    movimiento["Unidad_Medida"] || ""
-
+        if(!existe){
+            productosUnicos.push({
+                clave,
+                descripcion:item.descripcion
             });
-
         }
+
+    });
+
+    productosUnicos.sort((a,b)=>
+        a.descripcion.localeCompare(b.descripcion,"es",{sensitivity:"base"})
     );
 
+    productosUnicos.forEach(item=>{
 
-    productosDisponibles.sort(
-        function(a, b) {
+        const opcion=document.createElement("option");
 
-            return a.descripcion.localeCompare(
-                b.descripcion,
-                "es",
-                {
-                    sensitivity: "base"
-                }
-            );
+        opcion.value=item.clave;
+        opcion.textContent=item.descripcion;
 
-        }
-    );
+        filtro.appendChild(opcion);
 
+    });
 
-    const selector =
-        document.getElementById(
-            "descripcion"
-        );
+    const existeSeleccion=productosUnicos.some(p=>p.clave===valorAnterior);
 
-    selector.innerHTML = `
-        <option value="">
-            Seleccione un producto
-        </option>
-    `;
-
-
-    productosDisponibles.forEach(
-        function(productoDisponible, indice) {
-
-            const opcion =
-                document.createElement(
-                    "option"
-                );
-
-            opcion.value =
-                indice;
-
-            let texto =
-                productoDisponible.descripcion;
-
-            if (
-                productoDisponible.origen ===
-                "Movimientos"
-            ) {
-
-                texto +=
-                    " — registrado en Movimientos";
-
-            }
-
-            opcion.textContent =
-                texto;
-
-            selector.appendChild(
-                opcion
-            );
-
-        }
-    );
-
-
-    const opcionNuevo =
-        document.createElement(
-            "option"
-        );
-
-    opcionNuevo.value =
-        "__NUEVO__";
-
-    opcionNuevo.textContent =
-        "➕ Producto no registrado";
-
-    selector.appendChild(
-        opcionNuevo
-    );
-
-}
-
-
-async function cargarProductosYMovimientosParaSelector() {
-
-    await cargarProductos();
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("Movimientos")
-                .select("*");
-
-        if (error) {
-            throw error;
-        }
-
-        movimientos =
-            data || [];
-
-    } catch (error) {
-
-        console.error(
-            "Error al cargar movimientos para el selector:",
-            error
-        );
-
-        movimientos = [];
-
-        alert(
-            "No se pudieron cargar los movimientos para construir la lista de productos.\n\n" +
-            error.message
-        );
-
-    }
-
-    construirListaProductosDisponibles();
-
-}
-
-
-async function cargarLotes() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("Lotes")
-                .select('"Lote", "Fecha vencimiento"')
-                .order("Lote", {
-                    ascending: true
-                });
-
-        if (error) {
-            throw error;
-        }
-
-        lotes =
-            data || [];
-
-        const selector =
-            document.getElementById(
-                "lote"
-            );
-
-        selector.innerHTML = `
-            <option value="">
-                Seleccione un lote
-            </option>
-        `;
-
-        lotes.forEach(
-            function(lote) {
-
-                const numeroLote =
-                    String(
-                        lote["Lote"] || ""
-                    ).trim();
-
-                if (!numeroLote) {
-                    return;
-                }
-
-                const fechaVencimiento =
-                    lote["Fecha vencimiento"];
-
-                let texto =
-                    numeroLote;
-
-                if (fechaVencimiento) {
-
-                    texto +=
-                        " — Vence: " +
-                        formatearFecha(
-                            fechaVencimiento
-                        );
-
-                }
-
-                const opcion =
-                    document.createElement(
-                        "option"
-                    );
-
-                opcion.value =
-                    numeroLote;
-
-                opcion.textContent =
-                    texto;
-
-                selector.appendChild(
-                    opcion
-                );
-
-            }
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Error al cargar lotes:",
-            error
-        );
-
-        alert(
-            "No se pudieron cargar los lotes desde Supabase.\n\n" +
-            error.message
-        );
-
+    if(existeSeleccion){
+        productoSeleccionado=valorAnterior;
+        filtro.value=valorAnterior;
+    }else{
+        productoSeleccionado="";
+        filtro.value="";
     }
 
 }
 
+/* APLICAR EL FILTRO DE PRODUCTO */
 
-async function cargarPersonal() {
+function filtrarPorProducto(){
 
-    const listaResponsables =
-        document.getElementById(
-            "listaResponsables"
-        );
-
-    const listaUbicaciones =
-        document.getElementById(
-            "listaUbicaciones"
-        );
-
-    listaResponsables.innerHTML =
-        "";
-
-    listaUbicaciones.innerHTML =
-        "";
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .rpc(
-                    "obtener_personal_activo"
-                );
-
-        if (error) {
-            throw error;
-        }
-
-        personal =
-            data || [];
-
-        const responsablesAgregados =
-            [];
-
-        personal.forEach(
-            persona => {
-
-                const responsable =
-                    String(
-                        persona.responsable || ""
-                    ).trim();
-
-                if (
-                    responsable &&
-                    !responsablesAgregados.some(
-                        existente =>
-                            normalizarTexto(
-                                existente
-                            ) ===
-                            normalizarTexto(
-                                responsable
-                            )
-                    )
-                ) {
-
-                    responsablesAgregados.push(
-                        responsable
-                    );
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-                    option.value =
-                        responsable;
-
-                    listaResponsables.appendChild(
-                        option
-                    );
-
-                }
-
-            }
-        );
-
-
-        const ubicacionesAgregadas =
-            [];
-
-        personal.forEach(
-            persona => {
-
-                const ubicacion =
-                    String(
-                        persona.ubicacion || ""
-                    ).trim();
-
-                if (
-                    ubicacion &&
-                    !ubicacionesAgregadas.some(
-                        existente =>
-                            normalizarTexto(
-                                existente
-                            ) ===
-                            normalizarTexto(
-                                ubicacion
-                            )
-                    )
-                ) {
-
-                    ubicacionesAgregadas.push(
-                        ubicacion
-                    );
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-                    option.value =
-                        ubicacion;
-
-                    listaUbicaciones.appendChild(
-                        option
-                    );
-
-                }
-
-            }
-        );
-
-
-        const filtro =
-            document.getElementById(
-                "filtroResponsable"
-            );
-
-        filtro.innerHTML = `
-            <option value="">
-                Todos los responsables
-            </option>
-        `;
-
-
-        responsablesAgregados.forEach(
-            function(responsable) {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    responsable;
-
-                option.textContent =
-                    responsable;
-
-                filtro.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        /*
-         * IMPORTANTE:
-         *
-         * NO se agregan validaciones que obliguen
-         * a que destino esté dentro de esta lista.
-         *
-         * Los datalist solamente funcionan como
-         * sugerencias.
-         */
-
-    } catch (error) {
-
-        console.error(
-            "Error cargando personal:",
-            error
-        );
-
-        alert(
-            "No se pudieron cargar los responsables y ubicaciones.\n\n" +
-            error.message
-        );
-
-    }
-
-}
-
-
-function filtrarPorResponsable() {
-
-    responsableSeleccionado =
-        document.getElementById(
-            "filtroResponsable"
-        ).value;
+    productoSeleccionado=document.getElementById("filtroProducto").value;
 
     mostrarMovimientos();
 
 }
 
+function actualizarSelectorTipo(tipoSeleccionado=""){
 
-function mostrarCamposProductoNuevo(mostrar) {
+    const selector=document.getElementById("tipo");
 
-    const campoDescripcionNueva =
-        document.getElementById(
-            "campoDescripcionNueva"
-        );
+    const opciones=vistaActual==="producto terminado"
+        ?[{value:"Producto Terminado",label:"Producto terminado"}]
+        :TIPOS_INSUMOS;
 
-    const campoCodigoNuevo =
-        document.getElementById(
-            "campoCodigoNuevo"
-        );
+    selector.innerHTML='<option value="">Seleccione</option>';
 
-    const aviso =
-        document.getElementById(
-            "avisoProductoNuevo"
-        );
+    opciones.forEach(item=>{
+        const option=document.createElement("option");
+        option.value=item.value;
+        option.textContent=item.label;
+        selector.appendChild(option);
+    });
 
-    const descripcionNueva =
-        document.getElementById(
-            "descripcionNueva"
-        );
-
-    const codigoNuevo =
-        document.getElementById(
-            "codigoNuevo"
-        );
-
-    const codigo =
-        document.getElementById(
-            "codigo"
-        );
-
-
-    if (mostrar) {
-
-        campoDescripcionNueva.classList.add(
-            "activo"
-        );
-
-        campoCodigoNuevo.classList.add(
-            "activo"
-        );
-
-        aviso.classList.add(
-            "activo"
-        );
-
-        descripcionNueva.required =
-            true;
-
-        codigoNuevo.required =
-            false;
-
-        codigo.readOnly =
-            true;
-
-        codigo.value =
-            "";
-
-    } else {
-
-        campoDescripcionNueva.classList.remove(
-            "activo"
-        );
-
-        campoCodigoNuevo.classList.remove(
-            "activo"
-        );
-
-        aviso.classList.remove(
-            "activo"
-        );
-
-        descripcionNueva.required =
-            false;
-
-        descripcionNueva.value =
-            "";
-
-        codigoNuevo.value =
-            "";
-
-        codigo.readOnly =
-            true;
-
+    if(tipoSeleccionado&&tipoPerteneceVista(tipoSeleccionado)){
+        selector.value=tipoSeleccionado;
+    }else{
+        selector.value=vistaActual==="producto terminado"?"Producto Terminado":"";
     }
 
 }
 
+function actualizarConversionCosto(){
 
-function actualizarProducto() {
+    const moneda=document.getElementById("moneda").value;
+    const costo=document.getElementById("costoUnitario").value;
+    const tipoCambio=document.getElementById("tipoCambio");
+    const costoColones=document.getElementById("costoUnitarioColones");
 
-    const selector =
-        document.getElementById(
-            "descripcion"
-        );
-
-    const indice =
-        selector.value;
-
-    const codigo =
-        document.getElementById(
-            "codigo"
-        );
-
-    const unidadMedida =
-        document.getElementById(
-            "unidadMedida"
-        );
-
-    const tipo =
-        document.getElementById(
-            "tipo"
-        );
-
-
-    if (
-        indice === "__NUEVO__"
-    ) {
-
-        mostrarCamposProductoNuevo(
-            true
-        );
-
-        codigo.value =
-            "";
-
-        unidadMedida.value =
-            "";
-
-        tipo.value =
-            "";
-
-        actualizarObligatoriedadCodigoYLote();
-
-        return;
-
+    if(moneda==="CRC"){
+        tipoCambio.value="1";
+        tipoCambio.readOnly=true;
+    }else{
+        tipoCambio.readOnly=false;
+        if(tipoCambio.value==="1")tipoCambio.value="";
     }
 
+    const precio=Number(costo);
+    const cambio=Number(tipoCambio.value);
 
-    mostrarCamposProductoNuevo(
-        false
+    if(
+        costo!==""&&
+        Number.isFinite(precio)&&
+        precio>=0&&
+        tipoCambio.value!==""&&
+        Number.isFinite(cambio)&&
+        cambio>0
+    ){
+        costoColones.value=(moneda==="USD"?precio*cambio:precio).toFixed(4);
+    }else{
+        costoColones.value="";
+    }
+
+}
+
+function actualizarTipoFormulario(){
+
+    const tipo=document.getElementById("tipo").value;
+    const esInsumo=esTipoInsumo(tipo);
+    const esPT=esTipoProductoTerminado(tipo);
+
+    document.getElementById("campoLote").classList.toggle("oculto",!esPT);
+    document.getElementById("grupoCompra").classList.toggle("oculto",!esInsumo);
+
+    if(esPT){
+        document.getElementById("grupoOrigen").classList.remove("oculto");
+        document.getElementById("grupoDestino").classList.remove("oculto");
+    }else{
+        document.getElementById("grupoOrigen").classList.add("oculto");
+        document.getElementById("grupoDestino").classList.add("oculto");
+    }
+
+    document.getElementById("tituloOrigen").textContent="Origen del movimiento";
+    document.getElementById("labelUbicacionOrigen").textContent="Ubicación origen";
+    document.getElementById("labelResponsableOrigen").textContent="Responsable origen";
+
+    document.getElementById("tituloDestino").textContent=esInsumo?"Recepción":"Destino";
+    document.getElementById("labelUbicacionDestino").textContent=esInsumo?"Ubicación destino / recepción":"Ubicación destino";
+    document.getElementById("labelResponsableDestino").textContent=esInsumo?"Responsable destino / recepción":"Responsable destino";
+
+    actualizarObligatoriedadCodigoYLote();
+    actualizarCamposSegunMovimiento();
+
+}
+
+function actualizarObligatoriedadCodigoYLote(){
+
+    const tipo=document.getElementById("tipo").value;
+    const esPT=esTipoProductoTerminado(tipo);
+    const esNuevo=document.getElementById("descripcion").value==="__NUEVO__";
+
+    document.getElementById("lote").required=esPT&&!esNuevo;
+
+}
+
+async function cargarProductos(){
+
+    const {data,error}=await supabaseClient
+        .from("Productos")
+        .select("*")
+        .order("id",{ascending:true});
+
+    if(error)throw error;
+
+    productos=data||[];
+
+}
+
+function agregarProductoDisponible(item){
+
+    if(!item.descripcion||!item.tipo||!tipoPerteneceVista(item.tipo))return;
+
+    const existe=productosDisponibles.some(p=>
+        normalizarTexto(p.descripcion)===normalizarTexto(item.descripcion)&&
+        normalizarTexto(p.tipo)===normalizarTexto(item.tipo)
     );
 
+    if(!existe)productosDisponibles.push(item);
 
-    if (indice === "") {
+}
 
-        codigo.value =
-            "";
+function construirListaProductosDisponibles(){
 
-        unidadMedida.value =
-            "";
+    productosDisponibles=[];
 
-        tipo.value =
-            "";
+    productos.forEach(producto=>{
 
-        actualizarObligatoriedadCodigoYLote();
+        agregarProductoDisponible({
+            origen:"Productos",
+            producto,
+            descripcion:String(obtenerValor(producto,["Descripcion","Producto","Nombre"])||"").trim(),
+            codigo:obtenerValor(producto,["Codigo"])||"",
+            tipo:obtenerValor(producto,["Tipo"])||"",
+            unidadMedida:obtenerValor(producto,["Unidad_Medida","Unidad Medida","Unidad"])||""
+        });
 
-        return;
+    });
 
+    movimientos.forEach(m=>{
+
+        agregarProductoDisponible({
+            origen:"Movimientos",
+            producto:null,
+            descripcion:String(m["Descripcion"]||"").trim(),
+            codigo:m["Codigo"]||"",
+            tipo:m["Tipo"]||"",
+            unidadMedida:m["Unidad_Medida"]||""
+        });
+
+    });
+
+    productosDisponibles.sort((a,b)=>
+        a.descripcion.localeCompare(b.descripcion,"es",{sensitivity:"base"})
+    );
+
+    const selector=document.getElementById("descripcion");
+    const valorAnterior=selector.value;
+
+    selector.innerHTML='<option value="">Seleccione un producto</option>';
+
+    productosDisponibles.forEach((item,i)=>{
+
+        const op=document.createElement("option");
+
+        op.value=String(i);
+        op.textContent=item.descripcion;
+
+        selector.appendChild(op);
+
+    });
+
+    const nuevo=document.createElement("option");
+
+    nuevo.value="__NUEVO__";
+    nuevo.textContent="➕ Producto no registrado";
+
+    selector.appendChild(nuevo);
+
+    if(valorAnterior==="__NUEVO__")selector.value=valorAnterior;
+
+    /* ACTUALIZA LAS OPCIONES DEL FILTRO DE PRODUCTOS */
+    actualizarFiltroProducto();
+
+}
+
+async function cargarProductosYMovimientosParaSelector(){
+
+    await cargarProductos();
+
+    const {data,error}=await supabaseClient
+        .from("Movimientos")
+        .select("*");
+
+    if(error)throw error;
+
+    movimientos=data||[];
+
+    construirListaProductosDisponibles();
+
+}
+
+async function cargarLotes(){
+
+    const {data,error}=await supabaseClient
+        .from("Lotes")
+        .select('"Lote", "Fecha vencimiento"')
+        .order("Lote",{ascending:true});
+
+    if(error)throw error;
+
+    lotes=data||[];
+
+    const selector=document.getElementById("lote");
+
+    selector.innerHTML='<option value="">Seleccione un lote</option>';
+
+    lotes.forEach(l=>{
+
+        const numero=String(l["Lote"]||"").trim();
+
+        if(!numero)return;
+
+        const op=document.createElement("option");
+
+        op.value=numero;
+        op.textContent=numero+(l["Fecha vencimiento"]?" — Vence: "+formatearFecha(l["Fecha vencimiento"]):"");
+
+        selector.appendChild(op);
+
+    });
+
+}
+
+async function cargarPersonal(){
+
+    const listaR=document.getElementById("listaResponsables");
+    const listaU=document.getElementById("listaUbicaciones");
+
+    listaR.innerHTML="";
+    listaU.innerHTML="";
+
+    const {data,error}=await supabaseClient.rpc("obtener_personal_activo");
+
+    if(error)throw error;
+
+    personal=data||[];
+
+    const responsables=[...new Set(personal.map(p=>String(p.responsable||"").trim()).filter(Boolean))];
+    const ubicaciones=[...new Set(personal.map(p=>String(p.ubicacion||"").trim()).filter(Boolean))];
+
+    responsables.forEach(v=>{
+
+        const op=document.createElement("option");
+        op.value=v;
+
+        listaR.appendChild(op);
+
+    });
+
+    ubicaciones.forEach(v=>{
+
+        const op=document.createElement("option");
+        op.value=v;
+
+        listaU.appendChild(op);
+
+    });
+
+    const filtro=document.getElementById("filtroResponsable");
+
+    filtro.innerHTML='<option value="">Todos los responsables</option>';
+
+    responsables.forEach(v=>{
+
+        const op=document.createElement("option");
+
+        op.value=v;
+        op.textContent=v;
+
+        filtro.appendChild(op);
+
+    });
+
+}
+
+function filtrarPorResponsable(){
+
+    responsableSeleccionado=document.getElementById("filtroResponsable").value;
+
+    mostrarMovimientos();
+
+}
+
+/* CAMBIAR ENTRE INSUMOS Y PRODUCTO TERMINADO */
+
+function filtrarPorTipo(){
+
+    vistaActual=document.getElementById("filtroTipo").value;
+
+    /* Limpiar los filtros dependientes de la categoría */
+    responsableSeleccionado="";
+    productoSeleccionado="";
+
+    document.getElementById("filtroResponsable").value="";
+    document.getElementById("filtroProducto").value="";
+
+    /* Reconstruir productos según la categoría seleccionada */
+    construirListaProductosDisponibles();
+
+    /* Actualizar el tipo que aparecerá en el formulario */
+    actualizarSelectorTipo(
+        vistaActual==="producto terminado"
+            ?"Producto Terminado"
+            :"Materia Prima"
+    );
+
+    actualizarTipoFormulario();
+
+    mostrarMovimientos();
+
+}
+
+function mostrarCamposProductoNuevo(mostrar){
+
+    document.getElementById("campoDescripcionNueva").classList.toggle("oculto",!mostrar);
+    document.getElementById("campoCodigoNuevo").classList.toggle("oculto",!mostrar);
+    document.getElementById("avisoProductoNuevo").classList.toggle("oculto",!mostrar);
+    document.getElementById("descripcionNueva").required=mostrar;
+
+    if(!mostrar){
+        document.getElementById("descripcionNueva").value="";
+        document.getElementById("codigoNuevo").value="";
     }
-
-
-    const productoDisponible =
-        productosDisponibles[
-            parseInt(indice)
-        ];
-
-
-    if (!productoDisponible) {
-
-        codigo.value =
-            "";
-
-        unidadMedida.value =
-            "";
-
-        tipo.value =
-            "";
-
-        actualizarObligatoriedadCodigoYLote();
-
-        return;
-
-    }
-
-
-    codigo.value =
-        productoDisponible.codigo ||
-        "";
-
-    unidadMedida.value =
-        productoDisponible.unidadMedida ||
-        "";
-
-    tipo.value =
-        productoDisponible.tipo ||
-        "";
 
     actualizarObligatoriedadCodigoYLote();
 
 }
 
+function actualizarProducto(){
 
-function actualizarMotivos() {
+    const indice=document.getElementById("descripcion").value;
+    const codigo=document.getElementById("codigo");
+    const unidad=document.getElementById("unidadMedida");
 
-    const movimiento =
-        document.getElementById(
-            "movimiento"
-        ).value;
+    if(indice==="__NUEVO__"){
 
-    const selectorMotivo =
-        document.getElementById(
-            "motivo"
+        mostrarCamposProductoNuevo(true);
+
+        codigo.value="";
+        unidad.value="";
+
+        actualizarSelectorTipo(
+            vistaActual==="producto terminado"
+                ?"Producto Terminado"
+                :""
         );
 
-    const motivoAnterior =
-        selectorMotivo.value;
+        actualizarTipoFormulario();
 
-    selectorMotivo.innerHTML = `
-        <option value="">
-            Seleccione
-        </option>
-    `;
-
-
-    let motivos = [];
-
-
-    if (
-        movimiento === "Entrada"
-    ) {
-
-        motivos = [
-            "Recepcion de produccion",
-            "Compra",
-            "Reempaque",
-            "Otro"
-        ];
+        return;
 
     }
 
-    else if (
-        movimiento === "Salida"
-    ) {
+    mostrarCamposProductoNuevo(false);
 
-        motivos = [
-            "Venta",
-            "Reempaque",
-            "Donacion",
-            "Muestra",
-            "Regalía",
-            "Producción",
-            "Otro"
-        ];
+    if(indice===""){
+
+        codigo.value="";
+        unidad.value="";
+
+        actualizarSelectorTipo("");
+        actualizarTipoFormulario();
+
+        return;
 
     }
 
-    else if (
-        movimiento === "Traspaso"
-    ) {
+    const p=productosDisponibles[Number(indice)];
 
-        motivos = [
-            "Consignacion",
-            "Cambio de responsable",
-            "Otro"
-        ];
+    if(!p){
 
-    }
+        codigo.value="";
+        unidad.value="";
 
-
-    motivos.forEach(
-        function(motivo) {
-
-            const opcion =
-                document.createElement(
-                    "option"
-                );
-
-            opcion.value =
-                motivo;
-
-            opcion.textContent =
-                motivo;
-
-            selectorMotivo.appendChild(
-                opcion
-            );
-
-        }
-    );
-
-
-    if (
-        motivos.includes(
-            motivoAnterior
-        )
-    ) {
-
-        selectorMotivo.value =
-            motivoAnterior;
+        return;
 
     }
+
+    codigo.value=p.codigo||"";
+    unidad.value=p.unidadMedida||"";
+
+    actualizarSelectorTipo(p.tipo);
+    actualizarTipoFormulario();
 
 }
 
+function actualizarMotivos(){
 
-function actualizarCamposSegunMovimiento() {
+    const mov=document.getElementById("movimiento").value;
+    const sel=document.getElementById("motivo");
+    const anterior=sel.value;
 
-    const movimiento =
-        document.getElementById(
-            "movimiento"
-        ).value;
+    sel.innerHTML='<option value="">Seleccione</option>';
 
-    const ubicacionOrigen =
-        document.getElementById(
-            "ubicacionOrigen"
-        );
+    let motivos=[];
 
-    const responsableOrigen =
-        document.getElementById(
-            "responsableOrigen"
-        );
+    if(mov==="Entrada"){
+        motivos=["Recepcion de produccion","Compra","Reempaque","Otro"];
+    }else if(mov==="Salida"){
+        motivos=["Venta","Reempaque","Donacion","Muestra","Regalía","Producción","Otro"];
+    }else if(mov==="Traspaso"){
+        motivos=["Consignacion","Cambio de responsable","Otro"];
+    }
 
-    const ubicacionDestino =
-        document.getElementById(
-            "ubicacionDestino"
-        );
+    motivos.forEach(m=>{
 
-    const responsableDestino =
-        document.getElementById(
-            "responsableDestino"
-        );
+        const op=document.createElement("option");
 
+        op.value=m;
+        op.textContent=m;
+
+        sel.appendChild(op);
+
+    });
+
+    if(motivos.includes(anterior))sel.value=anterior;
+
+}
+
+function actualizarCamposSegunMovimiento(){
+
+    const mov=document.getElementById("movimiento").value;
+    const tipo=document.getElementById("tipo").value;
+
+    const esPT=esTipoProductoTerminado(tipo);
+    const esInsumo=esTipoInsumo(tipo);
 
     actualizarMotivos();
 
+    const ids=[
+        "ubicacionOrigen",
+        "responsableOrigen",
+        "ubicacionDestino",
+        "responsableDestino"
+    ];
 
-    /*
-     * Ningún campo de destino está restringido
-     * a las opciones de los datalist.
-     *
-     * Se puede escribir cualquier valor.
-     */
+    ids.forEach(id=>{
+        document.getElementById(id).required=false;
+    });
 
-    ubicacionOrigen.required =
-        false;
+    const grupoOrigen=document.getElementById("grupoOrigen");
+    const grupoDestino=document.getElementById("grupoDestino");
 
-    responsableOrigen.required =
-        false;
+    if(esInsumo){
 
-    ubicacionDestino.required =
-        false;
+        const mostrarOrigen=mov==="Salida"||mov==="Traspaso";
+        const mostrarDestino=mov==="Entrada"||mov==="Traspaso";
 
-    responsableDestino.required =
-        false;
+        grupoOrigen.classList.toggle("oculto",!mostrarOrigen);
+        grupoDestino.classList.toggle("oculto",!mostrarDestino);
 
+        document.getElementById("tituloOrigen").textContent="Origen del movimiento";
+        document.getElementById("tituloDestino").textContent=mov==="Traspaso"?"Destino del movimiento":"Recepción";
 
-    if (
-        movimiento === "Salida" ||
-        movimiento === "Traspaso"
-    ) {
+        document.getElementById("ubicacionOrigen").required=mostrarOrigen;
+        document.getElementById("responsableOrigen").required=mostrarOrigen;
+        document.getElementById("ubicacionDestino").required=mostrarDestino;
+        document.getElementById("responsableDestino").required=mostrarDestino;
 
-        ubicacionOrigen.required =
-            true;
+    }else if(esPT){
 
-        responsableOrigen.required =
-            true;
+        grupoOrigen.classList.remove("oculto");
+        grupoDestino.classList.remove("oculto");
 
-    }
+        if(mov==="Salida"||mov==="Traspaso"){
 
-}
+            document.getElementById("ubicacionOrigen").required=true;
+            document.getElementById("responsableOrigen").required=true;
 
-
-async function cargarMovimientos() {
-
-    try {
-
-        document.getElementById(
-            "mensajeCargando"
-        ).style.display =
-            "block";
-
-        document.getElementById(
-            "mensajeVacio"
-        ).style.display =
-            "none";
-
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("Movimientos")
-                .select("*")
-                .order("Fecha", {
-                    ascending: true
-                });
-
-
-        if (error) {
-            throw error;
         }
 
+    }else{
 
-        movimientos =
-            data || [];
-
-
-        construirListaProductosDisponibles();
-
-        mostrarMovimientos();
-
-
-    } catch (error) {
-
-        console.error(
-            "Error al cargar movimientos:",
-            error
-        );
-
-
-        document.getElementById(
-            "mensajeCargando"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "mensajeVacio"
-        ).textContent =
-            "No se pudieron cargar los movimientos.";
-
-
-        document.getElementById(
-            "mensajeVacio"
-        ).style.display =
-            "block";
-
-
-        alert(
-            "No se pudieron cargar los movimientos desde Supabase.\n\n" +
-            error.message
-        );
+        grupoOrigen.classList.add("oculto");
+        grupoDestino.classList.add("oculto");
 
     }
 
 }
 
+async function cargarMovimientos(){
 
-function abrirFormulario() {
+    const {data,error}=await supabaseClient
+        .from("Movimientos")
+        .select("*")
+        .order("Fecha",{ascending:true});
 
-    indiceEdicion =
-        null;
+    if(error)throw error;
 
+    movimientos=data||[];
 
-    document.getElementById(
-        "tituloFormulario"
-    ).textContent =
-        "Registrar movimiento";
+    construirListaProductosDisponibles();
+    mostrarMovimientos();
 
+}
 
-    document.getElementById(
-        "formMovimiento"
-    ).reset();
+function abrirFormulario(){
 
+    indiceEdicion=null;
 
-    document.getElementById(
-        "codigo"
-    ).value =
-        "";
+    document.getElementById("tituloFormulario").textContent="Registrar movimiento";
+    document.getElementById("formMovimiento").reset();
 
+    document.getElementById("codigo").value="";
+    document.getElementById("unidadMedida").value="";
+    document.getElementById("proveedor").value="";
+    document.getElementById("fechaFactura").value="";
+    document.getElementById("costoUnitario").value="";
+    document.getElementById("moneda").value="CRC";
+    document.getElementById("tipoCambio").value="1";
+    document.getElementById("costoUnitarioColones").value="";
 
-    document.getElementById(
-        "unidadMedida"
-    ).value =
-        "";
+    document.getElementById("motivo").innerHTML='<option value="">Seleccione primero el movimiento</option>';
 
+    mostrarCamposProductoNuevo(false);
 
-    document.getElementById(
-        "tipo"
-    ).value =
-        "";
-
-
-    actualizarObligatoriedadCodigoYLote();
-
-
-    document.getElementById(
-        "motivo"
-    ).innerHTML = `
-        <option value="">
-            Seleccione primero el movimiento
-        </option>
-    `;
-
-
-    mostrarCamposProductoNuevo(
-        false
+    actualizarSelectorTipo(
+        vistaActual==="producto terminado"
+            ?"Producto Terminado"
+            :"Materia Prima"
     );
 
+    document.getElementById("descripcion").value="";
 
-    actualizarCamposSegunMovimiento();
+    actualizarTipoFormulario();
+    actualizarConversionCosto();
 
+    const hoy=new Date();
 
-    const hoy =
-        new Date();
+    document.getElementById("fecha").value=
+        `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}-${String(hoy.getDate()).padStart(2,"0")}`;
 
-
-    const anio =
-        hoy.getFullYear();
-
-
-    const mes =
-        String(
-            hoy.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const dia =
-        String(
-            hoy.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    document.getElementById(
-        "fecha"
-    ).value =
-        `${anio}-${mes}-${dia}`;
-
-
-    document.getElementById(
-        "modalMovimiento"
-    ).style.display =
-        "flex";
+    document.getElementById("modalMovimiento").style.display="flex";
 
 }
 
+function cerrarFormulario(){
 
-function cerrarFormulario() {
-
-    document.getElementById(
-        "modalMovimiento"
-    ).style.display =
-        "none";
+    document.getElementById("modalMovimiento").style.display="none";
 
 }
-
 
 function crearRegistroMovimiento(
     producto,
@@ -2195,1309 +1373,776 @@ function crearRegistroMovimiento(
     unidadMedida,
     cantidad,
     movimiento,
-    motivo
-) {
+    motivo,
+    proveedor,
+    fechaFactura,
+    moneda,
+    tipoCambio,
+    costoUnitarioColones
+){
 
-    let codigoFinal =
-        null;
+    const esInsumo=esTipoInsumo(tipo);
 
-    let descripcionFinal =
-        null;
-
-
-    if (producto) {
-
-        codigoFinal =
-            producto.codigo ||
-            null;
-
-        descripcionFinal =
-            producto.descripcion ||
-            null;
-
-    }
-
-    else {
-
-        codigoFinal =
-            codigoManual.trim() ||
-            null;
-
-        descripcionFinal =
-            descripcionManual.trim() ||
-            null;
-
-    }
-
+    const codigoFinal=producto?(producto.codigo||null):(codigoManual.trim()||null);
+    const descripcionFinal=producto?(producto.descripcion||null):(descripcionManual.trim()||null);
 
     return {
 
-        "Fecha":
-            fecha,
+        "Fecha":fecha,
+        "Codigo":codigoFinal,
+        "Lote":esInsumo?null:(lote||null),
 
-        "Codigo":
-            codigoFinal,
+        "Ubicacion origen":ubicacionOrigen||null,
+        "Responsable origen":responsableOrigen||null,
 
-        "Lote":
-            lote ||
-            null,
+        "Ubicacion destino":ubicacionDestino||null,
+        "Responsable destino":responsableDestino||null,
 
-        "Ubicacion origen":
-            ubicacionOrigen ||
-            null,
+        "Descripcion":descripcionFinal,
+        "Tipo":tipo||null,
+        "Unidad_Medida":unidadMedida||null,
+        "Cantidad":Number(cantidad),
+        "Movimiento":movimiento,
+        "Motivo":motivo,
 
-        "Responsable origen":
-            responsableOrigen ||
-            null,
-
-        "Ubicacion destino":
-            ubicacionDestino ||
-            null,
-
-        "Responsable destino":
-            responsableDestino ||
-            null,
-
-        "Descripcion":
-            descripcionFinal,
-
-        "Tipo":
-            tipo ||
-            null,
-
-        "Unidad_Medida":
-            unidadMedida ||
-            null,
-
-        "Cantidad":
-            cantidad,
-
-        "Movimiento":
-            movimiento,
-
-        "Motivo":
-            motivo
+        "Proveedor":esInsumo?(proveedor||null):null,
+        "Fecha factura":esInsumo?(fechaFactura||null):null,
+        "Moneda":esInsumo?(moneda||"CRC"):null,
+        "Tipo de cambio":esInsumo&&tipoCambio!==""?Number(tipoCambio):null,
+        "Costo unitario en colones":esInsumo&&costoUnitarioColones!==""?Number(costoUnitarioColones):null
 
     };
 
 }
 
+document.getElementById("formMovimiento").addEventListener("submit",async event=>{
 
-document
-    .getElementById(
-        "formMovimiento"
-    )
-    .addEventListener(
-        "submit",
-        async function(event) {
+    event.preventDefault();
 
-            event.preventDefault();
+    const indice=document.getElementById("descripcion").value;
 
+    let producto=null,descripcionManual="",codigoManual="";
 
-            const indiceProducto =
-                document.getElementById(
-                    "descripcion"
-                ).value;
+    if(indice!==""&&indice!=="__NUEVO__"){
 
+        producto=productosDisponibles[Number(indice)];
 
-            let productoSeleccionado =
-                null;
+        if(!producto){
+            alert("No se encontró el producto seleccionado.");
+            return;
+        }
 
-            let descripcionManual =
-                "";
+    }else if(indice==="__NUEVO__"){
 
-            let codigoManual =
-                "";
+        descripcionManual=document.getElementById("descripcionNueva").value.trim();
+        codigoManual=document.getElementById("codigoNuevo").value.trim();
 
+        if(!descripcionManual){
+            alert("Ingrese la descripción del producto nuevo.");
+            return;
+        }
 
-            if (
-                indiceProducto !== "" &&
-                indiceProducto !== "__NUEVO__"
-            ) {
+    }else{
 
-                productoSeleccionado =
-                    productosDisponibles[
-                        parseInt(
-                            indiceProducto
-                        )
-                    ];
+        alert("Seleccione un producto o elija 'Producto no registrado'.");
+        return;
 
+    }
 
-                if (!productoSeleccionado) {
+    const v=id=>document.getElementById(id).value;
 
-                    alert(
-                        "No se encontro el producto seleccionado."
-                    );
+    const fecha=v("fecha");
+    const lote=v("lote");
+    const ubicacionOrigen=v("ubicacionOrigen").trim();
+    const responsableOrigen=v("responsableOrigen").trim();
+    const ubicacionDestino=v("ubicacionDestino").trim();
+    const responsableDestino=v("responsableDestino").trim();
+    const tipo=v("tipo");
+    const unidadMedida=v("unidadMedida").trim();
+    const cantidad=v("cantidad");
+    const movimiento=v("movimiento");
+    const motivo=v("motivo");
 
-                    return;
+    const proveedor=v("proveedor").trim();
+    const fechaFactura=v("fechaFactura");
+    const moneda=v("moneda");
+    const costoUnitario=v("costoUnitario");
+    const tipoCambio=v("tipoCambio");
+    const costoUnitarioColones=v("costoUnitarioColones");
 
-                }
+    if(!fecha){
+        alert("Seleccione una fecha.");
+        return;
+    }
 
-            }
+    if(!tipo||!tipoPerteneceVista(tipo)){
+        alert("Seleccione un tipo válido para la categoría actual.");
+        return;
+    }
 
+    if(!unidadMedida){
+        alert("Ingrese la unidad de medida.");
+        return;
+    }
 
-            else if (
-                indiceProducto === "__NUEVO__"
-            ) {
+    if(esTipoProductoTerminado(tipo)&&indice!=="__NUEVO__"&&!lote){
+        alert("Seleccione el lote del producto terminado.");
+        document.getElementById("lote").focus();
+        return;
+    }
 
-                descripcionManual =
-                    document.getElementById(
-                        "descripcionNueva"
-                    ).value.trim();
+    if(cantidad===""||!Number.isFinite(Number(cantidad))||Number(cantidad)<=0){
+        alert("Ingrese una cantidad válida mayor que cero.");
+        document.getElementById("cantidad").focus();
+        return;
+    }
 
+    if(!movimiento){
+        alert("Seleccione el tipo de movimiento.");
+        return;
+    }
 
-                codigoManual =
-                    document.getElementById(
-                        "codigoNuevo"
-                    ).value.trim();
+    if(!motivo){
+        alert("Seleccione el motivo.");
+        return;
+    }
 
+    if(esTipoInsumo(tipo)){
 
-                if (!descripcionManual) {
+        if(movimiento==="Entrada"||movimiento==="Traspaso"){
 
-                    alert(
-                        "Ingrese la descripcion del producto nuevo."
-                    );
-
-                    document.getElementById(
-                        "descripcionNueva"
-                    ).focus();
-
-                    return;
-
-                }
-
-            }
-
-
-            else {
-
-                alert(
-                    "Seleccione un producto o seleccione 'Producto no registrado'."
-                );
-
+            if(!ubicacionDestino){
+                alert("Ingrese la ubicación destino o de recepción.");
+                document.getElementById("ubicacionDestino").focus();
                 return;
-
             }
 
-
-            const fecha =
-                document.getElementById(
-                    "fecha"
-                ).value;
-
-
-            const lote =
-                document.getElementById(
-                    "lote"
-                ).value.trim();
-
-
-            /*
-             * Estos cuatro campos son TEXTO LIBRE.
-             * Pueden contener valores que no estén
-             * en los datalist.
-             */
-
-            const ubicacionOrigen =
-                document.getElementById(
-                    "ubicacionOrigen"
-                ).value.trim();
-
-
-            const responsableOrigen =
-                document.getElementById(
-                    "responsableOrigen"
-                ).value.trim();
-
-
-            const ubicacionDestino =
-                document.getElementById(
-                    "ubicacionDestino"
-                ).value.trim();
-
-
-            const responsableDestino =
-                document.getElementById(
-                    "responsableDestino"
-                ).value.trim();
-
-
-            const tipo =
-                document.getElementById(
-                    "tipo"
-                ).value;
-
-
-            const unidadMedida =
-                document.getElementById(
-                    "unidadMedida"
-                ).value.trim();
-
-
-            const cantidad =
-                document.getElementById(
-                    "cantidad"
-                ).value;
-
-
-            const movimiento =
-                document.getElementById(
-                    "movimiento"
-                ).value;
-
-
-            const motivo =
-                document.getElementById(
-                    "motivo"
-                ).value;
-
-
-            if (!fecha) {
-
-                alert(
-                    "Seleccione una fecha."
-                );
-
+            if(!responsableDestino){
+                alert("Ingrese el responsable destino o de recepción.");
+                document.getElementById("responsableDestino").focus();
                 return;
-
-            }
-
-
-            if (!tipo) {
-
-                alert(
-                    "Seleccione el tipo de producto."
-                );
-
-                return;
-
-            }
-
-
-            const tipoNormalizado =
-                normalizarTexto(
-                    tipo
-                );
-
-
-            const esProductoTerminado =
-                tipoNormalizado ===
-                "producto terminado";
-
-
-            if (
-                esProductoTerminado &&
-                indiceProducto !== "__NUEVO__" &&
-                !lote
-            ) {
-
-                alert(
-                    "Ingrese el lote para el Producto Terminado."
-                );
-
-                document.getElementById(
-                    "lote"
-                ).focus();
-
-                return;
-
-            }
-
-
-            if (!unidadMedida) {
-
-                alert(
-                    "Ingrese la unidad de medida."
-                );
-
-                return;
-
-            }
-
-
-            if (
-                cantidad === "" ||
-                !Number.isFinite(
-                    Number(cantidad)
-                ) ||
-                Number(cantidad) <= 0
-            ) {
-
-                alert(
-                    "Ingrese una cantidad valida mayor que cero."
-                );
-
-                document.getElementById(
-                    "cantidad"
-                ).focus();
-
-                return;
-
-            }
-
-
-            if (!movimiento) {
-
-                alert(
-                    "Seleccione el tipo de movimiento."
-                );
-
-                return;
-
-            }
-
-
-            if (!motivo) {
-
-                alert(
-                    "Seleccione el motivo."
-                );
-
-                return;
-
-            }
-
-
-            if (
-                movimiento === "Salida" ||
-                movimiento === "Traspaso"
-            ) {
-
-                if (!ubicacionOrigen) {
-
-                    alert(
-                        "Ingrese la ubicacion origen."
-                    );
-
-                    document.getElementById(
-                        "ubicacionOrigen"
-                    ).focus();
-
-                    return;
-
-                }
-
-
-                if (!responsableOrigen) {
-
-                    alert(
-                        "Ingrese el responsable origen."
-                    );
-
-                    document.getElementById(
-                        "responsableOrigen"
-                    ).focus();
-
-                    return;
-
-                }
-
-            }
-
-
-            const registro =
-                crearRegistroMovimiento(
-                    productoSeleccionado,
-                    descripcionManual,
-                    codigoManual,
-                    fecha,
-                    lote,
-                    ubicacionOrigen,
-                    responsableOrigen,
-                    ubicacionDestino,
-                    responsableDestino,
-                    tipo,
-                    unidadMedida,
-                    cantidad,
-                    movimiento,
-                    motivo
-                );
-
-
-            const botonGuardar =
-                document.getElementById(
-                    "btnGuardar"
-                );
-
-
-            try {
-
-                botonGuardar.disabled =
-                    true;
-
-                botonGuardar.textContent =
-                    "Guardando...";
-
-
-                if (
-                    indiceEdicion !== null
-                ) {
-
-                    const movimientoActual =
-                        movimientos[
-                            indiceEdicion
-                        ];
-
-
-                    if (!movimientoActual) {
-
-                        throw new Error(
-                            "No se encontro el movimiento seleccionado."
-                        );
-
-                    }
-
-
-                    const id =
-                        movimientoActual.id ??
-                        movimientoActual.ID;
-
-
-                    if (!id) {
-
-                        throw new Error(
-                            "No se encontro el ID del movimiento."
-                        );
-
-                    }
-
-
-                    const columnaID =
-                        movimientoActual.id !== undefined
-                            ? "id"
-                            : "ID";
-
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabaseClient
-                            .from("Movimientos")
-                            .update(
-                                registro
-                            )
-                            .eq(
-                                columnaID,
-                                id
-                            )
-                            .select()
-                            .single();
-
-
-                    if (error) {
-                        throw error;
-                    }
-
-
-                    movimientos[
-                        indiceEdicion
-                    ] =
-                        data;
-
-
-                    construirListaProductosDisponibles();
-
-
-                    alert(
-                        "Movimiento actualizado correctamente.\n\n" +
-                        "El Kardex se actualizará automáticamente."
-                    );
-
-                }
-
-
-                else {
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabaseClient
-                            .from("Movimientos")
-                            .insert(
-                                registro
-                            )
-                            .select()
-                            .single();
-
-
-                    if (error) {
-                        throw error;
-                    }
-
-
-                    movimientos.push(
-                        data
-                    );
-
-
-                    construirListaProductosDisponibles();
-
-
-                    alert(
-                        "Movimiento registrado correctamente.\n\n" +
-                        "El Kardex se actualizará automáticamente."
-                    );
-
-                }
-
-
-                mostrarMovimientos();
-
-                cerrarFormulario();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Error al guardar movimiento:",
-                    error
-                );
-
-
-                alert(
-                    "No se pudo guardar el movimiento.\n\n" +
-                    error.message
-                );
-
-
-            } finally {
-
-                botonGuardar.disabled =
-                    false;
-
-                botonGuardar.textContent =
-                    "Guardar";
-
             }
 
         }
+
+        if(movimiento==="Salida"||movimiento==="Traspaso"){
+
+            if(!ubicacionOrigen){
+                alert("Ingrese la ubicación origen.");
+                document.getElementById("ubicacionOrigen").focus();
+                return;
+            }
+
+            if(!responsableOrigen){
+                alert("Ingrese el responsable origen.");
+                document.getElementById("responsableOrigen").focus();
+                return;
+            }
+
+        }
+
+    }
+
+    if(esTipoInsumo(tipo)&&costoUnitario!==""){
+
+        if(!Number.isFinite(Number(costoUnitario))||Number(costoUnitario)<0){
+            alert("Ingrese un costo unitario válido.");
+            return;
+        }
+
+        if(!tipoCambio||!Number.isFinite(Number(tipoCambio))||Number(tipoCambio)<=0){
+            alert("Ingrese un tipo de cambio válido y mayor que cero.");
+            return;
+        }
+
+        if(!costoUnitarioColones||!Number.isFinite(Number(costoUnitarioColones))){
+            alert("No se pudo calcular el costo unitario en colones.");
+            return;
+        }
+
+    }
+
+    if(esTipoProductoTerminado(tipo)&&(movimiento==="Salida"||movimiento==="Traspaso")){
+
+        if(!ubicacionOrigen){
+            alert("Ingrese la ubicación origen.");
+            document.getElementById("ubicacionOrigen").focus();
+            return;
+        }
+
+        if(!responsableOrigen){
+            alert("Ingrese el responsable origen.");
+            document.getElementById("responsableOrigen").focus();
+            return;
+        }
+
+    }
+
+    const registro=crearRegistroMovimiento(
+        producto,
+        descripcionManual,
+        codigoManual,
+        fecha,
+        lote,
+        ubicacionOrigen,
+        responsableOrigen,
+        ubicacionDestino,
+        responsableDestino,
+        tipo,
+        unidadMedida,
+        cantidad,
+        movimiento,
+        motivo,
+        proveedor,
+        fechaFactura,
+        moneda,
+        tipoCambio,
+        costoUnitarioColones
     );
 
+    const boton=document.getElementById("btnGuardar");
 
-function mostrarMovimientos() {
+    try{
 
-    const cuerpo =
-        document.getElementById(
-            "cuerpoMovimientos"
-        );
+        boton.disabled=true;
+        boton.textContent="Guardando...";
 
+        if(indiceEdicion!==null){
 
-    const mensajeCargando =
-        document.getElementById(
-            "mensajeCargando"
-        );
+            const actual=movimientos[indiceEdicion];
 
+            if(!actual)throw new Error("No se encontró el movimiento seleccionado.");
 
-    const mensajeVacio =
-        document.getElementById(
-            "mensajeVacio"
-        );
+            const id=actual.id??actual.ID;
 
+            if(id===null||id===undefined)throw new Error("No se encontró el ID del movimiento.");
 
-    cuerpo.innerHTML =
-        "";
+            const columna=actual.id!==undefined?"id":"ID";
 
-
-    mensajeCargando.style.display =
-        "none";
-
-
-    let movimientosMostrar =
-        movimientos;
-
-
-    if (
-        responsableSeleccionado
-    ) {
-
-        movimientosMostrar =
-            movimientos.filter(
-                function(registro) {
-
-                    return (
-
-                        normalizarTexto(
-                            registro["Responsable destino"]
-                        )
-                        ===
-                        normalizarTexto(
-                            responsableSeleccionado
-                        )
-
-                        ||
-
-                        normalizarTexto(
-                            registro["Responsable origen"]
-                        )
-                        ===
-                        normalizarTexto(
-                            responsableSeleccionado
-                        )
-
-                    );
-
-                }
-            );
-
-    }
-
-
-    document.getElementById(
-        "totalMovimientos"
-    ).textContent =
-        movimientosMostrar.length;
-
-
-    mensajeVacio.textContent =
-        responsableSeleccionado
-            ? "No hay movimientos registrados para este responsable."
-            : "No hay movimientos registrados.";
-
-
-    mensajeVacio.style.display =
-        movimientosMostrar.length === 0
-            ? "block"
-            : "none";
-
-
-    movimientosMostrar.forEach(
-        function(registro) {
-
-            const indiceReal =
-                movimientos.indexOf(
-                    registro
-                );
-
-
-            const fila =
-                document.createElement(
-                    "tr"
-                );
-
-
-            const fecha =
-                registro["Fecha"] ||
-                "";
-
-
-            const codigo =
-                registro["Codigo"] ||
-                "";
-
-
-            const lote =
-                registro["Lote"] ||
-                "";
-
-
-            const ubicacionOrigen =
-                registro["Ubicacion origen"] ||
-                "";
-
-
-            const responsableOrigen =
-                registro["Responsable origen"] ||
-                "";
-
-
-            const ubicacionDestino =
-                registro["Ubicacion destino"] ||
-                "";
-
-
-            const responsableDestino =
-                registro["Responsable destino"] ||
-                "";
-
-
-            const descripcion =
-                registro["Descripcion"] ||
-                "";
-
-
-            const tipo =
-                registro["Tipo"] ||
-                "";
-
-
-            const unidadMedida =
-                registro["Unidad_Medida"] ||
-                "";
-
-
-            const cantidad =
-                registro["Cantidad"] ??
-                "";
-
-
-            const movimiento =
-                registro["Movimiento"] ||
-                "";
-
-
-            const motivo =
-                registro["Motivo"] ||
-                "";
-
-
-            fila.innerHTML = `
-
-                <td>
-                    ${formatearFecha(fecha)}
-                </td>
-
-                <td>
-                    ${
-                        codigo
-                            ? codigo
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        lote
-                            ? lote
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        ubicacionOrigen
-                            ? ubicacionOrigen
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        responsableOrigen
-                            ? responsableOrigen
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        descripcion
-                            ? descripcion
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        tipo
-                            ? tipo
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        unidadMedida
-                            ? unidadMedida
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${cantidad}
-                </td>
-
-                <td>
-                    ${movimiento}
-                </td>
-
-                <td>
-                    ${motivo}
-                </td>
-
-                <td>
-                    ${
-                        ubicacionDestino
-                            ? ubicacionDestino
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td>
-                    ${
-                        responsableDestino
-                            ? responsableDestino
-                            : '<span class="sin-dato">—</span>'
-                    }
-                </td>
-
-                <td class="acciones">
-
-                    <button
-                        type="button"
-                        class="btn-editar"
-                        title="Editar movimiento"
-                        onclick="editarMovimiento(${indiceReal})"
-                        aria-label="Editar movimiento"
-                    >
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-
-                            <path
-                                d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linejoin="round"
-                            />
-
-                            <path
-                                d="M14.5 5.5L18.5 9.5"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-
-                        </svg>
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="btn-eliminar"
-                        title="Eliminar movimiento"
-                        onclick="eliminarMovimiento(${indiceReal})"
-                        aria-label="Eliminar movimiento"
-                    >
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-
-                            <path
-                                d="M5 7H19"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-
-                            <path
-                                d="M9 7V4H15V7"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linejoin="round"
-                            />
-
-                            <path
-                                d="M7 7L8 20H16L17 7"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linejoin="round"
-                            />
-
-                            <path
-                                d="M10 11V17"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-
-                            <path
-                                d="M14 11V17"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                            />
-
-                        </svg>
-
-                    </button>
-
-                </td>
-
-            `;
-
-
-            cuerpo.appendChild(
-                fila
-            );
-
-        }
-    );
-
-}
-
-
-function editarMovimiento(indice) {
-
-    const movimiento =
-        movimientos[indice];
-
-
-    if (!movimiento) {
-        return;
-    }
-
-
-    indiceEdicion =
-        indice;
-
-
-    document.getElementById(
-        "tituloFormulario"
-    ).textContent =
-        "Editar movimiento";
-
-
-    document.getElementById(
-        "modalMovimiento"
-    ).style.display =
-        "flex";
-
-
-    document.getElementById(
-        "fecha"
-    ).value =
-        movimiento["Fecha"] ||
-        "";
-
-
-    const codigo =
-        movimiento["Codigo"] ||
-        "";
-
-
-    document.getElementById(
-        "codigo"
-    ).value =
-        codigo;
-
-
-    const descripcion =
-        movimiento["Descripcion"] ||
-        "";
-
-
-    const productoIndex =
-        productosDisponibles.findIndex(
-            producto =>
-                normalizarTexto(
-                    producto.descripcion
-                ) ===
-                normalizarTexto(
-                    descripcion
-                )
-        );
-
-
-    if (
-        productoIndex >= 0
-    ) {
-
-        document.getElementById(
-            "descripcion"
-        ).value =
-            productoIndex;
-
-        actualizarProducto();
-
-    }
-
-
-    else {
-
-        document.getElementById(
-            "descripcion"
-        ).value =
-            "__NUEVO__";
-
-        mostrarCamposProductoNuevo(
-            true
-        );
-
-        document.getElementById(
-            "descripcionNueva"
-        ).value =
-            descripcion;
-
-        document.getElementById(
-            "codigoNuevo"
-        ).value =
-            codigo ||
-            "";
-
-    }
-
-
-    document.getElementById(
-        "lote"
-    ).value =
-        movimiento["Lote"] ||
-        "";
-
-
-    /*
-     * IMPORTANTE:
-     *
-     * Los valores personalizados guardados
-     * anteriormente también se cargan aquí,
-     * aunque no existan en Personal.
-     */
-
-    document.getElementById(
-        "ubicacionOrigen"
-    ).value =
-        movimiento["Ubicacion origen"] ||
-        "";
-
-
-    document.getElementById(
-        "responsableOrigen"
-    ).value =
-        movimiento["Responsable origen"] ||
-        "";
-
-
-    document.getElementById(
-        "ubicacionDestino"
-    ).value =
-        movimiento["Ubicacion destino"] ||
-        "";
-
-
-    document.getElementById(
-        "responsableDestino"
-    ).value =
-        movimiento["Responsable destino"] ||
-        "";
-
-
-    document.getElementById(
-        "tipo"
-    ).value =
-        movimiento["Tipo"] ||
-        "";
-
-
-    actualizarObligatoriedadCodigoYLote();
-
-
-    document.getElementById(
-        "unidadMedida"
-    ).value =
-        movimiento["Unidad_Medida"] ||
-        "";
-
-
-    document.getElementById(
-        "cantidad"
-    ).value =
-        movimiento["Cantidad"] ??
-        "";
-
-
-    document.getElementById(
-        "movimiento"
-    ).value =
-        movimiento["Movimiento"] ||
-        "";
-
-
-    actualizarMotivos();
-
-
-    document.getElementById(
-        "motivo"
-    ).value =
-        movimiento["Motivo"] ||
-        "";
-
-
-    actualizarCamposSegunMovimiento();
-
-}
-
-
-async function eliminarMovimiento(indice) {
-
-    const movimiento =
-        movimientos[indice];
-
-
-    if (!movimiento) {
-        return;
-    }
-
-
-    const confirmar =
-        confirm(
-            "¿Está seguro de eliminar este movimiento?"
-        );
-
-
-    if (!confirmar) {
-        return;
-    }
-
-
-    try {
-
-        const id =
-            movimiento.id ??
-            movimiento.ID;
-
-
-        if (!id) {
-
-            throw new Error(
-                "No se encontro el ID del movimiento."
-            );
-
-        }
-
-
-        const columnaID =
-            movimiento.id !== undefined
-                ? "id"
-                : "ID";
-
-
-        const {
-            error
-        } =
-            await supabaseClient
+            const {data,error}=await supabaseClient
                 .from("Movimientos")
-                .delete()
-                .eq(
-                    columnaID,
-                    id
-                );
+                .update(registro)
+                .eq(columna,id)
+                .select()
+                .single();
 
+            if(error)throw error;
 
-        if (error) {
-            throw error;
+            movimientos[indiceEdicion]=data;
+
+            alert("Movimiento actualizado correctamente.\n\nEl Kardex se actualizará automáticamente.");
+
+        }else{
+
+            const {data,error}=await supabaseClient
+                .from("Movimientos")
+                .insert(registro)
+                .select()
+                .single();
+
+            if(error)throw error;
+
+            movimientos.push(data);
+
+            alert("Movimiento registrado correctamente.\n\nEl Kardex se actualizará automáticamente.");
+
         }
-
-
-        movimientos.splice(
-            indice,
-            1
-        );
-
 
         construirListaProductosDisponibles();
-
         mostrarMovimientos();
+        cerrarFormulario();
 
+    }catch(error){
 
-        alert(
-            "Movimiento eliminado correctamente.\n\n" +
-            "El Kardex se actualizará automáticamente."
-        );
+        console.error(error);
+        alert("No se pudo guardar el movimiento.\n\n"+error.message);
 
+    }finally{
 
-    } catch (error) {
-
-        console.error(
-            "Error eliminando movimiento:",
-            error
-        );
-
-
-        alert(
-            "No se pudo eliminar el movimiento.\n\n" +
-            error.message
-        );
+        boton.disabled=false;
+        boton.textContent="Guardar";
 
     }
 
+});
+
+function mostrarDatoEnFila(fila,valor){
+
+    const td=document.createElement("td");
+
+    if(valor!==null&&valor!==undefined&&valor!==""){
+
+        td.textContent=valor;
+
+    }else{
+
+        const span=document.createElement("span");
+
+        span.className="sin-dato";
+        span.textContent="—";
+
+        td.appendChild(span);
+
+    }
+
+    fila.appendChild(td);
+
 }
 
+function crearBotonesAccion(indice,fila){
 
-function formatearFecha(fecha) {
+    const td=document.createElement("td");
+    td.className="acciones";
 
-    if (!fecha) {
+    const editar=document.createElement("button");
+
+    editar.type="button";
+    editar.className="btn-editar";
+    editar.title="Editar movimiento";
+    editar.setAttribute("aria-label","Editar movimiento");
+
+    editar.innerHTML='<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20H8L19.5 8.5C20.3 7.7 20.3 6.3 19.5 5.5L18.5 4.5C17.7 3.7 16.3 3.7 15.5 4.5L4 16V20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 5.5L18.5 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+    editar.addEventListener("click",()=>editarMovimiento(indice));
+
+    const eliminar=document.createElement("button");
+
+    eliminar.type="button";
+    eliminar.className="btn-eliminar";
+    eliminar.title="Eliminar movimiento";
+    eliminar.setAttribute("aria-label","Eliminar movimiento");
+
+    eliminar.innerHTML='<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7V4H15V7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 7L8 20H16L17 7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 11V17M14 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+    eliminar.addEventListener("click",()=>eliminarMovimiento(indice));
+
+    td.append(editar,eliminar);
+
+    fila.appendChild(td);
+
+}
+
+function obtenerCostoMonedaFactura(r){
+
+    const costoCRC=Number(r["Costo unitario en colones"]);
+    const cambio=Number(r["Tipo de cambio"]);
+    const moneda=r["Moneda"]||"CRC";
+
+    if(
+        r["Costo unitario en colones"]===null||
+        r["Costo unitario en colones"]===undefined||
+        r["Costo unitario en colones"]===""
+    ){
         return "";
     }
 
+    if(moneda==="USD"&&cambio>0){
+        return costoCRC/cambio;
+    }
 
-    const partes =
-        String(fecha)
-            .split("-");
+    return costoCRC;
 
+}
 
-    if (
-        partes.length === 3
-    ) {
+function mostrarMovimientos(){
 
-        return (
-            partes[2] +
-            "/" +
-            partes[1] +
-            "/" +
-            partes[0]
+    const cuerpo=document.getElementById("cuerpoMovimientos");
+    const enc=document.getElementById("encabezadosMovimientos");
+    const vacio=document.getElementById("mensajeVacio");
+
+    cuerpo.innerHTML="";
+    enc.innerHTML="";
+
+    document.getElementById("mensajeCargando").style.display="none";
+
+    const esInsumos=vistaActual==="insumos";
+
+    const columnas=esInsumos
+        ?[
+            "Fecha",
+            "Código",
+            "Descripción",
+            "Tipo",
+            "Unidad de medida",
+            "Movimiento",
+            "Motivo",
+            "Cantidad",
+            "Proveedor",
+            "Fecha factura",
+            "Moneda",
+            "Costo unitario (moneda factura)",
+            "Tipo de cambio",
+            "Costo unitario (₡)",
+            "Ubicación origen",
+            "Responsable origen",
+            "Ubicación destino / recepción",
+            "Responsable destino / recepción",
+            "Acciones"
+        ]
+        :[
+            "Fecha",
+            "Código",
+            "Lote",
+            "Ubicación origen",
+            "Responsable origen",
+            "Descripción",
+            "Tipo",
+            "Unidad de medida",
+            "Cantidad",
+            "Movimiento",
+            "Motivo",
+            "Ubicación destino",
+            "Responsable destino",
+            "Acciones"
+        ];
+
+    columnas.forEach(n=>{
+
+        const th=document.createElement("th");
+
+        th.textContent=n;
+
+        enc.appendChild(th);
+
+    });
+
+    /* FILTRO PRINCIPAL POR TIPO */
+
+    let lista=movimientos.filter(r=>
+        esInsumos
+            ?esTipoInsumo(r["Tipo"])
+            :esTipoProductoTerminado(r["Tipo"])
+    );
+
+    /* FILTRO POR PRODUCTO */
+
+    if(productoSeleccionado){
+
+        const partes=productoSeleccionado.split("|||");
+
+        const tipoFiltro=partes[0]||"";
+        const descripcionFiltro=partes[1]||"";
+
+        lista=lista.filter(r=>
+            normalizarTexto(r["Tipo"])===tipoFiltro&&
+            normalizarTexto(r["Descripcion"])===descripcionFiltro
         );
 
     }
 
+    /* FILTRO POR RESPONSABLE */
 
-    return fecha;
+    if(responsableSeleccionado){
 
-}
+        lista=lista.filter(r=>{
 
+            const d=normalizarTexto(r["Responsable destino"])===normalizarTexto(responsableSeleccionado);
+            const o=normalizarTexto(r["Responsable origen"])===normalizarTexto(responsableSeleccionado);
 
-window.addEventListener(
-    "click",
-    function(event) {
+            return d||o;
 
-        const modal =
-            document.getElementById(
-                "modalMovimiento"
+        });
+
+    }
+
+    document.getElementById("totalMovimientos").textContent=lista.length;
+
+    if(productoSeleccionado){
+
+        vacio.textContent="No hay movimientos registrados para el producto seleccionado.";
+
+    }else if(responsableSeleccionado){
+
+        vacio.textContent="No hay movimientos registrados para este responsable en esta categoría.";
+
+    }else{
+
+        vacio.textContent=esInsumos
+            ?"No hay movimientos registrados de materias primas, materiales de empaque, suministros u otros."
+            :"No hay movimientos registrados de producto terminado.";
+
+    }
+
+    vacio.style.display=lista.length?"none":"block";
+
+    lista.forEach(r=>{
+
+        const indice=movimientos.indexOf(r);
+        const fila=document.createElement("tr");
+
+        if(esInsumos){
+
+            [
+                formatearFecha(r["Fecha"]),
+                r["Codigo"],
+                r["Descripcion"],
+                r["Tipo"],
+                r["Unidad_Medida"],
+                r["Movimiento"],
+                r["Motivo"],
+                r["Cantidad"],
+                r["Proveedor"],
+                formatearFecha(r["Fecha factura"]),
+                r["Moneda"]
+            ].forEach(v=>mostrarDatoEnFila(fila,v));
+
+            const costo=obtenerCostoMonedaFactura(r);
+            const cambio=r["Tipo de cambio"];
+            const crc=r["Costo unitario en colones"];
+
+            mostrarDatoEnFila(
+                fila,
+                costo!==""?Number(costo).toLocaleString("es-CR",{minimumFractionDigits:2,maximumFractionDigits:4}):""
             );
 
+            mostrarDatoEnFila(
+                fila,
+                cambio!==null&&cambio!==undefined&&cambio!==""?Number(cambio).toLocaleString("es-CR",{minimumFractionDigits:2,maximumFractionDigits:4}):""
+            );
 
-        if (
-            event.target ===
-            modal
-        ) {
+            mostrarDatoEnFila(
+                fila,
+                crc!==null&&crc!==undefined&&crc!==""?Number(crc).toLocaleString("es-CR",{minimumFractionDigits:2,maximumFractionDigits:4}):""
+            );
 
-            cerrarFormulario();
+            mostrarDatoEnFila(fila,r["Ubicacion origen"]);
+            mostrarDatoEnFila(fila,r["Responsable origen"]);
+            mostrarDatoEnFila(fila,r["Ubicacion destino"]);
+            mostrarDatoEnFila(fila,r["Responsable destino"]);
+
+        }else{
+
+            [
+                formatearFecha(r["Fecha"]),
+                r["Codigo"],
+                r["Lote"],
+                r["Ubicacion origen"],
+                r["Responsable origen"],
+                r["Descripcion"],
+                r["Tipo"],
+                r["Unidad_Medida"],
+                r["Cantidad"],
+                r["Movimiento"],
+                r["Motivo"],
+                r["Ubicacion destino"],
+                r["Responsable destino"]
+            ].forEach(v=>mostrarDatoEnFila(fila,v));
 
         }
 
-    }
-);
+        crearBotonesAccion(indice,fila);
 
+        cuerpo.appendChild(fila);
 
-async function iniciar() {
-
-    await cargarProductosYMovimientosParaSelector();
-
-    await cargarLotes();
-
-    await cargarPersonal();
-
-    await cargarMovimientos();
-
-    actualizarObligatoriedadCodigoYLote();
-
-    actualizarCamposSegunMovimiento();
+    });
 
 }
 
+function editarMovimiento(indice){
+
+    const r=movimientos[indice];
+
+    if(!r)return;
+
+    indiceEdicion=indice;
+
+    const tipoOriginal=r["Tipo"]||"";
+
+    vistaActual=esTipoProductoTerminado(tipoOriginal)?"producto terminado":"insumos";
+
+    document.getElementById("filtroTipo").value=vistaActual;
+
+    /* Al editar, limpiar los filtros para mostrar la categoría del registro */
+    responsableSeleccionado="";
+    productoSeleccionado="";
+
+    document.getElementById("filtroResponsable").value="";
+    document.getElementById("filtroProducto").value="";
+
+    construirListaProductosDisponibles();
+
+    document.getElementById("tituloFormulario").textContent="Editar movimiento";
+    document.getElementById("formMovimiento").reset();
+    document.getElementById("modalMovimiento").style.display="flex";
+
+    document.getElementById("fecha").value=r["Fecha"]||"";
+    document.getElementById("codigo").value=r["Codigo"]||"";
+
+    const desc=r["Descripcion"]||"";
+
+    const ix=productosDisponibles.findIndex(p=>
+        normalizarTexto(p.descripcion)===normalizarTexto(desc)&&
+        normalizarTexto(p.tipo)===normalizarTexto(tipoOriginal)
+    );
+
+    if(ix>=0){
+
+        document.getElementById("descripcion").value=String(ix);
+
+        actualizarProducto();
+
+    }else{
+
+        document.getElementById("descripcion").value="__NUEVO__";
+
+        mostrarCamposProductoNuevo(true);
+
+        document.getElementById("descripcionNueva").value=desc;
+        document.getElementById("codigoNuevo").value=r["Codigo"]||"";
+
+    }
+
+    actualizarSelectorTipo(tipoOriginal);
+
+    document.getElementById("tipo").value=tipoOriginal;
+
+    actualizarTipoFormulario();
+
+    document.getElementById("lote").value=r["Lote"]||"";
+
+    document.getElementById("ubicacionOrigen").value=r["Ubicacion origen"]||"";
+    document.getElementById("responsableOrigen").value=r["Responsable origen"]||"";
+
+    document.getElementById("ubicacionDestino").value=r["Ubicacion destino"]||"";
+    document.getElementById("responsableDestino").value=r["Responsable destino"]||"";
+
+    document.getElementById("proveedor").value=r["Proveedor"]||"";
+    document.getElementById("fechaFactura").value=r["Fecha factura"]||"";
+    document.getElementById("moneda").value=r["Moneda"]||"CRC";
+
+    const cambio=Number(r["Tipo de cambio"]||1);
+    const costoCRC=r["Costo unitario en colones"];
+
+    document.getElementById("tipoCambio").value=cambio;
+
+    if(costoCRC!==null&&costoCRC!==undefined&&costoCRC!==""){
+
+        const costoOriginal=Number(costoCRC);
+
+        document.getElementById("costoUnitario").value=
+            r["Moneda"]==="USD"&&cambio>0
+                ?(costoOriginal/cambio).toFixed(4)
+                :costoOriginal.toFixed(4);
+
+    }else{
+
+        document.getElementById("costoUnitario").value="";
+
+    }
+
+    actualizarConversionCosto();
+
+    if(costoCRC!==null&&costoCRC!==undefined&&costoCRC!==""){
+        document.getElementById("costoUnitarioColones").value=costoCRC;
+    }
+
+    document.getElementById("unidadMedida").value=r["Unidad_Medida"]||"";
+    document.getElementById("cantidad").value=r["Cantidad"]??"";
+    document.getElementById("movimiento").value=r["Movimiento"]||"";
+
+    actualizarMotivos();
+
+    document.getElementById("motivo").value=r["Motivo"]||"";
+
+    actualizarCamposSegunMovimiento();
+
+    mostrarMovimientos();
+
+}
+
+async function eliminarMovimiento(indice){
+
+    const r=movimientos[indice];
+
+    if(!r)return;
+
+    if(!confirm("¿Está seguro de eliminar este movimiento?"))return;
+
+    try{
+
+        const id=r.id??r.ID;
+
+        if(id===null||id===undefined){
+            throw new Error("No se encontró el ID del movimiento.");
+        }
+
+        const columna=r.id!==undefined?"id":"ID";
+
+        const {error}=await supabaseClient
+            .from("Movimientos")
+            .delete()
+            .eq(columna,id);
+
+        if(error)throw error;
+
+        movimientos.splice(indice,1);
+
+        construirListaProductosDisponibles();
+        mostrarMovimientos();
+
+        alert("Movimiento eliminado correctamente.\n\nEl Kardex se actualizará automáticamente.");
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("No se pudo eliminar el movimiento.\n\n"+error.message);
+
+    }
+
+}
+
+function formatearFecha(fecha){
+
+    if(!fecha)return "";
+
+    const partes=String(fecha).split("-");
+
+    return partes.length===3
+        ?partes[2]+"/"+partes[1]+"/"+partes[0]
+        :fecha;
+
+}
+
+window.addEventListener("click",event=>{
+
+    const modal=document.getElementById("modalMovimiento");
+
+    if(event.target===modal)cerrarFormulario();
+
+});
+
+async function iniciar(){
+
+    try{
+
+        document.getElementById("filtroTipo").value="insumos";
+
+        vistaActual="insumos";
+
+        await cargarProductosYMovimientosParaSelector();
+        await cargarLotes();
+        await cargarPersonal();
+        await cargarMovimientos();
+
+        actualizarSelectorTipo("");
+        actualizarTipoFormulario();
+
+    }catch(error){
+
+        console.error("Error al iniciar:",error);
+
+        document.getElementById("mensajeCargando").style.display="none";
+
+        alert("No se pudo cargar toda la información inicial.\n\n"+error.message);
+
+    }
+
+}
 
 iniciar();
 
 </script>
-
 </body>
-
 </html>
 
