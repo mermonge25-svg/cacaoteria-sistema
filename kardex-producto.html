@@ -1,443 +1,504 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kardex por Producto - Cacaotería S.R.L.</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Barlow", Arial, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        header {
-            background-color: #5B2326;
-            color: white;
-            padding: 18px 30px;
-            text-align: left;
-            border-bottom: 4px solid #E14E39;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 30px;
-        }
-
-        header p {
-            margin: 4px 0 0;
-            font-size: 16px;
-        }
-
-        .container {
-            width: 95%;
-            max-width: 1800px;
-            margin: 25px auto;
-        }
-
-        .panel {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(91,35,38,0.10);
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .top-bar h2 {
-            margin: 0;
-            color: #5B2326;
-            font-size: 24px;
-        }
-
-        .acciones-superiores {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filtros {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .filtros label {
-            font-weight: bold;
-            color: #5B2326;
-        }
-
-        .filtros select {
-            padding: 9px 10px;
-            border: 1px solid #5B2326;
-            border-radius: 6px;
-            font-family: "Barlow", Arial, sans-serif;
-            font-size: 15px;
-            background-color: white;
-            min-width: 250px;
-        }
-
-        .filtros select:focus {
-            outline: none;
-            border-color: #E14E39;
-            box-shadow: 0 0 0 2px rgba(225,78,57,0.15);
-        }
-
-        button {
-            background-color: #E14E39;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #5B2326;
-        }
-
-        button:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
-
-        .producto-seleccionado {
-            display: none;
-            background-color: #f7f7f7;
-            border-left: 5px solid #007F49;
-            padding: 15px 18px;
-            margin-bottom: 18px;
-            border-radius: 6px;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .producto-seleccionado.visible {
-            display: flex;
-        }
-
-        .producto-seleccionado-info {
-            color: #5B2326;
-        }
-
-        .producto-seleccionado-info strong {
-            font-size: 17px;
-        }
-
-        .producto-seleccionado-info span {
-            display: block;
-            margin-top: 3px;
-            color: #555;
-        }
-
-        .boton-ver-lotes {
-            background-color: #007F49;
-        }
-
-        .boton-ver-lotes:hover {
-            background-color: #5B2326;
-        }
-
-        .mensaje {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            background-color: #eee;
-        }
-
-        .resumen-costos {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .tarjeta-costo {
-            background-color: #f7f7f7;
-            border-left: 5px solid #007F49;
-            border-radius: 7px;
-            padding: 15px 18px;
-        }
-
-        .tarjeta-costo h3 {
-            margin: 0 0 8px;
-            color: #5B2326;
-            font-size: 16px;
-        }
-
-        .tarjeta-costo .valor {
-            color: #007F49;
-            font-size: 21px;
-            font-weight: bold;
-        }
-
-        .tarjeta-costo.total-general {
-            border-left-color: #E14E39;
-        }
-
-        .tarjeta-costo.total-general .valor {
-            color: #E14E39;
-        }
-
-        .tarjeta-costo small {
-            display: block;
-            margin-top: 4px;
-            color: #666;
-            font-size: 12px;
-        }
-
-        .tabla-contenedor {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scrollbar-color: #5B2326 #ddd;
-            scrollbar-width: auto;
-        }
-
-        table {
-            width: 100%;
-            min-width: 2300px;
-            border-collapse: collapse;
-            background-color: white;
-        }
-
-        th {
-            background-color: #5B2326;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-bottom: 3px solid #E14E39;
-            text-align: center;
-            white-space: nowrap;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        td {
-            padding: 12px;
-            border: none;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-            white-space: nowrap;
-            font-size: 15px;
-            background-color: white;
-        }
-
-        tbody tr:hover td {
-            background-color: rgba(225,78,57,0.08);
-        }
-
-        .columna-seleccion {
-            width: 90px;
-            min-width: 90px;
-        }
-
-        .radio-producto {
-            width: 19px;
-            height: 19px;
-            cursor: pointer;
-            accent-color: #007F49;
-        }
-
-        .fila-seleccionada td {
-            background-color: rgba(0,127,73,0.08);
-        }
-
-        .fila-seleccionada:hover td {
-            background-color: rgba(0,127,73,0.12);
-        }
-
-        td:nth-child(2),
-        td:nth-child(3),
-        td:nth-child(4),
-        td:nth-child(5) {
-            text-align: left;
-        }
-
-        .numero {
-            text-align: center;
-        }
-
-        .saldo-final {
-            font-weight: bold;
-            color: #E14E39;
-        }
-
-        .valor-inventario {
-            font-weight: bold;
-            color: #007F49;
-        }
-
-        .costo-convertido {
-            font-weight: bold;
-            color: #007F49;
-        }
-
-        .moneda {
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .tipo-cambio-valor {
-            color: #5B2326;
-            font-weight: bold;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.45);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.visible {
-            display: flex;
-        }
-
-        .modal-contenido {
-            background-color: white;
-            width: 95%;
-            max-width: 1100px;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
-        }
-
-        .modal-encabezado {
-            background-color: #5B2326;
-            color: white;
-            padding: 18px 22px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
-        }
-
-        .modal-encabezado h3 {
-            margin: 0;
-            font-size: 21px;
-        }
-
-        .modal-encabezado p {
-            margin: 5px 0 0;
-            font-size: 14px;
-        }
-
-        .boton-cerrar {
-            background: transparent;
-            color: white;
-            padding: 0;
-            font-size: 28px;
-            line-height: 1;
-        }
-
-        .boton-cerrar:hover {
-            background: transparent;
-            color: #E14E39;
-        }
-
-        .modal-cuerpo {
-            padding: 20px;
-        }
-
-        .tabla-lotes-contenedor {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .tabla-lotes {
-            width: 100%;
-            min-width: 700px;
-            border-collapse: collapse;
-        }
-
-        .tabla-lotes th {
-            background-color: #5B2326;
-            padding: 10px;
-            font-size: 14px;
-        }
-
-        .tabla-lotes td {
-            padding: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .tabla-lotes td:first-child {
-            text-align: left;
-        }
-
-        .tabla-lotes-total td {
-            font-weight: bold;
-            background-color: #f1f1f1;
-        }
-
-        .tabla-contenedor::-webkit-scrollbar {
-            height: 10px;
-        }
-
-        .tabla-contenedor::-webkit-scrollbar-track {
-            background: #ddd;
-            border-radius: 10px;
-        }
-
-        .tabla-contenedor::-webkit-scrollbar-thumb {
-            background: #5B2326;
-            border-radius: 10px;
-        }
-
-        .tabla-contenedor::-webkit-scrollbar-thumb:hover {
-            background: #E14E39;
-        }
-
-        @media (max-width: 1000px) {
-            .resumen-costos {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .resumen-costos {
-                grid-template-columns: 1fr;
-            }
-
-            .acciones-superiores {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kardex por Producto - Cacaotería S.R.L.</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --cafe:#5B2326;
+    --cafe-hover:#45191C;
+    --fondo:#f5f5f5;
+    --blanco:#fff;
+    --gris:#ddd;
+    --gris-texto:#777;
+}
+
+*{
+    box-sizing:border-box;
+    font-family:"Barlow",Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    background:var(--fondo);
+    color:#333;
+}
+
+header{
+    background:var(--cafe);
+    color:var(--blanco);
+    padding:20px 30px;
+    border-bottom:4px solid var(--cafe);
+}
+
+header h1{
+    margin:0;
+    font-size:28px;
+}
+
+header p{
+    margin:5px 0 0;
+    font-size:14px;
+}
+
+.contenedor{
+    max-width:1800px;
+    margin:30px auto;
+    padding:0 20px;
+}
+
+.panel{
+    background:var(--blanco);
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(91,35,38,.10);
+}
+
+.encabezado{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:16px;
+    margin-bottom:20px;
+    width:100%;
+}
+
+.encabezado h2{
+    margin:0;
+    color:var(--cafe);
+    font-size:21px;
+    font-weight:700;
+}
+
+.acciones-superior{
+    display:grid;
+    grid-template-columns:minmax(280px,1fr) auto;
+    align-items:center;
+    gap:25px;
+    width:100%;
+}
+
+.filtros{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-width:430px;
+    width:100%;
+    margin:0;
+}
+
+.filtro-grupo{
+    display:grid;
+    grid-template-columns:110px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+    width:100%;
+}
+
+.filtro-grupo label{
+    font-weight:700;
+    color:var(--cafe);
+    white-space:nowrap;
+}
+
+.filtro-grupo select{
+    width:100%;
+    padding:9px 12px;
+    border:1px solid var(--cafe);
+    border-radius:6px;
+    background:var(--blanco);
+    font-size:14px;
+    min-width:0;
+    color:#333;
+}
+
+.filtro-grupo select:focus{
+    outline:none;
+    border-color:var(--cafe-hover);
+    box-shadow:0 0 0 2px rgba(91,35,38,.10);
+}
+
+.acciones-derecha{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:center;
+    gap:12px;
+    min-width:210px;
+}
+
+.total{
+    background:var(--blanco);
+    padding:12px 18px;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    font-weight:700;
+    text-align:center;
+    white-space:nowrap;
+}
+
+.btn-actualizar{
+    background:var(--cafe);
+    color:var(--blanco);
+    border:0;
+    padding:12px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    white-space:nowrap;
+    width:100%;
+}
+
+.btn-actualizar:hover{
+    background:var(--cafe-hover);
+}
+
+.btn-actualizar:disabled{
+    opacity:.6;
+    cursor:wait;
+}
+
+.producto-seleccionado{
+    display:none;
+    background:#f7f7f7;
+    border-left:5px solid var(--cafe);
+    padding:15px 18px;
+    margin-bottom:18px;
+    border-radius:6px;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.producto-seleccionado.visible{
+    display:flex;
+}
+
+.producto-seleccionado-info{
+    color:var(--cafe);
+}
+
+.producto-seleccionado-info strong{
+    font-size:17px;
+}
+
+.producto-seleccionado-info span{
+    display:block;
+    margin-top:3px;
+    color:#555;
+}
+
+.boton-ver-lotes{
+    background:var(--cafe);
+    color:white;
+    border:0;
+    padding:10px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+}
+
+.boton-ver-lotes:hover{
+    background:var(--cafe-hover);
+}
+
+.mensaje{
+    padding:10px 14px;
+    margin-bottom:15px;
+    border-radius:6px;
+    background:#eee;
+    font-size:14px;
+}
+
+.resumen-costos{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.tarjeta-costo{
+    background:#f7f7f7;
+    border-left:5px solid var(--cafe);
+    border-radius:7px;
+    padding:15px 18px;
+}
+
+.tarjeta-costo h3{
+    margin:0 0 8px;
+    color:var(--cafe);
+    font-size:16px;
+}
+
+.tarjeta-costo .valor{
+    color:var(--cafe);
+    font-size:21px;
+    font-weight:700;
+}
+
+.tarjeta-costo small{
+    display:block;
+    margin-top:4px;
+    color:#666;
+    font-size:12px;
+}
+
+.tabla-contenedor{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-color:var(--cafe) #ddd;
+    background:var(--blanco);
+    border-radius:8px;
+}
+
+table{
+    width:100%;
+    min-width:2100px;
+    border-collapse:collapse;
+    background:var(--blanco);
+}
+
+th{
+    background:var(--cafe);
+    color:var(--blanco);
+    padding:14px 12px;
+    border-bottom:3px solid var(--cafe);
+    text-align:center;
+    white-space:nowrap;
+    font-size:15px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid var(--gris);
+    text-align:center;
+    white-space:nowrap;
+    font-size:14px;
+    background:var(--blanco);
+}
+
+tbody tr:hover td{
+    background:#f5f2f2;
+}
+
+.columna-seleccion{
+    width:90px;
+    min-width:90px;
+}
+
+.radio-producto{
+    width:19px;
+    height:19px;
+    cursor:pointer;
+    accent-color:var(--cafe);
+}
+
+.fila-seleccionada td{
+    background:rgba(91,35,38,.08);
+}
+
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5){
+    text-align:left;
+}
+
+.saldo-final{
+    font-weight:700;
+    color:var(--cafe);
+}
+
+.valor-inventario,
+.costo-convertido{
+    font-weight:700;
+    color:var(--cafe);
+}
+
+.moneda{
+    font-weight:700;
+}
+
+.mensaje-vacio{
+    display:none;
+    text-align:center;
+    padding:30px;
+    color:var(--gris-texto);
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.visible{
+    display:flex;
+}
+
+.modal-contenido{
+    background:var(--blanco);
+    width:95%;
+    max-width:1100px;
+    max-height:85vh;
+    overflow-y:auto;
+    border-radius:10px;
+    box-shadow:0 5px 25px rgba(0,0,0,.25);
+}
+
+.modal-encabezado{
+    background:var(--cafe);
+    color:var(--blanco);
+    padding:18px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.modal-encabezado h3{
+    margin:0;
+    font-size:21px;
+}
+
+.modal-encabezado p{
+    margin:5px 0 0;
+    font-size:14px;
+}
+
+.boton-cerrar{
+    background:transparent;
+    color:white;
+    padding:0;
+    font-size:28px;
+    line-height:1;
+    border:0;
+    cursor:pointer;
+}
+
+.boton-cerrar:hover{
+    background:transparent;
+    color:#ddd;
+}
+
+.modal-cuerpo{
+    padding:20px;
+}
+
+.tabla-lotes-contenedor{
+    width:100%;
+    overflow-x:auto;
+}
+
+.tabla-lotes{
+    width:100%;
+    min-width:700px;
+    border-collapse:collapse;
+}
+
+.tabla-lotes th{
+    padding:10px;
+    font-size:14px;
+}
+
+.tabla-lotes td{
+    padding:10px;
+    font-size:14px;
+}
+
+.tabla-lotes td:first-child{
+    text-align:left;
+}
+
+.tabla-lotes-total td{
+    font-weight:700;
+    background:#f1f1f1;
+}
+
+@media(max-width:1000px){
+    .acciones-superior{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .filtros{
+        max-width:none;
+    }
+
+    .acciones-derecha{
+        flex-direction:row;
+        align-items:center;
+        width:100%;
+    }
+
+    .total,
+    .btn-actualizar{
+        flex:1;
+    }
+
+    .resumen-costos{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:700px){
+    header{
+        padding:18px 20px;
+    }
+
+    .contenedor{
+        padding:0 10px;
+        margin:15px auto;
+    }
+
+    .panel{
+        padding:14px;
+    }
+
+    .encabezado h2{
+        font-size:19px;
+    }
+
+    .filtro-grupo{
+        grid-template-columns:1fr;
+        gap:5px;
+    }
+
+    .acciones-derecha{
+        flex-direction:column;
+    }
+
+    .total,
+    .btn-actualizar{
+        width:100%;
+    }
+
+    .resumen-costos{
+        grid-template-columns:1fr;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -447,101 +508,128 @@
     <p>Sistema de Gestión Operativa</p>
 </header>
 
-<div class="container">
-    <div class="panel">
+<main class="contenedor">
+<div class="panel">
 
-        <div class="top-bar">
-            <h2>Kardex por Producto</h2>
+    <div class="encabezado">
+        <h2>Kardex por Producto</h2>
 
-            <div class="acciones-superiores">
-                <button id="btnActualizar" onclick="cargarKardex()">
+        <div class="acciones-superior">
+            <div class="filtros">
+
+                <div class="filtro-grupo">
+                    <label for="filtroTipo">Mostrar:</label>
+                    <select id="filtroTipo" onchange="filtrarPorTipo()">
+                        <option value="todos">Todos</option>
+                        <option value="producto terminado">Producto terminado</option>
+                        <option value="materias primas">Materias primas</option>
+                        <option value="material de empaque">Material de empaque</option>
+                    </select>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label for="filtroProducto">Producto:</label>
+                    <select id="filtroProducto" onchange="filtrarPorProducto()">
+                        <option value="">Todos los productos</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="acciones-derecha">
+                <div class="total">
+                    Registros: <span id="totalRegistros">0</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-actualizar"
+                    id="btnActualizar"
+                    onclick="cargarKardex()"
+                >
                     Actualizar
                 </button>
             </div>
         </div>
-
-        <div class="filtros">
-            <label for="filtroProducto">Tipo:</label>
-
-            <select id="filtroProducto" onchange="aplicarFiltroProducto()">
-                <option value="">Todos</option>
-            </select>
-        </div>
-
-        <div id="productoSeleccionado" class="producto-seleccionado">
-            <div class="producto-seleccionado-info">
-                <strong id="nombreProductoSeleccionado">Producto</strong>
-                <span id="codigoProductoSeleccionado">Código:</span>
-            </div>
-
-            <button
-                type="button"
-                class="boton-ver-lotes"
-                onclick="abrirLotesSeleccionado()">
-                Ver lotes
-            </button>
-        </div>
-
-        <div id="mensaje" class="mensaje">Cargando Kardex...</div>
-
-        <div class="resumen-costos">
-
-            <div class="tarjeta-costo">
-                <h3>Producto Terminado</h3>
-                <div id="totalProductoTerminado" class="valor">₡0,00</div>
-                <small>Costo total del inventario</small>
-            </div>
-
-            <div class="tarjeta-costo">
-                <h3>Materia Prima</h3>
-                <div id="totalMateriaPrima" class="valor">₡0,00</div>
-                <small>Costo total del inventario</small>
-            </div>
-
-            <div class="tarjeta-costo">
-                <h3>Material de Empaque</h3>
-                <div id="totalMaterialEmpaque" class="valor">₡0,00</div>
-                <small>Costo total del inventario</small>
-            </div>
-
-            <div class="tarjeta-costo total-general">
-                <h3>Total general</h3>
-                <div id="totalGeneral" class="valor">₡0,00</div>
-                <small>Todas las categorías</small>
-            </div>
-
-        </div>
-
-        <div class="tabla-contenedor">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="columna-seleccion">Seleccionar</th>
-                        <th>Código</th>
-                        <th>Tipo</th>
-                        <th>Unidad_Medida</th>
-                        <th>Descripción</th>
-                        <th>Saldo Inicial</th>
-                        <th>Entradas</th>
-                        <th>Salidas</th>
-                        <th>Saldo Final</th>
-                        <th>Costo unitario sin impuesto</th>
-                        <th>Moneda</th>
-                        <th>Tipo de cambio</th>
-                        <th>Costo en colones</th>
-                        <th>Precio unitario sin impuesto</th>
-                        <th>Precio unitario con impuesto</th>
-                        <th>IVA</th>
-                        <th>Valor inventario</th>
-                    </tr>
-                </thead>
-
-                <tbody id="tablaKardex"></tbody>
-            </table>
-        </div>
-
     </div>
+
+    <div id="productoSeleccionado" class="producto-seleccionado">
+        <div class="producto-seleccionado-info">
+            <strong id="nombreProductoSeleccionado">Producto</strong>
+            <span id="codigoProductoSeleccionado">Código:</span>
+        </div>
+
+        <button
+            type="button"
+            class="boton-ver-lotes"
+            onclick="abrirLotesSeleccionado()"
+        >
+            Ver lotes
+        </button>
+    </div>
+
+    <div id="mensaje" class="mensaje">
+        Cargando Kardex...
+    </div>
+
+    <div class="resumen-costos">
+        <div class="tarjeta-costo">
+            <h3>Producto Terminado</h3>
+            <div id="totalProductoTerminado" class="valor">₡0,00</div>
+            <small>Costo total del inventario</small>
+        </div>
+
+        <div class="tarjeta-costo">
+            <h3>Materia Prima</h3>
+            <div id="totalMateriaPrima" class="valor">₡0,00</div>
+            <small>Costo total del inventario</small>
+        </div>
+
+        <div class="tarjeta-costo">
+            <h3>Material de Empaque</h3>
+            <div id="totalMaterialEmpaque" class="valor">₡0,00</div>
+            <small>Costo total del inventario</small>
+        </div>
+
+        <div class="tarjeta-costo">
+            <h3>Total general</h3>
+            <div id="totalGeneral" class="valor">₡0,00</div>
+            <small>Todas las categorías</small>
+        </div>
+    </div>
+
+    <div class="tabla-contenedor">
+        <table>
+            <thead>
+                <tr>
+                    <th class="columna-seleccion">Seleccionar</th>
+                    <th>Código</th>
+                    <th>Tipo</th>
+                    <th>Unidad de medida</th>
+                    <th>Descripción</th>
+                    <th>Saldo inicial</th>
+                    <th>Entradas</th>
+                    <th>Salidas</th>
+                    <th>Saldo final</th>
+                    <th>Costo unitario</th>
+                    <th>Moneda</th>
+                    <th>Costo en colones</th>
+                    <th>Precio unitario sin impuesto</th>
+                    <th>Precio unitario con impuesto</th>
+                    <th>IVA</th>
+                    <th>Valor inventario</th>
+                </tr>
+            </thead>
+            <tbody id="tablaKardex"></tbody>
+        </table>
+
+        <div id="mensajeVacio" class="mensaje-vacio">
+            No hay registros para mostrar.
+        </div>
+    </div>
+
 </div>
+</main>
 
 <div id="modalLotes" class="modal" onclick="cerrarModalSiFondo(event)">
     <div class="modal-contenido" onclick="event.stopPropagation()">
@@ -555,9 +643,8 @@
             <button
                 type="button"
                 class="boton-cerrar"
-                onclick="cerrarModalLotes()">
-                ×
-            </button>
+                onclick="cerrarModalLotes()"
+            >×</button>
         </div>
 
         <div class="modal-cuerpo">
@@ -566,13 +653,12 @@
                     <thead>
                         <tr>
                             <th>Lote</th>
-                            <th>Saldo Inicial</th>
+                            <th>Saldo inicial</th>
                             <th>Entradas</th>
                             <th>Salidas</th>
-                            <th>Saldo Final</th>
+                            <th>Saldo final</th>
                         </tr>
                     </thead>
-
                     <tbody id="tablaLotes"></tbody>
                 </table>
             </div>
@@ -582,12 +668,16 @@
 </div>
 
 <script>
+
 // =========================================================
 // CONFIGURACIÓN SUPABASE
 // =========================================================
 
-const SUPABASE_URL = "https://shjfohkiyfnqedrzjqpy.supabase.co";
-const SUPABASE_KEY = "sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
+const SUPABASE_URL =
+"https://shjfohkiyfnqedrzjqpy.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_PT4ozb9f0-0BoLE5yZDpBw_hhXPCzOs";
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
@@ -601,260 +691,398 @@ let productosAgrupadosGlobal = [];
 let productoSeleccionadoActual = null;
 let costosGlobal = [];
 
+let tipoSeleccionado = "todos";
+let productoSeleccionadoFiltro = "";
+
+
 // =========================================================
 // UTILIDADES
 // =========================================================
 
-function escaparHTML(valor) {
-    if (valor === null || valor === undefined) return "";
+function escaparHTML(valor){
+    if(valor === null || valor === undefined) return "";
 
     return String(valor)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
-function valorMostrar(valor) {
-    if (
+function valorMostrar(valor){
+    if(
         valor === null ||
         valor === undefined ||
         String(valor).trim() === ""
-    ) {
-        return "—";
-    }
+    ) return "—";
 
     return String(valor).trim();
 }
 
-function formatearCantidad(numero) {
-    if (numero === null || numero === undefined || numero === "") {
+function formatearCantidad(numero){
+    if(numero === null || numero === undefined || numero === ""){
         return "—";
     }
 
     const valor = Number(numero);
 
-    if (!Number.isFinite(valor)) return "—";
+    if(!Number.isFinite(valor)) return "—";
 
-    return valor.toLocaleString("es-CR", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 12
+    return valor.toLocaleString("es-CR",{
+        minimumFractionDigits:0,
+        maximumFractionDigits:12
     });
 }
 
-function formatearMonetario(numero) {
-    if (
+function formatearMonetario(numero){
+    if(
         numero === null ||
         numero === undefined ||
         numero === "" ||
         !Number.isFinite(Number(numero))
-    ) {
-        return "—";
-    }
+    ) return "—";
 
-    return Number(numero).toLocaleString("es-CR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+    return Number(numero).toLocaleString("es-CR",{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
     });
 }
 
-function formatearColones(numero) {
-    if (
+function formatearColones(numero){
+    if(
         numero === null ||
         numero === undefined ||
         !Number.isFinite(Number(numero))
-    ) {
-        return "₡0,00";
-    }
+    ) return "₡0,00";
 
-    return Number(numero).toLocaleString("es-CR", {
-        style: "currency",
-        currency: "CRC",
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+    return Number(numero).toLocaleString("es-CR",{
+        style:"currency",
+        currency:"CRC",
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
     });
 }
 
-function saldoEsCero(valor) {
-    if (valor === null || valor === undefined || valor === "") {
+function saldoEsCero(valor){
+    if(valor === null || valor === undefined || valor === ""){
         return true;
     }
 
     const numero = Number(valor);
 
-    if (!Number.isFinite(numero)) return true;
+    if(!Number.isFinite(numero)) return true;
 
     return Math.abs(numero) < 0.000001;
 }
 
-function normalizar(valor) {
-    if (valor === null || valor === undefined) return "";
+function normalizar(valor){
+    if(valor === null || valor === undefined) return "";
 
     return String(valor)
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/\s+/g," ")
         .trim()
         .toLowerCase();
 }
 
-function esUSD(moneda) {
-    const monedaNormalizada = normalizar(moneda);
+function esUSD(moneda){
+    const m = normalizar(moneda);
 
     return (
-        monedaNormalizada === "usd" ||
-        monedaNormalizada === "us$" ||
-        monedaNormalizada === "$" ||
-        monedaNormalizada.includes("usd") ||
-        monedaNormalizada.includes("dolar")
+        m === "usd" ||
+        m === "us$" ||
+        m === "$" ||
+        m.includes("usd") ||
+        m.includes("dolar")
     );
 }
 
+
 // =========================================================
-// CALCULAR COSTO EN COLONES
-//
-// Si la moneda es USD:
-// Costo en colones = costo unitario × tipo de cambio.
-//
-// Si la moneda es CRC/colones:
-// Costo en colones = costo unitario.
-//
-// Si el costo está en USD y no tiene un tipo de cambio válido,
-// no se calcula un valor de inventario incorrecto.
+// CLASIFICACIÓN DE TIPOS
 // =========================================================
 
-function calcularCostoEnColones(costoUnitario, moneda, tipoCambio) {
-    if (
+function esProductoTerminado(tipo){
+    return [
+        "producto terminado",
+        "productos terminados"
+    ].includes(normalizar(tipo));
+}
+
+function esMateriaPrima(tipo){
+    return [
+        "materia prima",
+        "materias primas"
+    ].includes(normalizar(tipo));
+}
+
+function esMaterialEmpaque(tipo){
+    return [
+        "material empaque",
+        "material de empaque",
+        "materiales de empaque"
+    ].includes(normalizar(tipo));
+}
+
+function perteneceCategoria(tipo){
+    if(tipoSeleccionado === "todos"){
+        return true;
+    }
+
+    if(tipoSeleccionado === "producto terminado"){
+        return esProductoTerminado(tipo);
+    }
+
+    if(tipoSeleccionado === "materias primas"){
+        return esMateriaPrima(tipo);
+    }
+
+    if(tipoSeleccionado === "material de empaque"){
+        return esMaterialEmpaque(tipo);
+    }
+
+    return false;
+}
+
+function precioDebeSerIgualAlCosto(tipo){
+    const t = normalizar(tipo);
+
+    return (
+        esMateriaPrima(t) ||
+        esMaterialEmpaque(t) ||
+        t === "suministro"
+    );
+}
+
+
+// =========================================================
+// OBTENER COSTO UNITARIO SEGÚN EL TIPO
+// =========================================================
+
+function obtenerCostoUnitario(costo,tipo){
+    if(!costo) return null;
+
+    let valor;
+
+    if(esProductoTerminado(tipo)){
+        valor = costo["Costo unitario inicial sin impuesto"];
+    }else{
+        valor = costo["CPP actualizado"];
+    }
+
+    if(
+        valor === null ||
+        valor === undefined ||
+        String(valor).trim() === ""
+    ){
+        return null;
+    }
+
+    const numero = Number(valor);
+
+    return Number.isFinite(numero) ? numero : null;
+}
+
+
+// =========================================================
+// CONVERTIR COSTO A COLONES
+// =========================================================
+
+function calcularCostoEnColones(
+    costoUnitario,
+    moneda,
+    tipoCambio,
+    tipo
+){
+    if(
         costoUnitario === null ||
         costoUnitario === undefined ||
-        String(costoUnitario).trim() === ""
-    ) {
+        !Number.isFinite(Number(costoUnitario))
+    ){
         return null;
     }
 
-    const costo = Number(costoUnitario);
-
-    if (!Number.isFinite(costo)) {
-        return null;
+    if(!esProductoTerminado(tipo)){
+        return Number(costoUnitario);
     }
 
-    if (esUSD(moneda)) {
-        if (
+    if(esUSD(moneda)){
+        if(
             tipoCambio === null ||
             tipoCambio === undefined ||
             String(tipoCambio).trim() === ""
-        ) {
+        ){
             return null;
         }
 
         const tasa = Number(tipoCambio);
 
-        if (!Number.isFinite(tasa) || tasa <= 0) {
+        if(!Number.isFinite(tasa) || tasa <= 0){
             return null;
         }
 
-        // Esta es la conversión que se utiliza en la tabla.
-        return costo * tasa;
+        return Number(costoUnitario) * tasa;
     }
 
-    // El costo ya está expresado en colones.
-    return costo;
+    return Number(costoUnitario);
 }
 
-// Determina si el precio sin impuesto debe ser igual al costo.
-function precioDebeSerIgualAlCosto(tipo) {
-    const tipoNormalizado = normalizar(tipo);
-
-    return (
-        tipoNormalizado === "materia prima" ||
-        tipoNormalizado === "material de empaque" ||
-        tipoNormalizado === "material empaque" ||
-        tipoNormalizado === "suministro"
-    );
-}
 
 // =========================================================
 // FILTRO DE PRODUCTOS
 // =========================================================
 
-function cargarFiltroProductos(data) {
+function cargarFiltroProductos(){
+
     const filtro = document.getElementById("filtroProducto");
-    const valorActual = filtro.value;
 
-    filtro.innerHTML = `<option value="">Todos</option>`;
+    const valorAnterior = productoSeleccionadoFiltro;
 
-    const tipos = [];
+    filtro.innerHTML = `
+        <option value="">Todos los productos</option>
+    `;
 
-    data.forEach(producto => {
-        const tipo = String(producto.Tipo || "").trim();
+    productosAgrupadosGlobal.forEach((producto,indice)=>{
 
-        if (!tipo) return;
-
-        if (
-            !tipos.some(
-                existente => normalizar(existente) === normalizar(tipo)
-            )
-        ) {
-            tipos.push(tipo);
+        if(!perteneceCategoria(producto.Tipo)){
+            return;
         }
+
+        const opcion = document.createElement("option");
+
+        // Se conserva el índice como valor interno.
+        opcion.value = String(indice);
+
+        // Mostrar únicamente la descripción.
+        opcion.textContent =
+            producto.Descripcion || "Sin descripción";
+
+        filtro.appendChild(opcion);
     });
 
-    tipos.sort((a, b) =>
-        a.localeCompare(b, "es", { sensitivity: "base" })
+    const sigueDisponible = Array.from(filtro.options).some(
+        opcion => opcion.value === valorAnterior
     );
 
-    tipos.forEach(tipo => {
-        const option = document.createElement("option");
-        option.value = tipo;
-        option.textContent = tipo;
-        filtro.appendChild(option);
-    });
-
-    const existe = Array.from(filtro.options).some(
-        option => normalizar(option.value) === normalizar(valorActual)
-    );
-
-    if (existe) {
-        filtro.value = valorActual;
+    if(sigueDisponible){
+        productoSeleccionadoFiltro = valorAnterior;
+        filtro.value = valorAnterior;
+    }else{
+        productoSeleccionadoFiltro = "";
+        filtro.value = "";
     }
 }
 
-function aplicarFiltroProducto() {
-    const valorSeleccionado =
+
+// =========================================================
+// APLICAR FILTROS
+// =========================================================
+
+function aplicarFiltros(){
+
+    tipoSeleccionado =
+        document.getElementById("filtroTipo").value;
+
+    productoSeleccionadoFiltro =
         document.getElementById("filtroProducto").value;
+
+    cargarFiltroProductos();
+
+    let registrosVisibles = 0;
 
     const filas = document.querySelectorAll(
         "#tablaKardex tr.fila-producto"
     );
 
-    filas.forEach(fila => {
-        const tipo = fila.dataset.tipo || "";
+    filas.forEach(fila=>{
 
-        fila.style.display =
-            !valorSeleccionado ||
-            normalizar(tipo) === normalizar(valorSeleccionado)
-                ? ""
-                : "none";
+        const tipo = fila.dataset.tipo || "";
+        const indice = fila.dataset.indice || "";
+
+        const perteneceTipo = perteneceCategoria(tipo);
+
+        const perteneceProducto =
+            !productoSeleccionadoFiltro ||
+            indice === productoSeleccionadoFiltro;
+
+        const mostrar = perteneceTipo && perteneceProducto;
+
+        fila.style.display = mostrar ? "" : "none";
+
+        if(mostrar){
+            registrosVisibles++;
+        }
     });
 
-    if (
-        productoSeleccionadoActual &&
-        valorSeleccionado &&
-        normalizar(productoSeleccionadoActual.Tipo) !==
-            normalizar(valorSeleccionado)
-    ) {
-        limpiarSeleccion();
+    document.getElementById("totalRegistros").textContent =
+        registrosVisibles.toLocaleString("es-CR");
+
+    const mensajeVacio = document.getElementById("mensajeVacio");
+
+    mensajeVacio.style.display =
+        registrosVisibles === 0 ? "block" : "none";
+
+    if(productoSeleccionadoActual){
+
+        const indiceSeleccionado =
+            productosAgrupadosGlobal.indexOf(
+                productoSeleccionadoActual
+            );
+
+        const sigueVisible = filas.length > 0 &&
+            Array.from(filas).some(fila =>
+                fila.dataset.indice === String(indiceSeleccionado) &&
+                fila.style.display !== "none"
+            );
+
+        if(!sigueVisible){
+            limpiarSeleccion();
+        }
     }
 }
 
+
 // =========================================================
-// AGRUPAR PRODUCTOS POR CÓDIGO O DESCRIPCIÓN
+// EVENTOS DE FILTROS
 // =========================================================
 
-function agruparProductos(data) {
+function filtrarPorTipo(){
+
+    tipoSeleccionado =
+        document.getElementById("filtroTipo").value;
+
+    productoSeleccionadoFiltro = "";
+
+    document.getElementById("filtroProducto").value = "";
+
+    limpiarSeleccion();
+
+    cargarFiltroProductos();
+
+    aplicarFiltros();
+}
+
+function filtrarPorProducto(){
+
+    productoSeleccionadoFiltro =
+        document.getElementById("filtroProducto").value;
+
+    aplicarFiltros();
+}
+
+
+// =========================================================
+// AGRUPAR PRODUCTOS
+// =========================================================
+
+function agruparProductos(data){
+
     const grupos = {};
 
-    data.forEach(producto => {
+    data.forEach(producto=>{
+
         const codigo = normalizar(producto.Codigo);
         const descripcion = normalizar(producto.Descripcion);
 
@@ -871,17 +1099,17 @@ function agruparProductos(data) {
             ? "descripcion:" + descripcion
             : "codigo:" + codigo;
 
-        if (!grupos[clave]) {
+        if(!grupos[clave]){
             grupos[clave] = {
-                Codigo: producto.Codigo,
-                Tipo: producto.Tipo,
-                Unidad_Medida: producto.Unidad_Medida,
-                Descripcion: producto.Descripcion,
-                lotes: [],
-                saldoInicial: 0,
-                entradas: 0,
-                salidas: 0,
-                saldoFinal: 0
+                Codigo:producto.Codigo,
+                Tipo:producto.Tipo,
+                Unidad_Medida:producto.Unidad_Medida,
+                Descripcion:producto.Descripcion,
+                lotes:[],
+                saldoInicial:0,
+                entradas:0,
+                salidas:0,
+                saldoFinal:0
             };
         }
 
@@ -892,37 +1120,29 @@ function agruparProductos(data) {
         const salidas = Number(producto.Salidas);
         const saldoFinal = Number(producto["Saldo Final"]);
 
-        if (Number.isFinite(saldoInicial)) {
+        if(Number.isFinite(saldoInicial)){
             grupo.saldoInicial += saldoInicial;
         }
 
-        if (Number.isFinite(entradas)) {
+        if(Number.isFinite(entradas)){
             grupo.entradas += entradas;
         }
 
-        if (Number.isFinite(salidas)) {
+        if(Number.isFinite(salidas)){
             grupo.salidas += salidas;
         }
 
-        if (Number.isFinite(saldoFinal)) {
+        if(Number.isFinite(saldoFinal)){
             grupo.saldoFinal += saldoFinal;
         }
 
-        if (!saldoEsCero(producto["Saldo Final"])) {
+        if(!saldoEsCero(producto["Saldo Final"])){
             grupo.lotes.push({
-                Lote: producto.Lote,
-                saldoInicial: Number.isFinite(saldoInicial)
-                    ? saldoInicial
-                    : 0,
-                entradas: Number.isFinite(entradas)
-                    ? entradas
-                    : 0,
-                salidas: Number.isFinite(salidas)
-                    ? salidas
-                    : 0,
-                saldoFinal: Number.isFinite(saldoFinal)
-                    ? saldoFinal
-                    : 0
+                Lote:producto.Lote,
+                saldoInicial:Number.isFinite(saldoInicial) ? saldoInicial : 0,
+                entradas:Number.isFinite(entradas) ? entradas : 0,
+                salidas:Number.isFinite(salidas) ? salidas : 0,
+                saldoFinal:Number.isFinite(saldoFinal) ? saldoFinal : 0
             });
         }
     });
@@ -930,20 +1150,22 @@ function agruparProductos(data) {
     return Object.values(grupos);
 }
 
+
 // =========================================================
 // SELECCIONAR PRODUCTO
 // =========================================================
 
-function seleccionarProducto(indice) {
+function seleccionarProducto(indice){
+
     const producto = productosAgrupadosGlobal[indice];
 
-    if (!producto) return;
+    if(!producto) return;
 
     productoSeleccionadoActual = producto;
 
     document.querySelectorAll(
         "#tablaKardex tr.fila-producto"
-    ).forEach(fila => {
+    ).forEach(fila=>{
         fila.classList.remove("fila-seleccionada");
     });
 
@@ -951,33 +1173,36 @@ function seleccionarProducto(indice) {
         `tr[data-indice="${indice}"]`
     );
 
-    if (fila) {
+    if(fila){
         fila.classList.add("fila-seleccionada");
     }
 
     document.getElementById(
         "nombreProductoSeleccionado"
-    ).textContent = producto.Descripcion || "Producto sin descripción";
+    ).textContent =
+        producto.Descripcion || "Producto sin descripción";
 
     document.getElementById(
         "codigoProductoSeleccionado"
-    ).textContent = "Código: " + (producto.Codigo || "Sin código");
+    ).textContent =
+        "Código: " + (producto.Codigo || "Sin código");
 
     document.getElementById(
         "productoSeleccionado"
     ).classList.add("visible");
 }
 
-function limpiarSeleccion() {
+function limpiarSeleccion(){
+
     productoSeleccionadoActual = null;
 
     document.querySelectorAll(
         "#tablaKardex tr.fila-producto"
-    ).forEach(fila => {
+    ).forEach(fila=>{
         fila.classList.remove("fila-seleccionada");
     });
 
-    document.querySelectorAll(".radio-producto").forEach(radio => {
+    document.querySelectorAll(".radio-producto").forEach(radio=>{
         radio.checked = false;
     });
 
@@ -986,12 +1211,14 @@ function limpiarSeleccion() {
     ).classList.remove("visible");
 }
 
+
 // =========================================================
 // MODAL DE LOTES
 // =========================================================
 
-function abrirLotesSeleccionado() {
-    if (!productoSeleccionadoActual) return;
+function abrirLotesSeleccionado(){
+
+    if(!productoSeleccionadoActual) return;
 
     const producto = productoSeleccionadoActual;
 
@@ -1005,7 +1232,8 @@ function abrirLotesSeleccionado() {
 
     tabla.innerHTML = "";
 
-    producto.lotes.forEach(lote => {
+    producto.lotes.forEach(lote=>{
+
         const fila = document.createElement("tr");
 
         fila.innerHTML = `
@@ -1013,9 +1241,7 @@ function abrirLotesSeleccionado() {
             <td>${formatearCantidad(lote.saldoInicial)}</td>
             <td>${formatearCantidad(lote.entradas)}</td>
             <td>${formatearCantidad(lote.salidas)}</td>
-            <td class="saldo-final">
-                ${formatearCantidad(lote.saldoFinal)}
-            </td>
+            <td class="saldo-final">${formatearCantidad(lote.saldoFinal)}</td>
         `;
 
         tabla.appendChild(fila);
@@ -1030,9 +1256,7 @@ function abrirLotesSeleccionado() {
         <td>${formatearCantidad(producto.saldoInicial)}</td>
         <td>${formatearCantidad(producto.entradas)}</td>
         <td>${formatearCantidad(producto.salidas)}</td>
-        <td class="saldo-final">
-            ${formatearCantidad(producto.saldoFinal)}
-        </td>
+        <td class="saldo-final">${formatearCantidad(producto.saldoFinal)}</td>
     `;
 
     tabla.appendChild(filaTotal);
@@ -1040,27 +1264,29 @@ function abrirLotesSeleccionado() {
     document.getElementById("modalLotes").classList.add("visible");
 }
 
-function cerrarModalLotes() {
+function cerrarModalLotes(){
     document.getElementById("modalLotes").classList.remove("visible");
 }
 
-function cerrarModalSiFondo(event) {
-    if (event.target.id === "modalLotes") {
+function cerrarModalSiFondo(event){
+    if(event.target.id === "modalLotes"){
         cerrarModalLotes();
     }
 }
 
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
+document.addEventListener("keydown",function(event){
+    if(event.key === "Escape"){
         cerrarModalLotes();
     }
 });
+
 
 // =========================================================
 // CONSTRUIR TABLA Y CALCULAR COSTOS
 // =========================================================
 
-function construirTablaDesdeDatos() {
+function construirTablaDesdeDatos(){
+
     const tabla = document.getElementById("tablaKardex");
 
     tabla.innerHTML = "";
@@ -1073,51 +1299,47 @@ function construirTablaDesdeDatos() {
     const mapaCostosPorCodigo = {};
     const mapaCostosPorDescripcion = {};
 
-    // Relacionar los registros de Costos con el Kardex.
-    costosGlobal.forEach(costo => {
+    costosGlobal.forEach(costo=>{
+
         const codigo = normalizar(costo.Codigo);
 
-        if (codigo && codigo !== "—" && codigo !== "-") {
+        if(codigo && codigo !== "—" && codigo !== "-"){
             mapaCostosPorCodigo[codigo] = costo;
         }
 
         const descripcion = normalizar(costo.Descripcion);
 
-        if (descripcion) {
+        if(descripcion){
             mapaCostosPorDescripcion[descripcion] = costo;
         }
     });
 
-    productosAgrupadosGlobal.forEach((producto, indice) => {
+    productosAgrupadosGlobal.forEach((producto,indice)=>{
+
         const codigoProducto = normalizar(producto.Codigo);
         const descripcionProducto = normalizar(producto.Descripcion);
 
         let costo = null;
 
-        // Primero busca por código.
-        if (
+        if(
             codigoProducto &&
             codigoProducto !== "—" &&
             codigoProducto !== "-"
-        ) {
+        ){
             costo = mapaCostosPorCodigo[codigoProducto] || null;
         }
 
-        // Si no encuentra el código, busca por descripción.
-        if (!costo && descripcionProducto) {
-            costo =
-                mapaCostosPorDescripcion[descripcionProducto] || null;
+        if(!costo && descripcionProducto){
+            costo = mapaCostosPorDescripcion[descripcionProducto] || null;
         }
 
-        // -----------------------------------------------------
-        // DATOS DE LA TABLA COSTOS
-        // -----------------------------------------------------
+        const costoUnitario = obtenerCostoUnitario(
+            costo,
+            producto.Tipo
+        );
 
-        const costoUnitario = costo
-            ? costo["Costo unitario sin impuesto"]
-            : null;
-
-        const moneda = costo
+        // Moneda original utilizada únicamente para los cálculos.
+        const monedaOrigen = costo
             ? costo["Moneda del costo unitario sin impuesto"]
             : null;
 
@@ -1125,113 +1347,76 @@ function construirTablaDesdeDatos() {
             ? costo["Tipo de cambio"]
             : null;
 
-        // -----------------------------------------------------
-        // COLUMNA: COSTO EN COLONES
-        //
-        // Se utiliza esta misma variable tanto para mostrar el
-        // costo convertido como para calcular el inventario.
-        // -----------------------------------------------------
+        // La moneda que se muestra en el Kardex siempre será CRC.
+        const moneda = "CRC";
 
         const costoEnColones = calcularCostoEnColones(
             costoUnitario,
-            moneda,
-            tipoCambio
+            monedaOrigen,
+            tipoCambio,
+            producto.Tipo
         );
-
-        // -----------------------------------------------------
-        // PRECIO UNITARIO SIN IMPUESTO
-        // -----------------------------------------------------
 
         let precioUnitarioSinImpuesto = null;
 
-        if (precioDebeSerIgualAlCosto(producto.Tipo)) {
+        if(precioDebeSerIgualAlCosto(producto.Tipo)){
             precioUnitarioSinImpuesto = costoUnitario;
-        } else {
+        }else{
             precioUnitarioSinImpuesto = costo
                 ? costo["Precio unitario sin impuesto"]
                 : null;
         }
 
-        // -----------------------------------------------------
-        // IVA
-        // -----------------------------------------------------
-
         const iva = costo ? costo["IVA"] : null;
-
-        // -----------------------------------------------------
-        // PRECIO UNITARIO CON IMPUESTO
-        // -----------------------------------------------------
 
         let precioUnitarioConImpuesto = null;
 
         const precioSinIVA = Number(precioUnitarioSinImpuesto);
         const porcentajeIVA = Number(iva);
 
-        if (
+        if(
             precioUnitarioSinImpuesto !== null &&
             precioUnitarioSinImpuesto !== "" &&
             iva !== null &&
             iva !== "" &&
             Number.isFinite(precioSinIVA) &&
             Number.isFinite(porcentajeIVA)
-        ) {
+        ){
             precioUnitarioConImpuesto =
                 precioSinIVA * (1 + porcentajeIVA);
         }
-
-        // -----------------------------------------------------
-        // VALOR INVENTARIO
-        //
-        // Fórmula:
-        // Valor inventario = saldo final × costo en colones.
-        //
-        // Si no existe un costo en colones válido, se muestra
-        // "—" en vez de inventar un valor.
-        // -----------------------------------------------------
 
         let valorInventario = null;
 
         const cantidadTotal = Number(producto.saldoFinal);
 
-        if (
+        if(
             Number.isFinite(cantidadTotal) &&
             costoEnColones !== null &&
             Number.isFinite(costoEnColones)
-        ) {
-            valorInventario = cantidadTotal * costoEnColones;
+        ){
+            valorInventario =
+                cantidadTotal * costoEnColones;
         }
 
-        // -----------------------------------------------------
-        // TOTALES DEL INVENTARIO
-        // -----------------------------------------------------
-
-        if (
+        if(
             valorInventario !== null &&
             Number.isFinite(valorInventario)
-        ) {
+        ){
             totalGeneral += valorInventario;
 
-            const tipoNormalizado = normalizar(producto.Tipo);
-
-            if (tipoNormalizado === "producto terminado") {
+            if(esProductoTerminado(producto.Tipo)){
                 totalProductoTerminado += valorInventario;
             }
 
-            if (tipoNormalizado === "materia prima") {
+            if(esMateriaPrima(producto.Tipo)){
                 totalMateriaPrima += valorInventario;
             }
 
-            if (
-                tipoNormalizado === "material de empaque" ||
-                tipoNormalizado === "material empaque"
-            ) {
+            if(esMaterialEmpaque(producto.Tipo)){
                 totalMaterialEmpaque += valorInventario;
             }
         }
-
-        // -----------------------------------------------------
-        // CONSTRUIR FILA
-        // -----------------------------------------------------
 
         const fila = document.createElement("tr");
 
@@ -1251,58 +1436,34 @@ function construirTablaDesdeDatos() {
             </td>
 
             <td>${escaparHTML(valorMostrar(producto.Codigo))}</td>
-
             <td>${escaparHTML(valorMostrar(producto.Tipo))}</td>
-
             <td>${escaparHTML(valorMostrar(producto.Unidad_Medida))}</td>
-
             <td>${escaparHTML(valorMostrar(producto.Descripcion))}</td>
+            <td>${formatearCantidad(producto.saldoInicial)}</td>
+            <td>${formatearCantidad(producto.entradas)}</td>
+            <td>${formatearCantidad(producto.salidas)}</td>
 
-            <td class="numero">
-                ${formatearCantidad(producto.saldoInicial)}
-            </td>
-
-            <td class="numero">
-                ${formatearCantidad(producto.entradas)}
-            </td>
-
-            <td class="numero">
-                ${formatearCantidad(producto.salidas)}
-            </td>
-
-            <td class="numero saldo-final">
+            <td class="saldo-final">
                 ${formatearCantidad(producto.saldoFinal)}
             </td>
 
-            <td class="numero">
-                ${formatearMonetario(costoUnitario)}
-            </td>
+            <td>${formatearMonetario(costoUnitario)}</td>
 
             <td class="moneda">
                 ${escaparHTML(valorMostrar(moneda))}
             </td>
 
-            <td class="numero tipo-cambio-valor">
-                ${formatearMonetario(tipoCambio)}
-            </td>
-
-            <td class="numero costo-convertido">
+            <td class="costo-convertido">
                 ${formatearMonetario(costoEnColones)}
             </td>
 
-            <td class="numero">
-                ${formatearMonetario(precioUnitarioSinImpuesto)}
-            </td>
+            <td>${formatearMonetario(precioUnitarioSinImpuesto)}</td>
 
-            <td class="numero">
-                ${formatearMonetario(precioUnitarioConImpuesto)}
-            </td>
+            <td>${formatearMonetario(precioUnitarioConImpuesto)}</td>
 
-            <td class="numero">
-                ${formatearMonetario(iva)}
-            </td>
+            <td>${formatearMonetario(iva)}</td>
 
-            <td class="numero valor-inventario">
+            <td class="valor-inventario">
                 ${formatearMonetario(valorInventario)}
             </td>
         `;
@@ -1310,7 +1471,6 @@ function construirTablaDesdeDatos() {
         tabla.appendChild(fila);
     });
 
-    // Mostrar los totales calculados con el costo en colones.
     document.getElementById("totalProductoTerminado").textContent =
         formatearColones(totalProductoTerminado);
 
@@ -1323,58 +1483,62 @@ function construirTablaDesdeDatos() {
     document.getElementById("totalGeneral").textContent =
         formatearColones(totalGeneral);
 
-    aplicarFiltroProducto();
+    aplicarFiltros();
 }
+
 
 // =========================================================
 // CARGAR KARDEX Y COSTOS DESDE SUPABASE
 // =========================================================
 
-async function cargarKardex() {
+async function cargarKardex(){
+
     const mensaje = document.getElementById("mensaje");
     const boton = document.getElementById("btnActualizar");
 
-    limpiarSeleccion();
+    boton.disabled = true;
+    boton.textContent = "Actualizando...";
 
     mensaje.textContent =
         "Cargando Kardex y datos de costos desde Supabase...";
 
-    boton.disabled = true;
+    limpiarSeleccion();
 
-    try {
-        // Cargar existencias del Kardex.
+    document.getElementById("tablaKardex").innerHTML = "";
+    document.getElementById("totalRegistros").textContent = "0";
+
+    try{
+
         const {
-            data: kardexData,
-            error: kardexError
+            data:kardexData,
+            error:kardexError
         } = await supabaseClient
             .from(TABLA_KARDEX_PRODUCTO)
             .select(
                 'Codigo, Lote, Tipo, Unidad_Medida, Descripcion, "Saldo Inicial", Entradas, Salidas, "Saldo Final"'
             );
 
-        if (kardexError) {
+        if(kardexError){
             throw new Error(
                 "Error cargando Kardex_Producto: " +
                 kardexError.message
             );
         }
 
-        // Mostrar únicamente productos con saldo disponible.
         const kardexConSaldo = (kardexData || []).filter(
             producto => !saldoEsCero(producto["Saldo Final"])
         );
 
-        // Cargar costos, moneda y tipo de cambio desde Supabase.
         const {
-            data: costosData,
-            error: costosError
+            data:costosData,
+            error:costosError
         } = await supabaseClient
             .from(TABLA_COSTOS)
             .select(
-                'Codigo, Descripcion, "Costo unitario sin impuesto", "Precio unitario sin impuesto", "IVA", "Moneda del costo unitario sin impuesto", "Tipo de cambio"'
+                'Codigo, Descripcion, "CPP actualizado", "Costo unitario inicial sin impuesto", "Precio unitario sin impuesto", "IVA", "Moneda del costo unitario sin impuesto", "Tipo de cambio"'
             );
 
-        if (costosError) {
+        if(costosError){
             throw new Error(
                 "Error cargando Costos: " +
                 costosError.message
@@ -1383,52 +1547,76 @@ async function cargarKardex() {
 
         costosGlobal = costosData || [];
 
-        // Agrupar registros del Kardex por producto.
-        productosAgrupadosGlobal = agruparProductos(kardexConSaldo);
+        productosAgrupadosGlobal =
+            agruparProductos(kardexConSaldo);
 
-        // Ordenar por tipo y descripción.
-        productosAgrupadosGlobal.sort((a, b) => {
+        productosAgrupadosGlobal.sort((a,b)=>{
+
             const comparacionTipo = String(a.Tipo || "").localeCompare(
                 String(b.Tipo || ""),
                 "es",
-                { sensitivity: "base" }
+                {sensitivity:"base"}
             );
 
-            if (comparacionTipo !== 0) {
+            if(comparacionTipo !== 0){
                 return comparacionTipo;
             }
 
             return String(a.Descripcion || "").localeCompare(
                 String(b.Descripcion || ""),
                 "es",
-                { sensitivity: "base" }
+                {sensitivity:"base"}
             );
         });
 
-        cargarFiltroProductos(productosAgrupadosGlobal);
+        tipoSeleccionado =
+            document.getElementById("filtroTipo").value;
+
+        productoSeleccionadoFiltro =
+            document.getElementById("filtroProducto").value;
+
+        cargarFiltroProductos();
+
         construirTablaDesdeDatos();
 
         mensaje.textContent =
-            "Kardex actualizado. " +
-            productosAgrupadosGlobal.length +
-            " productos con saldo disponible.";
+            "Kardex actualizado correctamente.";
 
-    } catch (error) {
-        console.error("Error completo:", error);
+    }catch(error){
+
+        console.error("Error completo:",error);
+
         mensaje.textContent = error.message;
 
-    } finally {
+        document.getElementById("mensajeVacio").style.display = "block";
+
+        document.getElementById("mensajeVacio").textContent =
+            "No se pudo cargar la información del Kardex.";
+
+    }finally{
+
         boton.disabled = false;
+        boton.textContent = "Actualizar";
     }
 }
+
 
 // =========================================================
 // INICIAR APLICACIÓN
 // =========================================================
 
-document.addEventListener("DOMContentLoaded", cargarKardex);
+document.addEventListener("DOMContentLoaded",()=>{
+
+    document.getElementById("filtroTipo").value = "todos";
+
+    tipoSeleccionado = "todos";
+
+    cargarKardex();
+});
 
 </script>
 
 </body>
 </html>
+
+
